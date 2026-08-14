@@ -1,0 +1,191 @@
+/* 책 원고 에이전트 — **이 앱에서 더한 화면만.**
+ *
+ * `app.css` 는 260812-summary-shocase 에서 그대로 가져온 것이고, 거기서 바꾼 것은
+ * 브랜드 색 여섯 줄뿐이다. 새 화면(현황판 사다리 · 목차 · 원고 자 · 프롬프트)의
+ * 스타일을 그 파일 안에 섞으면, 나중에 저쪽이 디자인을 고쳤을 때 어디까지가
+ * 가져온 것이고 어디부터가 우리 것인지 알 수 없어진다. **파일로 갈라 둔다.**
+ *
+ * 규칙은 저쪽과 같다:
+ *   1) 테두리를 쓰지 않는다. 구분은 inset box-shadow(헤어라인)로 한다.
+ *   2) 그림자는 오버레이 레이어만 갖는다.
+ *   3) 반투명은 항상 rgb(var(--x-rgb) / .xx).
+ * 토큰은 전부 app.css 의 :root 에서 가져다 쓴다 — 여기서 새 색을 만들지 않는다.
+ */
+
+/* ── 상태 알약 ─────────────────────────────────────────────────────────────
+   app.css 의 `.dot` 은 9px 짜리 **점**이다. 여기서 말해야 하는 것은
+   「아직 · 다시 해야 함 · 됨 · 됐지만 경고」 네 가지인데, 색만으로는 못 읽는다
+   (같은 채도의 점 두 개를 눈이 못 가른다). 그래서 글자가 든 알약을 따로 둔다. */
+.pill { padding: 2px 9px; border-radius: var(--r-pill); font-size: var(--t-2xs);
+  font-weight: 700; letter-spacing: -.01em; white-space: nowrap; }
+.pill.ok { background: var(--ok-wash); color: var(--ok); }
+.pill.warn { background: var(--warn-wash); color: var(--warn); }
+.pill.idle { background: var(--paper-deep); color: var(--text-3); }
+
+/* ── 홈 — 사슬 ─────────────────────────────────────────────────────────── */
+.chain { display: grid; gap: 8px; margin-top: 4px; }
+.chain-row { display: grid; grid-template-columns: 20px 158px 1fr; gap: 10px;
+  align-items: baseline; }
+.chain-n { display: grid; place-items: center; width: 20px; height: 20px;
+  border-radius: 50%; background: var(--brand-wash); color: var(--brand);
+  font-size: 10px; font-weight: 800; font-style: normal; }
+.chain-name { font-size: var(--t-sm); font-weight: 700; color: var(--ink); }
+.chain-why { font-size: var(--t-xs); color: var(--text-2); line-height: var(--lh); }
+.rule-row { padding: 5px 0; font-size: var(--t-xs); color: var(--text-2);
+  line-height: var(--lh); }
+.rule-row + .rule-row { box-shadow: inset 0 1px 0 var(--hairline-2); }
+
+/* ── 시작 화면 — PDF 고르기 · 앞쪽 미리보기 ────────────────────────────── */
+.pdflist { display: grid; gap: 4px; margin-top: 10px; }
+.pdfrow { display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 7px 12px; border: 0; border-radius: var(--r-sm); cursor: pointer;
+  background: var(--bone); color: var(--text-2); text-align: left;
+  font-family: inherit; font-size: var(--t-xs);
+  box-shadow: inset 0 0 0 1px var(--hairline); }
+.pdfrow:hover { background: var(--sky-wash); color: var(--brand); }
+.pdfrow.on { background: var(--brand-wash); color: var(--brand);
+  box-shadow: inset 0 0 0 1.5px var(--brand); }
+.pdf-name { flex: 1; font-weight: 600; }
+.pdf-mb { color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+.peek { display: grid; gap: 6px; margin-top: 10px; }
+.peek-page { display: grid; grid-template-columns: 46px 1fr; gap: 9px;
+  padding: 8px 11px; border-radius: var(--r-sm); background: var(--bone);
+  box-shadow: inset 0 0 0 1px var(--hairline); }
+.peek-no { color: var(--brand); font-size: var(--t-2xs); font-weight: 800;
+  font-variant-numeric: tabular-nums; }
+.peek-txt { color: var(--text-2); font-size: var(--t-2xs); line-height: var(--lh); }
+.peek-heads { padding: 9px 12px; border-radius: var(--r-sm);
+  background: var(--paper-deep); }
+.peek-head { color: var(--text-2); font-size: var(--t-2xs); line-height: 1.7;
+  white-space: pre-wrap; font-variant-numeric: tabular-nums; }
+
+/* ── 현황판 — 여섯 줄 사다리 ───────────────────────────────────────────── */
+.steps { display: grid; gap: 10px; max-width: 860px; }
+.step { padding: 14px 17px; border-radius: var(--r-lg); background: var(--bone);
+  box-shadow: inset 0 0 0 1px var(--hairline); }
+.step.done { background: var(--white); }
+.step.locked { opacity: .5; }
+.step-hd { display: flex; align-items: center; gap: 9px; }
+.step-n { display: grid; place-items: center; width: 21px; height: 21px; flex: none;
+  border-radius: 50%; background: var(--brand); color: #fff;
+  font-size: var(--t-2xs); font-weight: 800; font-style: normal; }
+.step.locked .step-n { background: var(--idle); }
+.step-name { flex: 1; font-size: var(--t-md); font-weight: 700; color: var(--ink); }
+/* 돈이 드는 단계와 안 드는 단계를 눈으로 가른다. 같은 모양이면 사람이 조심하느라
+   아무것도 못 누른다. */
+.step-paid { padding: 2px 8px; border-radius: var(--r-pill);
+  background: var(--warn-wash); color: var(--warn);
+  font-size: 10px; font-weight: 800; }
+.step-cost { color: var(--text-3); font-size: var(--t-2xs);
+  font-variant-numeric: tabular-nums; }
+.step-why { margin: 5px 0 0 30px; color: var(--text-2); font-size: var(--t-xs);
+  line-height: var(--lh); }
+.step-warn { margin: 5px 0 0 30px; color: var(--warn); font-size: var(--t-2xs); }
+.step-act { display: flex; align-items: center; flex-wrap: wrap; gap: 7px;
+  margin: 11px 0 0 30px; }
+.step-run-label { color: var(--text-3); font-size: var(--t-2xs);
+  font-variant-numeric: tabular-nums; }
+
+/* ── 목차 · 원고 · 프롬프트 공통 — 위쪽 띠 ─────────────────────────────── */
+.obar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  padding: 9px 13px; margin-bottom: 12px; border-radius: var(--r);
+  background: var(--bone); box-shadow: inset 0 0 0 1px var(--hairline); }
+.ostat { color: var(--text-2); font-size: var(--t-2xs); font-weight: 700;
+  font-variant-numeric: tabular-nums; }
+.ostat.ok { color: var(--ok); }
+.ostat.warn { color: var(--warn); }
+.obar .btn { margin-left: auto; }
+
+/* ── 목차 ──────────────────────────────────────────────────────────────── */
+.opage, .dpage, .ipage { max-width: 900px; }
+.ogroup { margin: 22px 0 9px; padding-bottom: 5px; font-size: var(--t-md);
+  font-weight: 700; color: var(--ink);
+  box-shadow: inset 0 -1px 0 var(--hairline); }
+.ocard { display: grid; gap: 7px; padding: 12px 14px; margin-bottom: 8px;
+  border-radius: var(--r); background: var(--bone);
+  box-shadow: inset 0 0 0 1px var(--hairline); }
+.ocard.bad { box-shadow: inset 0 0 0 1.5px rgb(var(--err-rgb) / .45); }
+.ocard.dropped { opacity: .4; }
+.ocard-hd { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+/* 이름표는 **보여 주되 못 고친다.** 그림 파일이 여기 매달려 있어서, 고치는 순간
+   이미 그려 둔 그림이 미아가 된다. 고정폭으로 두어 값처럼 읽히게 한다. */
+.oid { padding: 1px 7px; border-radius: 4px; background: var(--paper-deep);
+  color: var(--text-3); font-size: 10.5px; font-weight: 700;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; }
+.ono { color: var(--brand); font-size: var(--t-2xs); font-weight: 800; }
+.otag { padding: 1px 7px; border-radius: var(--r-pill);
+  background: var(--brand-wash); color: var(--brand);
+  font-size: 10px; font-weight: 700; }
+.otag.bad { background: var(--err-bg); color: var(--err); }
+.otitle { padding: 7px 10px; border: 0; border-radius: var(--r-sm);
+  background: var(--white); color: var(--ink);
+  font-family: inherit; font-size: var(--t-sm); font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--hairline); }
+.osay { padding: 7px 10px; border: 0; border-radius: var(--r-sm); resize: vertical;
+  background: var(--white); color: var(--text);
+  font-family: inherit; font-size: var(--t-xs); line-height: var(--lh);
+  box-shadow: inset 0 0 0 1px var(--hairline); }
+.otitle:focus, .osay:focus, .iprompt:focus { outline: 0;
+  box-shadow: inset 0 0 0 1.5px var(--sky-500); }
+.ocard-ft { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+.obudget { width: 52px; padding: 4px 8px; border: 0; border-radius: var(--r-sm);
+  background: var(--white); color: var(--text); font-family: inherit;
+  font-size: var(--t-xs); box-shadow: inset 0 0 0 1px var(--hairline); }
+.sopt.drop { margin-left: auto; color: var(--err); }
+.sopt.drop:hover { background: var(--err-bg); color: var(--err); }
+.sfield-hint.saved { color: var(--ok); }
+
+/* ── 원고 — 자 위의 미리보기 ───────────────────────────────────────────── */
+.dsplit { display: grid; grid-template-columns: minmax(280px, 340px) 1fr; gap: 16px;
+  align-items: start; }
+.dside { display: grid; gap: 4px; }
+.drow { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 10px;
+  border: 0; border-radius: var(--r-sm); cursor: pointer; text-align: left;
+  background: var(--bone); color: var(--text-2); font-family: inherit;
+  box-shadow: inset 0 0 0 1px var(--hairline); }
+.drow:hover { background: var(--sky-wash); }
+.drow.on { background: var(--brand-wash); box-shadow: inset 0 0 0 1.5px var(--brand); }
+.drow.bad { box-shadow: inset 0 0 0 1.5px rgb(var(--err-rgb) / .45); }
+.drow-t { flex: 1; font-size: var(--t-2xs); overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; }
+.dstage { position: relative; overflow: hidden; border-radius: var(--r);
+  background: var(--white); box-shadow: inset 0 0 0 1px var(--hairline);
+  height: calc(100vh - 220px); }
+/* ★ 폭 960 으로 띄우고 통째로 줄인다. 안을 반응형으로 만들지 않는다 —
+     반응형이면 여기서 보이는 줄바꿈이 실제로 나가는 것과 달라진다.
+     960 인 근거: UA 기본값 body{margin:8px} 이 좌우로 8px 씩 먹어 배치 폭이 944 가
+     되고, 발표 쇼케이스가 원고를 오릴 때 쓰는 폭이 그 944 다. */
+.dframe { width: 960px; height: 100%; border: 0; transform-origin: top left;
+  display: block; }
+/* 한 화면의 아래끝. 507px × 축소비율 자리에 선을 하나 긋는다 — 이 선을 넘은 장이
+   발표에서 통째로 축소되는 장이다. */
+.druler { position: absolute; left: 0; right: 0; pointer-events: none;
+  top: calc(507px * var(--k, 1));
+  box-shadow: 0 0 0 1px rgb(var(--err-rgb) / .55); }
+.druler-lb { position: absolute; right: 6px; top: 3px; padding: 1px 7px;
+  border-radius: var(--r-pill); background: rgb(var(--err-rgb) / .9); color: #fff;
+  font-size: 10px; font-weight: 700; }
+
+/* ── 이미지 프롬프트 ───────────────────────────────────────────────────── */
+.icard { display: grid; gap: 7px; padding: 12px 14px; margin-bottom: 8px;
+  border-radius: var(--r); background: var(--bone);
+  box-shadow: inset 0 0 0 1px var(--hairline); }
+.icard-hd { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+.inum { color: var(--brand-deep); font-size: var(--t-sm); font-weight: 800;
+  font-variant-numeric: tabular-nums; }
+.icard-t { flex: 1; color: var(--ink); font-size: var(--t-sm); font-weight: 600; }
+/* 프롬프트는 영어 한 덩이라 고정폭이 읽기 좋다 — 어디서 잘렸는지가 보인다. */
+.iprompt { padding: 8px 11px; border: 0; border-radius: var(--r-sm); resize: vertical;
+  background: var(--white); color: var(--text-2);
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 11.5px; line-height: 1.65;
+  box-shadow: inset 0 0 0 1px var(--hairline); }
+.card.warn { background: var(--warn-wash); }
+
+@media (max-width: 1000px) {
+  .dsplit { grid-template-columns: 1fr; }
+  .dstage { height: 60vh; }
+  .chain-row { grid-template-columns: 20px 1fr; }
+  .chain-why { grid-column: 2; }
+}

@@ -1,0 +1,62 @@
+# -*- coding: utf-8 -*-
+"""순서 번호 — **이 표가 유일한 출처다.**
+
+구조는 `260812-summary-shocase/core/steps.py` 그대로다. 거기서 얻은 규칙:
+자리마다 이름이 조금씩 달라도 **번호가 둘을 잇는다.** 다음 숫자를 누르면 된다.
+
+★ 번호는 실행 순서(registry.ORDER)가 아니라 **사람이 누르는 순서**다.
+  여기서는 둘이 거의 같지만, 같아 보인다고 registry 를 직접 읽지 않는다 —
+  나중에 순서가 갈릴 때 화면이 조용히 틀린 번호를 보여 주게 된다.
+★ 이름은 **단계 라벨의 낱말을 그대로** 쓴다.
+"""
+from __future__ import annotations
+
+from typing import Any, Dict, List, Optional
+
+STEPS: List[Dict[str, Any]] = [
+    {"n": 1, "name": "책에서 글 뽑기",
+     "tip": "PDF 를 쪽별로 읽어 붙입니다. 돈은 안 듭니다",
+     "keys": ["b1-pdf"]},
+    {"n": 2, "name": "장 나누기",
+     "tip": "h3 하나가 슬라이드 한 장 — 여기서 장 수가 정해집니다",
+     "keys": ["b2-outline"]},
+    {"n": 3, "name": "몸통 쓰기",
+     "tip": "장마다 여섯 줄 안쪽으로. 넘치면 장을 쪼갭니다",
+     "keys": ["b3-write", "b4-figure"]},
+    {"n": 4, "name": "이미지 프롬프트",
+     "tip": "가로형 그림 지시. 안 바뀐 장은 원장에서 그대로 씁니다",
+     "keys": ["b5-imgprompt"]},
+    {"n": 5, "name": "조립하고 재기",
+     "tip": "원고 한 파일로 묶고 944×507 을 실제로 잽니다. 돈은 안 듭니다",
+     "keys": ["b6-assemble", "b7-check"]},
+    {"n": 6, "name": "내보내기",
+     "tip": "원고 HTML · 이미지프롬프트 JSON · 부족분 · 이름바꾸기",
+     "keys": ["b8-export"]},
+]
+
+BY_KEY: Dict[str, Dict[str, Any]] = {}
+for _s in STEPS:
+    for _k in _s["keys"]:
+        BY_KEY[_k] = _s
+
+# 손으로 고친 것은 순서에 없다 — 아무 때나 일어난다. 다만 **어느 단계보다 앞이냐**
+# 는 정해야 낡음을 판정할 수 있다. 목차·몸통을 손보는 일이므로 조립(5) 앞이다.
+HAND_BEFORE = 5
+
+
+def of(key: Optional[str]) -> Optional[Dict[str, Any]]:
+    """스테이지 키(또는 산출물 파일 이름) → 그 단계. 모르면 None."""
+    if not key:
+        return None
+    hit = BY_KEY.get(key)
+    if hit:
+        return hit
+    s = str(key).lower()
+    if s.endswith(".html") or s.endswith(".json") or s.endswith(".txt"):
+        return BY_KEY["b8-export"]
+    return None
+
+
+def n_of(key: Optional[str]) -> Optional[int]:
+    st = of(key)
+    return st["n"] if st else None

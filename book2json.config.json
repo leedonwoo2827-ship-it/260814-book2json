@@ -1,0 +1,35 @@
+{
+  "port": 5187,
+  "auth": "claude-code",
+  "models": {
+    "outline": "claude-opus-5",
+    "write": "claude-opus-5",
+    "figure": "claude-opus-5",
+    "imgprompt": "claude-sonnet-5"
+  },
+  "effort": {
+    "outline": "high",
+    "write": "high",
+    "figure": "medium",
+    "imgprompt": "medium"
+  },
+  "budget_usd": {
+    "per_stage": 2.5,
+    "warn_total": 8.0
+  },
+  "manuscript": {
+    "box_w": 944,
+    "box_h": 507,
+    "max_blocks": 6,
+    "batch": 8
+  },
+  "image": {
+    "aspect": "landscape",
+    "accent_a": "#2f6b66",
+    "accent_b": "#d8b779",
+    "negative": "text, letters, watermark, logo, low quality, distorted"
+  },
+  "render": {
+    "seed_hex": "#2f6b66"
+  }
+}
