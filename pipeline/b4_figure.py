@@ -124,12 +124,17 @@ def run(job, pid: int, slug: str, project: Dict[str, Any], *, force: bool = Fals
 
     # ★ 대상은 **원고에 실제로 있는 장**이다. b3 가 장을 쪼갰으면(`…-03b`) 그 장도
     #   그림이 필요하다 — 목차만 보면 쪼갠 장이 통째로 그림 없이 나간다.
+    #
+    # ★ 거르는 기준은 목차가 뭐라고 했는가(`visual`)가 **아니라** 몸통에 표가
+    #   실제로 있는가다. 예전엔 목차가 `table` 이라 한 장을 건너뛰었는데, b3 가
+    #   그 장을 표 없이 줄글로 써 오면 **아무도 안 그린다.** 20장의 `sam20-19` 가
+    #   그렇게 그림도 표도 없이 나갔고, b6·b7 이 잡아 줬는데도 b4 를 다시 눌러
+    #   봐야 "새로 그릴 장이 없습니다" 만 나왔다 — 고칠 방법이 없는 경고였다.
+    #   목차는 의도이고 원고는 사실이다. **사실을 본다.**
     by_id = {s["data_id"]: s for s in (outline.get("slides") or [])}
     targets: List[Dict[str, Any]] = []
     for did, body in draft.items():
         base = by_id.get(did) or by_id.get(body.get("from") or "") or {}
-        if base.get("visual") == "table":
-            continue
         if any(b["kind"] == "table" for b in body.get("blocks") or []):
             continue                                  # 표가 이미 그 자리를 맡았다
         targets.append({**base, "data_id": did,
