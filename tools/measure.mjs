@@ -104,7 +104,10 @@ const report = await page.evaluate(({ BOX_H, MAX_BLOCKS }) => {
       id: h.dataset.id || "",
       title: (h.textContent || "").trim().slice(0, 60),
       height, lines, svg, table,
-      say: !!h.dataset.say,
+      /* ★ 있는지(true/false)가 아니라 **몇 자인지**를 낸다. 영상 길이를 정하는 것이
+         이 글자 수라, 개수만 세면 「data-say 27/27」 이라 적어 놓고도 5분 30초짜리인
+         것을 모른다(2026-08-14). 공백은 뺀다 — core/narration.py 와 같은 셈법이다. */
+      say: (h.dataset.say || "").replace(/\s+/g, "").length,
       img: !!h.dataset.img,
       over: height > BOX_H,
       longer: lines > MAX_BLOCKS,
@@ -115,7 +118,15 @@ const report = await page.evaluate(({ BOX_H, MAX_BLOCKS }) => {
 
   /* 가로로 밀렸는가 — 규약의 마지막 방어선. 밀리면 캡처가 못 쓰게 된다. */
   const wide = document.documentElement.scrollWidth > document.documentElement.clientWidth;
-  return { slides: out, wide };
+
+  /* 표지·마무리 대본은 h1 에 붙어 있다. 장이 아니라서 위 목록에는 안 들어가지만
+     **소리는 나므로** 길이에는 들어가야 한다. */
+  const h1 = document.querySelector("h1");
+  const len = (s) => (s || "").replace(/\s+/g, "").length;
+  return {
+    slides: out, wide,
+    intro: len(h1?.dataset.say), outro: len(h1?.dataset.outroSay),
+  };
 }, { BOX_H, MAX_BLOCKS });
 
 await browser.close();

@@ -24,11 +24,12 @@ export const meta = {
 
 const BOX_W = 944, BOX_H = 507, VIEW_W = 960;
 
+/* ★ `bare`(그림도 표도 없음)를 뺐다(2026-08-14). 그림 단계를 아직 안 돌린 것뿐인데
+   스물한 장이 「규약에 어긋난 장」으로 뜨면, 진짜 어긋난 장이 그 사이에 묻힌다. */
 const FLAG_TXT = {
   over: "한 화면을 넘침 — h3 를 하나 더 만들어 나누세요",
   longer: "줄이 많음 — 여섯 줄 안쪽으로",
   empty: "몸통 없음 — 3번을 다시 돌리세요",
-  bare: "그림도 표도 없음 — 3번을 다시 돌리세요",
 };
 
 export async function mount(root) {

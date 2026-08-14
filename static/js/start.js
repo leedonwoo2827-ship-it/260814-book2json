@@ -1,21 +1,21 @@
-/* 새 원고 만들기 — **넣을 것은 PDF 하나뿐. 나머지는 채워 둔다.**
+/* 새 원고 만들기 — **끌어다 놓고, 길이 고르고, 단추.**
  *
- * 패널이 아니라 바닥에 두는 이유는 규칙 때문이다: **입력창이 있는 화면은 패널에
- * 두지 않는다.** 패널은 Esc 나 스크림 클릭으로 닫히므로, 경로를 타이핑하다 한 번만
- * 잘못 눌러도 날아간다.
+ * 2026-08-14: "새 원고를 누르니 너무 복잡하게 나오는데... 드래그드랍만 나오게
+ * 해주시면 안될까요?!" 맞는 말이었다. 이 화면은 폴더 경로 · 앞뒤로 버릴 쪽 ·
+ * 미리보기 · 이름 넷을 한꺼번에 물었는데, **매번 답이 같은 질문들**이었다.
+ * 매번 같은 답이 나오는 질문은 화면에 있을 이유가 없다 — 기본값으로 두고
+ * 「자세히」 안으로 접는다. 남는 것은 셋이다:
  *
- * ★ PDF 를 업로드가 아니라 **폴더 경로**로 받는다. 13개 × 평균 9MB 를 base64 로
- *   올리면 브라우저가 버틴다는 보장이 없고, 무엇보다 책은 이미 이 PC 에 있다.
+ *     PDF 를 끌어다 놓는다  →  몇 분짜리로 만들지 고른다  →  단추를 누른다
  *
- * ★ **placeholder 로는 아무것도 시작되지 않는다.** 예전엔 폴더 칸을 비운 채 회색
- *   글씨로 예시 경로만 보여 줬는데, 그 글씨가 값처럼 보여서 사람이 다 채웠다고
- *   여기고 넘어갔다 — 목록은 영영 안 나왔다(2026-08-14 신고: "새로운 원고 넣으면
- *   아무것도 안 나옵니다"). 지금은 서버가 추천한 폴더를 **값으로 넣고**, 화면이
- *   뜨자마자 훑고, 첫 PDF 를 골라 두고, 앞쪽을 미리 읽어 둔다.
- *   사람이 할 일은 **다른 PDF 를 고르는 것과 단추를 누르는 것**뿐이다.
+ * ★ 브라우저는 **끌어다 놓은 파일의 진짜 경로를 안 알려 준다**(Electron 이 아니다).
+ *   그래서 바이트를 서버로 올려 workspace 의 `_받은PDF/` 에 앉힌다. 예전에 업로드를
+ *   피했던 이유는 13개 × 9MB 를 **base64 로 한 JSON 에** 실으면 브라우저가 버틴다는
+ *   보장이 없어서였는데, 파일 하나당 한 요청으로 raw 로 보내면 그 문제가 없다.
+ *   책이 이미 이 PC 에 있는 사람을 위해 **폴더에서 고르기**는 「자세히」에 남겨 뒀다.
  *
- * ★ 물어보는 것은 넷뿐이고 넷 다 **권장값이 이미 들어 있다.** 열 개를 물으면
- *   아무도 안 채운다. 바꿔야 할 사람만 바꾸면 된다.
+ * ★ 분량표는 남긴다. 「몇 장」이 아니라 **「몇 분짜리」**로 고르는 자리이고,
+ *   19장이 5분 30초로 나온 뒤에 생긴 화면이다(core/narration.py).
  */
 "use strict";
 
@@ -25,25 +25,14 @@ import { navigate } from "./shell.js";
 
 export const meta = {
   title: "새 원고 만들기",
-  subtitle: "PDF 를 고르고 단추를 누르면 됩니다. 나머지는 채워 두었습니다",
+  subtitle: "단행본 한 장(章) PDF 를 끌어다 놓고, 길이를 고르면 됩니다",
 };
 
-/* 한 장(章)에 몇 자당 슬라이드 하나인가. 새뮤얼슨 19·20장 실측에서 나온 값이다
-   (44,093자 → 27장 · 51,234자 → 28장). 이 값으로 장 예산을 추천한다. */
-const CHARS_PER_SLIDE = 1700;
-
-let files = [];              // 훑어 온 PDF 목록
+let files = [];              // 고른 것 — {path, name, mb}. 경로는 전부 서버 안의 것
 let picked = new Set();      // 고른 경로
 let peeked = {};             // {경로: 미리 읽은 결과}
-
-function sec(n, title, sub) {
-  const s = el("div", "ssec");
-  const hd = el("div", "ssec-hd");
-  hd.append(el("i", "ssec-n", String(n)), el("h3", null, title));
-  if (sub) hd.appendChild(el("span", "ssec-sub", sub));
-  s.appendChild(hd);
-  return s;
-}
+let plans = [];              // 목표 길이별 권장 분량 — 서버(core/narration.py)가 준다
+let target = null;           // 고른 목표 길이(분)
 
 function field(label, name, value, hint) {
   const f = el("div", "sfield");
@@ -74,42 +63,64 @@ function guess(name) {
 
 export function mount(root) {
   const page = el("div", "spage");
-  files = []; picked = new Set(); peeked = {};
+  files = []; picked = new Set(); peeked = {}; plans = []; target = null;
 
-  // ── 1. 책 ────────────────────────────────────────────────────────────
-  const s1 = sec(1, "책", "PDF 가 어디 있는지");
-  const form = el("form", "sform");
-  form.appendChild(field("PDF 폴더", "dir", "", "훑는 중…"));
-  s1.appendChild(form);
-  const listBox = el("div", "pdflist");
-  s1.appendChild(listBox);
-  page.appendChild(s1);
+  // ── 1. 끌어다 놓기 ───────────────────────────────────────────────────
+  const drop = el("label", "drop");
+  const pick = el("input");
+  pick.type = "file";
+  pick.accept = ".pdf,application/pdf";
+  pick.multiple = true;
+  pick.hidden = true;
+  // ★ **무엇을 넣는 앱인지**를 여기 적는다. 이 앱은 「단행본 작가 에이전트」고,
+  //   실기책 요약이론 같은 것은 따로 만든다 — 그래서 아무 PDF 나 받는 것처럼
+  //   써 두면 엉뚱한 책이 들어온다. 나가는 것도 같이 적는다: 강의 슬라이드다.
+  drop.append(
+    icon("upload", 30),
+    el("div", "drop-big", "단행본 한 장(章) PDF 를 여기에 끌어다 놓으세요"),
+    el("div", "drop-sub",
+      "AI 아바타가 강의할 슬라이드 원고와 대본이 나옵니다 · "
+      + "눌러서 골라도 됩니다 · 여러 장을 놓으면 원고가 여러 편 생깁니다"),
+    pick);
+  page.appendChild(drop);
 
-  // ── 2. 본문이 시작하는 곳 ────────────────────────────────────────────
-  const s2 = sec(2, "본문이 시작하는 곳", "속표지를 몇 장 버릴지");
+  const listBox = el("div", "droplist");
+  page.appendChild(listBox);
+
+  const peekLine = el("div", "sfield-hint");
+  page.appendChild(peekLine);
+
+  // ── 2. 얼마나 긴 영상으로 ────────────────────────────────────────────
+  const lenBox = el("div", "lentab");
+  page.appendChild(lenBox);
+
+  // ── 자세히 — **매번 답이 같은 것들.** 접어 둔다 ──────────────────────
+  const more = el("details", "more");
+  more.appendChild(el("summary", null, "자세히 — 버릴 쪽 · 이름 · 폴더에서 고르기"));
   const trim = el("form", "sform trim");
   trim.appendChild(field("앞에서 버릴 쪽", "drop_head", "2",
-    "속표지·부제목 쪽. 아래 미리보기의 첫 쪽이 본문이면 맞습니다"));
-  trim.appendChild(field("뒤에서 버릴 쪽", "drop_tail", "0",
-    "연습문제·색인 쪽. 없으면 0"));
-  s2.appendChild(trim);
-  const peek = el("div", "peek");
-  s2.appendChild(peek);
-  page.appendChild(s2);
+    "속표지·부제목 쪽. 아래 첫 쪽 미리보기가 본문이면 맞습니다"));
+  trim.appendChild(field("뒤에서 버릴 쪽", "drop_tail", "0", "연습문제·색인 쪽. 없으면 0"));
+  more.appendChild(trim);
 
-  // ── 3. 이름과 장 수 ──────────────────────────────────────────────────
-  const s3 = sec(3, "이름과 장 수", "h3 하나 = 슬라이드 한 판");
   const form3 = el("form", "sform");
   form3.appendChild(field("책 이름", "book", "", "원고에 적힙니다"));
-  form3.appendChild(field("이 장의 이름", "title", "",
-    "원고의 h1 이 되고, 발표 표지가 됩니다"));
+  form3.appendChild(field("이 장의 이름", "title", "", "원고의 h1 이 되고, 발표 표지가 됩니다"));
   form3.appendChild(field("장 예산", "slide_budget", "",
-    "만들 슬라이드 수. ±3장까지 넘길 수 있습니다"));
+    "위에서 고른 길이가 채웁니다. 바꿔도 됩니다 — ±3장까지 넘길 수 있습니다"));
   form3.appendChild(field("이름표 앞머리", "id_prefix", "",
     "ch19 → ch19-03. 한 번 정하면 안 바꾸는 값입니다 — 그림 파일이 여기 매달립니다"));
   form3.appendChild(field("문체 주문", "tone", "", "선택 — 비워도 됩니다"));
-  s3.appendChild(form3);
-  page.appendChild(s3);
+  more.appendChild(form3);
+
+  // 책이 이미 이 PC 에 있는 사람 — 13개를 하나씩 끌어다 놓을 이유가 없다
+  const scanForm = el("form", "sform");
+  scanForm.appendChild(field("폴더에서 고르기", "dir", "",
+    "이 PC 에 이미 있는 PDF 폴더 경로. 올리지 않고 그 자리에서 읽습니다"));
+  more.appendChild(scanForm);
+  const scanBox = el("div", "pdflist");
+  more.appendChild(scanBox);
+  page.appendChild(more);
 
   // ── 실행 ─────────────────────────────────────────────────────────────
   const foot = el("div", "sfoot");
@@ -123,10 +134,72 @@ export function mount(root) {
   page.appendChild(foot);
   root.appendChild(page);
 
-  const budgetOf = (chars) =>
-    Math.max(12, Math.min(45, Math.round((chars || 0) / CHARS_PER_SLIDE)));
+  const sync = () => { go.disabled = picked.size === 0; };
 
-  /* 고른 PDF 가 바뀌면 아래 칸들을 **덮어쓴다.** 단, 사람이 손대 놓은 칸은 안 건드린다 */
+  /* ── 목표 길이 표 ──────────────────────────────────────────────────
+   *
+   * 숫자는 **하나도 여기서 계산하지 않는다.** 서버가 `/api/peek` 에 실어 준 것을
+   * 그대로 깐다. 화면이 「15분이면 27장」이라 해 놓고 목차 프롬프트는 딴 수를
+   * 받는 일이 없어야 하는데, 그것을 보장하는 유일한 방법은 계산을 한 곳에만
+   * 두는 것이다(core/narration.py).
+   */
+  const planOf = (m) => plans.find((p) => p.minutes === m) || plans[0] || null;
+
+  function drawPlans() {
+    lenBox.innerHTML = "";
+    if (!plans.length) return;           // 아직 PDF 가 없으면 표 자체가 없다
+
+    const src = plans[0].source_chars || 0;
+    lenBox.appendChild(el("div", "sfield-hint",
+      `원문 ${src.toLocaleString()}자 읽음. 몇 분짜리로 만들까요 — `
+      + `말하는 속도 ${plans[0].chars_per_min}자/분으로 잡은 값입니다`));
+
+    const head = el("div", "lenrow hd");
+    ["목표 길이", "요약 비율", "대본 목표", "장당 말", "슬라이드"]
+      .forEach((t) => head.appendChild(el("span", null, t)));
+    lenBox.appendChild(head);
+
+    for (const p of plans) {
+      const on = p.minutes === target;
+      const row = el("button", "lenrow" + (on ? " on" : ""));
+      row.type = "button";
+      const first = el("span", "len-min");
+      first.append(el("b", null, `${p.minutes}분`));
+      if (p.recommended) first.appendChild(el("i", "sopt-rec", "기본"));
+      row.appendChild(first);
+      row.append(
+        el("span", null, `${Math.round(p.ratio * 1000) / 10}%`),
+        el("span", null, `${p.say_total.toLocaleString()}자`),
+        el("span", null, `${p.say_per_slide}자 · ${p.seconds_per_slide}초`),
+        el("span", null, `${p.slides}장`
+          + (p.added_slides ? ` (원문 기준 ${p.base_slides})` : "")));
+      row.onclick = () => { target = p.minutes; drawPlans(); fillBudget(); };
+      lenBox.appendChild(row);
+    }
+
+    const p = planOf(target);
+    // 고른 줄에 대해서만 말한다. 세 줄 다 경고를 달면 아무것도 안 읽힌다.
+    for (const w of (p?.warnings || [])) lenBox.appendChild(el("div", "step-warn", w));
+    lenBox.appendChild(el("div", "sfield-hint",
+      `장 수는 원문이 정합니다(1,700자당 한 장). 목표가 길어지면 먼저 장마다 말을 `
+      + `늘리고, 한 화면이 34초를 넘길 때만 장을 더 만듭니다. `
+      + `★ 장이 늘어나는 것은 30분치까지입니다 — 60분은 30분과 같은 장 수에 `
+      + `대본만 두 배입니다.`));
+  }
+
+  /* 장 예산 칸은 고른 길이가 채운다 — 사람이 손대 놓았으면 안 건드린다 */
+  function fillBudget() {
+    const p = planOf(target);
+    if (!p) return;
+    if (!touched.has("slide_budget")) form3.slide_budget.value = String(p.slides);
+    const hint = form3.slide_budget.parentElement.querySelector(".sfield-hint");
+    if (hint) {
+      hint.textContent = `${p.minutes}분이면 ${p.slides}장 · 장마다 말 `
+        + `${p.say_per_slide}자입니다. 바꿔도 됩니다 — ±3장까지 넘길 수 있습니다`;
+    }
+  }
+
+  /* 고른 PDF 가 바뀌면 「자세히」 칸들을 **덮어쓴다.** 손대 놓은 칸은 안 건드린다 */
   const touched = new Set();
   for (const f of [form3.book, form3.title, form3.slide_budget, form3.id_prefix])
     f.addEventListener("input", () => touched.add(f.name));
@@ -136,117 +209,153 @@ export function mount(root) {
     if (!f) return;
     const g = guess(f.name);
     const pk = peeked[path];
-    const vals = {
-      book: g.book, title: g.title, id_prefix: g.prefix,
-      slide_budget: pk ? String(budgetOf(pk.chars)) : "",
-    };
-    for (const [k, v] of Object.entries(vals)) {
+    for (const [k, v] of Object.entries({book: g.book, title: g.title,
+                                         id_prefix: g.prefix})) {
       if (!touched.has(k) && v) form3[k].value = v;
     }
-    const hint = form3.slide_budget.parentElement.querySelector(".sfield-hint");
-    if (pk && hint) {
-      hint.textContent = `권장 ${budgetOf(pk.chars)}장 — 본문 `
-        + `${pk.chars.toLocaleString()}자를 ${CHARS_PER_SLIDE}자에 한 장씩으로 잡은 값입니다`
-        + " (19·20장 실측에서 나온 비율). 적게 시작하는 편이 낫습니다";
+    // 원문 길이가 바뀌면 표가 통째로 다시 계산된다 — 앞뒤로 버릴 쪽을 고쳐도 그렇다.
+    plans = (pk && pk.length_options) || [];
+    if (!plans.some((p) => p.minutes === target)) {
+      target = (plans.find((p) => p.recommended) || plans[0] || {}).minutes ?? null;
     }
+    drawPlans();
+    fillBudget();
   }
 
+  // ── 고른 파일 목록 ───────────────────────────────────────────────────
   function drawList() {
     listBox.innerHTML = "";
-    if (!files.length) {
-      listBox.appendChild(el("div", "side-empty",
-        "이 폴더에 PDF 가 없습니다. 위 경로를 고쳐 보세요."));
-      return;
-    }
-    files.forEach((f, i) => {
+    for (const f of files) {
       const on = picked.has(f.path);
       const row = el("button", "pdfrow" + (on ? " on" : ""));
       row.type = "button";
       row.append(el("span", "pdf-name", f.name), el("span", "pdf-mb", `${f.mb}MB`));
-      if (i === 0) row.appendChild(el("i", "sopt-rec", "권장"));
       row.onclick = () => {
         if (on) picked.delete(f.path);
         else picked.add(f.path);
-        drawList();
-        sync();
-        loadPeek();
+        drawList(); sync(); loadPeek();
       };
       listBox.appendChild(row);
-    });
-    const n = picked.size;
-    listBox.appendChild(el("div", "sfield-hint",
-      n <= 1 ? "PDF 한 개가 원고 한 편이 됩니다."
-             : `${n}개를 골랐습니다 — 원고 ${n}편이 따로 만들어집니다. `
-               + "아래 이름·장 수는 첫 번째 것에만 쓰이고, 나머지는 파일 이름에서 땁니다."));
+    }
+    if (picked.size > 1) {
+      listBox.appendChild(el("div", "sfield-hint",
+        `${picked.size}개를 골랐습니다 — 원고 ${picked.size}편이 따로 만들어집니다. `
+        + "길이는 다 같이 적용되고, 이름과 장 수는 파일마다 따로 잡힙니다."));
+    }
   }
 
-  const sync = () => { go.disabled = picked.size === 0; };
-
-  const scan = async (dir) => {
-    listBox.innerHTML = "";
-    listBox.appendChild(el("div", "side-empty", "훑는 중…"));
-    try {
-      const r = await api(`/api/scan?dir=${encodeURIComponent(dir)}`);
-      files = r.files || [];
-      // ★ 첫 PDF 를 **미리 골라 둔다.** 고를 것이 하나뿐인 화면에서 "고르세요" 만
-      //   띄우면 한 걸음이 그냥 늘어난다. 다른 것을 원하면 눌러서 바꾸면 된다.
-      picked = new Set(files.length ? [files[0].path] : []);
-      drawList();
-      sync();
-      loadPeek();
-      const hint = form.dir.parentElement.querySelector(".sfield-hint");
-      if (hint) hint.textContent = `${files.length}개를 찾았습니다`;
-    } catch (e) {
-      files = []; picked = new Set();
-      listBox.innerHTML = "";
-      listBox.appendChild(el("div", "srun-line err", String(e.message || e)));
-      sync();
+  // ── 올리기 ───────────────────────────────────────────────────────────
+  async function take(list) {
+    const pdfs = Array.from(list).filter((f) => /\.pdf$/i.test(f.name));
+    if (!pdfs.length) {
+      toast("PDF 만 됩니다", "err");
+      return;
     }
-  };
-  form.dir.addEventListener("input", debounce(
-    () => scan((form.dir.value || "").trim()), 500));
+    drop.classList.add("busy");
+    for (const f of pdfs) {
+      const row = el("div", "droprow");
+      row.append(el("span", "pdf-name", f.name),
+                 el("span", "pdf-mb", `${(f.size / 1048576).toFixed(1)}MB 올리는 중…`));
+      listBox.appendChild(row);
+      try {
+        // ★ api() 를 안 쓴다 — 그것은 본문을 JSON 으로 만든다. 여기는 바이트다.
+        const res = await fetch(`/api/upload?name=${encodeURIComponent(f.name)}`,
+                                {method: "POST", body: f});
+        if (!res.ok) throw new Error(((await res.json()).detail) || res.statusText);
+        const up = await res.json();
+        if (!files.some((x) => x.path === up.path)) files.push(up);
+        picked.add(up.path);
+      } catch (e) {
+        row.className = "srun-line err";
+        row.textContent = `${f.name}: ${e.message || e}`;
+        continue;
+      }
+      row.remove();
+    }
+    drop.classList.remove("busy");
+    drawList(); sync(); loadPeek();
+  }
 
+  drop.addEventListener("click", () => pick.click());
+  pick.addEventListener("change", () => { take(pick.files); pick.value = ""; });
+  for (const ev of ["dragenter", "dragover"]) {
+    drop.addEventListener(ev, (e) => {
+      e.preventDefault();
+      drop.classList.add("over");
+    });
+  }
+  for (const ev of ["dragleave", "drop"]) {
+    drop.addEventListener(ev, () => drop.classList.remove("over"));
+  }
+  drop.addEventListener("drop", (e) => {
+    e.preventDefault();
+    take(e.dataTransfer.files);
+  });
+  // 화면 아무 데나 놓아도 받는다. 브라우저가 PDF 를 **열어 버리는 것**을 막는 뜻도 있다.
+  page.addEventListener("dragover", (e) => e.preventDefault());
+  page.addEventListener("drop", (e) => {
+    e.preventDefault();
+    if (!drop.contains(e.target)) take(e.dataTransfer.files);
+  });
+
+  // ── 앞쪽 읽기 — 표를 만들 원문 글자 수가 여기서 나온다 ────────────────
   const loadPeek = debounce(async () => {
     const first = [...picked][0];
-    peek.innerHTML = "";
-    if (!first) return;
-    peek.appendChild(el("div", "side-empty", "앞쪽을 읽는 중…"));
+    if (!first) {
+      peekLine.textContent = "";
+      plans = []; drawPlans();
+      return;
+    }
+    peekLine.textContent = "앞쪽을 읽는 중…";
     const head = parseInt(trim.drop_head.value || "0", 10) || 0;
     const tail = parseInt(trim.drop_tail.value || "0", 10) || 0;
     try {
       const r = await api(`/api/peek?path=${encodeURIComponent(first)}`
                           + `&head=${head}&tail=${tail}`);
       peeked[first] = r;
-      peek.innerHTML = "";
-      peek.appendChild(el("div", "sfield-hint",
-        `${r.pages}쪽 · ${r.chars.toLocaleString()}자 · 본문 ${r.body_size}pt`
-        + ` · 책이 매긴 제목 ${r.heads.length}개`));
-      for (const s of r.sample || []) {
-        const b = el("div", "peek-page");
-        b.append(el("span", "peek-no", `p.${s.no}`),
-                 el("span", "peek-txt", s.text || "(빈 쪽)"));
-        peek.appendChild(b);
-      }
-      if (r.heads?.length) {
-        const h = el("div", "peek-heads");
-        for (const x of r.heads.slice(0, 12)) {
-          h.appendChild(el("div", "peek-head",
-            "  ".repeat(Math.max(0, x.level - 1))
-            + (x.num ? x.num + ". " : "") + x.title + `  (p.${x.page})`));
-        }
-        peek.appendChild(h);
-      } else {
-        peek.appendChild(el("div", "srun-line",
-          "책에서 제목을 못 찾았습니다. 목차는 본문만 보고 세웁니다 — 그래도 됩니다."));
-      }
+      // 미리보기는 **한 줄로 줄였다.** 확인할 것은 하나뿐이다 — 첫 쪽이 본문인가.
+      const s = (r.sample || [])[0];
+      peekLine.textContent =
+        `${r.pages}쪽 · ${r.chars.toLocaleString()}자 · 앞 ${head}쪽을 버리고 `
+        + `p.${s ? s.no : "?"} 부터: ${(s ? s.text : "").slice(0, 70)}…`;
       fill(first);
     } catch (e) {
-      peek.innerHTML = "";
-      peek.appendChild(el("div", "srun-line err", String(e.message || e)));
+      peekLine.textContent = "";
+      listBox.appendChild(el("div", "srun-line err", String(e.message || e)));
     }
   }, 350);
   trim.drop_head.addEventListener("input", loadPeek);
   trim.drop_tail.addEventListener("input", loadPeek);
+
+  // ── 폴더에서 고르기 (자세히 안) ──────────────────────────────────────
+  const scan = async (dir) => {
+    scanBox.innerHTML = "";
+    if (!dir) return;
+    scanBox.appendChild(el("div", "side-empty", "훑는 중…"));
+    try {
+      const r = await api(`/api/scan?dir=${encodeURIComponent(dir)}`);
+      scanBox.innerHTML = "";
+      for (const f of r.files || []) {
+        const row = el("button", "pdfrow");
+        row.type = "button";
+        row.append(el("span", "pdf-name", f.name), el("span", "pdf-mb", `${f.mb}MB`));
+        row.onclick = () => {
+          if (!files.some((x) => x.path === f.path)) files.push(f);
+          picked.add(f.path);
+          drawList(); sync(); loadPeek();
+        };
+        scanBox.appendChild(row);
+      }
+      if (!(r.files || []).length) {
+        scanBox.appendChild(el("div", "side-empty", "이 폴더에 PDF 가 없습니다."));
+      }
+    } catch (e) {
+      scanBox.innerHTML = "";
+      scanBox.appendChild(el("div", "srun-line err", String(e.message || e)));
+    }
+  };
+  scanForm.dir.addEventListener("input",
+    debounce(() => scan((scanForm.dir.value || "").trim()), 500));
 
   // ── 만들기 ───────────────────────────────────────────────────────────
   go.onclick = async () => {
@@ -257,7 +366,7 @@ export function mount(root) {
     let first = null;
     try {
       for (const [i, f] of list.entries()) {
-        // 첫 번째만 화면에 적은 값을 쓴다. 나머지는 파일 이름에서 딴다 —
+        // 첫 번째만 「자세히」에 적은 값을 쓴다. 나머지는 파일 이름에서 딴다 —
         // 여러 개를 고른 사람은 "장마다 한 편" 을 원하는 것이지, 같은 제목이
         // 붙은 여러 편을 원하는 게 아니다.
         const g = guess(f.name);
@@ -266,17 +375,19 @@ export function mount(root) {
           book: (form3.book.value || "").trim() || g.book,
           id_prefix: (form3.id_prefix.value || "").trim() || g.prefix,
           slide_budget: parseInt(form3.slide_budget.value || "0", 10)
-                        || budgetOf((peeked[f.path] || {}).chars),
+                        || (planOf(target) || {}).slides || 0,
           tone: (form3.tone.value || "").trim(),
         } : {
           title: g.title, book: (form3.book.value || "").trim() || g.book,
           id_prefix: g.prefix, slide_budget: 0,
           tone: (form3.tone.value || "").trim(),
         };
+        // ★ 목표 길이는 **모두에게 같이** 준다. 여러 장을 한꺼번에 고른 사람은
+        //   「이 책을 15분짜리로」 를 뜻하지, 첫 장만 15분을 뜻하지 않는다.
         const p = await api("/api/projects", {
           method: "POST",
           body: {...body, pdfs: [f.path], drop_head: head, drop_tail: tail,
-                 slide_budget: body.slide_budget || 30},
+                 target_min: target || undefined},
         });
         if (first === null) first = p.id;
       }
@@ -290,20 +401,4 @@ export function mount(root) {
       go.disabled = false;
     }
   };
-
-  // ── 화면이 뜨자마자 ──────────────────────────────────────────────────
-  (async () => {
-    let dir = "";
-    try {
-      dir = (await api("/api/settings")).suggest_pdf_dir || "";
-    } catch { /* 서버가 아직 안 떴을 수 있다 */ }
-    form.dir.value = dir;
-    if (dir) scan(dir);
-    else {
-      listBox.appendChild(el("div", "side-empty",
-        "PDF 가 든 폴더 경로를 위에 넣으세요."));
-      const hint = form.dir.parentElement.querySelector(".sfield-hint");
-      if (hint) hint.textContent = "예: D:\\00work\\260814-book2json\\_contex";
-    }
-  })();
 }

@@ -17,21 +17,18 @@ STEPS: List[Dict[str, Any]] = [
     {"n": 1, "name": "책에서 글 뽑기",
      "tip": "PDF 를 쪽별로 읽어 붙입니다. 돈은 안 듭니다",
      "keys": ["b1-pdf"]},
-    {"n": 2, "name": "장 나누기",
-     "tip": "h3 하나가 슬라이드 한 장 — 여기서 장 수가 정해집니다",
+    {"n": 2, "name": "장 나누기와 대본",
+     "tip": "h3 하나가 슬라이드 한 장 — 여기서 장 수와 영상 길이가 정해집니다",
      "keys": ["b2-outline"]},
     {"n": 3, "name": "몸통 쓰기",
      "tip": "장마다 여섯 줄 안쪽으로. 넘치면 장을 쪼갭니다",
      "keys": ["b3-write", "b4-figure"]},
-    {"n": 4, "name": "이미지 프롬프트",
-     "tip": "가로형 그림 지시. 안 바뀐 장은 원장에서 그대로 씁니다",
-     "keys": ["b5-imgprompt"]},
-    {"n": 5, "name": "조립하고 재기",
+    # ★ 4번이었던 「이미지 프롬프트」가 빠졌다 — 그림 지시는 다른 에이전트가
+    #   만든다(2026-08-14). 그것을 내보내던 6번도 같이 빠졌다: 남은 산출물(원고·
+    #   대본·실측)은 전부 조립·실측이 그 자리에서 파일로 쓴다.
+    {"n": 4, "name": "마무리 — 조립하고 재기",
      "tip": "원고 한 파일로 묶고 944×507 을 실제로 잽니다. 돈은 안 듭니다",
      "keys": ["b6-assemble", "b7-check"]},
-    {"n": 6, "name": "내보내기",
-     "tip": "원고 HTML · 이미지프롬프트 JSON · 부족분 · 이름바꾸기",
-     "keys": ["b8-export"]},
 ]
 
 BY_KEY: Dict[str, Dict[str, Any]] = {}
@@ -40,8 +37,8 @@ for _s in STEPS:
         BY_KEY[_k] = _s
 
 # 손으로 고친 것은 순서에 없다 — 아무 때나 일어난다. 다만 **어느 단계보다 앞이냐**
-# 는 정해야 낡음을 판정할 수 있다. 목차·몸통을 손보는 일이므로 조립(5) 앞이다.
-HAND_BEFORE = 5
+# 는 정해야 낡음을 판정할 수 있다. 목차·몸통을 손보는 일이므로 마무리(4) 앞이다.
+HAND_BEFORE = 4
 
 
 def of(key: Optional[str]) -> Optional[Dict[str, Any]]:
@@ -52,8 +49,9 @@ def of(key: Optional[str]) -> Optional[Dict[str, Any]]:
     if hit:
         return hit
     s = str(key).lower()
+    # 산출물 파일은 전부 마무리 단계가 쓴다(원고·대본은 b6, 실측은 b7).
     if s.endswith(".html") or s.endswith(".json") or s.endswith(".txt"):
-        return BY_KEY["b8-export"]
+        return BY_KEY["b6-assemble"]
     return None
 
 

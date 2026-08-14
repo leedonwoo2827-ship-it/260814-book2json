@@ -235,6 +235,32 @@ def save_overrides(pid: int, slug_name: str, doc: Dict[str, Any]) -> Path:
     return p
 
 
+# ── 끌어다 놓은 PDF 가 앉는 자리 ───────────────────────────────────────────
+INBOX = "_받은PDF"
+
+
+def inbox_dir(*, create: bool = True) -> Path:
+    """브라우저로 끌어다 놓은 PDF 를 여기에 둔다.
+
+    ★ 브라우저는 **파일의 실제 경로를 안 알려 준다**(Electron 이 아니다). 그래서
+      끌어다 놓기를 받으려면 바이트를 서버로 올려 이 앱이 아는 자리에 앉히는 수밖에
+      없다. 프로젝트 폴더 안이 아니라 workspace 바로 밑에 두는 이유: 같은 PDF 로
+      원고를 두 번 만들 수 있고, 프로젝트를 지워도 책은 남아야 한다.
+    """
+    p = ROOT / INBOX
+    if create:
+        p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def safe_name(name: str) -> str:
+    """올라온 파일 이름에서 **경로를 벗긴다.** `..\\..\\x.pdf` 같은 것이 온다고
+    가정하고 짠다 — 로컬 앱이라도 이름은 바깥에서 온 값이다."""
+    base = re.split(r"[\\/]", nfc(name or ""))[-1].strip().strip(".")
+    base = re.sub(r'[<>:"|?*\x00-\x1f]', "_", base) or "책.pdf"
+    return base if base.lower().endswith(".pdf") else base + ".pdf"
+
+
 # ── 다운로드 (경로 탈출 차단) ──────────────────────────────────────────────
 def safe_child(base: Path, filename: str) -> Optional[Path]:
     """`base` 밖으로 나가는 경로를 거부한다. 다운로드 엔드포인트 전용."""

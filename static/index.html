@@ -58,8 +58,9 @@
         <span data-icon="list"></span><span>목차 <em class="nav-dest">h3 하나 = 한 장</em></span></a></li>
       <li><a href="#/draft" data-nav="drf" title="원고 — 장별 몸통을 944×507 자 위에서">
         <span data-icon="file"></span><span>원고 <em class="nav-dest">몸통 · 실측</em></span></a></li>
-      <li><a href="#/image" data-nav="img" title="이미지 프롬프트 — 장별 가로형 그림 지시">
-        <span data-icon="image"></span><span>이미지 프롬프트 <em class="nav-dest">가로형 · 원장</em></span></a></li>
+      <!-- ★ 「이미지 프롬프트」 칸이 있었다. 2026-08-14 에 뺐다 — 그림 지시는
+           **다른 에이전트가 만든다.** 이 앱이 내는 것은 원고와 대본까지다.
+           화면 코드(static/js/image.js)는 지우지 않고 길만 끊었다. -->
     </ul>
 
     <!-- ★ 쇼케이스에 있던 「수정 — 유형」 레인은 없다. 저기서 유형은 그림이
@@ -67,8 +68,8 @@
          없다. 자리를 비워 두는 대신 지웠다 — 늘 비어 있는 칸은 눈이 배운다. -->
 
     <ul class="side-nav side-nav-tail">
-      <li><a href="#/export" data-nav="exp" title="내보내기 — 원고 HTML · 프롬프트 JSON">
-        <span data-icon="download"></span><span>내보내기 <em class="nav-dest">원고 · 프롬프트</em></span></a></li>
+      <li><a href="#/export" data-nav="exp" title="내보내기 — 원고 HTML · 대본">
+        <span data-icon="download"></span><span>내보내기 <em class="nav-dest">원고 · 대본</em></span></a></li>
     </ul>
 
     <!-- 스테이지 하나가 몇 분씩 간다. 그 화면을 지키고 있을 수 없으니, 어느 화면에

@@ -4,8 +4,9 @@
 FastAPI + 무빌드 바닐라 SPA. 구조는 `260812-summary-shocase/server.py` 와 같다.
 그 앱은 원고를 **받아서** 발표로 만들고, 이 앱은 그 원고를 **써서** 넘긴다.
 
-    단행본 PDF  →  [이 앱]  →  이론 요약 HTML  →  [발표 쇼케이스]  →  mp4
-                             + 이미지프롬프트 JSON → [이미지 스튜디오] → png
+    단행본 PDF  →  [이 앱]  →  이론 요약 HTML + 대본  →  [발표 쇼케이스]  →  mp4
+
+그림 지시는 **다른 에이전트가 만든다**(2026-08-14). 여기서는 원고와 대본까지다.
 
 산출물은 앱 폴더 밖 형제 폴더에 쌓인다 — core/workspace.py 참고.
 """
@@ -19,13 +20,13 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-import pipeline  # noqa: F401  — import 만으로 여덟 단계가 STAGES 에 붙는다
-from core import activity, book as bk, config, ledger as lg, workspace as ws
+import pipeline  # noqa: F401  — import 만으로 여섯 단계가 STAGES 에 붙는다
+from core import activity, book as bk, config, narration as nr, workspace as ws
 from core.jobs import get_registry
 from pipeline.registry import (STAGES, cached_data, outline_of, read_cache,
                                stage_states, total_cost)
@@ -133,6 +134,41 @@ def scan_pdfs(dir: str) -> Dict[str, Any]:
                                      for f in files]}
 
 
+@app.post("/api/upload")
+async def upload_pdf(request: Request, name: str) -> Dict[str, Any]:
+    """끌어다 놓은 PDF 한 개를 받는다. **본문은 파일 바이트 그대로다.**
+
+    ★ multipart 가 아니라 raw 로 받는다. FastAPI 의 `UploadFile` 은
+      `python-multipart` 를 요구하는데, 이 앱은 그 의존성이 없고 얻는 것도 없다 —
+      한 요청에 파일 하나면 경계를 파싱할 이유가 없다. 브라우저는 `fetch(body: File)`
+      로 그냥 보내면 된다.
+
+    ★ 스트림으로 받아 바로 디스크에 쓴다. 책 한 장이 15MB 쯤이라 메모리에 통째로
+      올려도 죽지는 않지만, 여러 개를 한꺼번에 끌어다 놓는 것이 기본 사용법이다.
+    """
+    d = ws.inbox_dir()
+    p = d / ws.safe_name(name)
+    # 같은 이름이 이미 있으면 옆에 앉힌다. 덮어쓰면 이미 그 파일로 만든 원고가
+    # 다음에 다시 돌 때 다른 책을 읽게 된다.
+    if p.exists():
+        stem, i = p.stem, 2
+        while p.exists():
+            p = d / f"{stem} ({i}).pdf"
+            i += 1
+
+    tmp = p.with_suffix(".part")
+    size = 0
+    with tmp.open("wb") as f:
+        async for chunk in request.stream():
+            size += len(chunk)
+            f.write(chunk)
+    if size < 1000 or tmp.read_bytes()[:5] != b"%PDF-":
+        tmp.unlink(missing_ok=True)
+        raise HTTPException(status_code=400, detail=f"PDF 가 아닙니다: {name}")
+    tmp.replace(p)
+    return {"path": str(p), "name": p.name, "mb": round(size / 1048576, 1)}
+
+
 @app.get("/api/peek")
 def peek_pdf(path: str, head: int = 0, tail: int = 0) -> Dict[str, Any]:
     """PDF 한 개의 앞쪽을 미리 본다 — **앞·뒤로 몇 쪽을 버릴지 정하는 자리.**
@@ -149,6 +185,10 @@ def peek_pdf(path: str, head: int = 0, tail: int = 0) -> Dict[str, Any]:
         "file": b["file"], "pages": len(b["pages"]), "chars": len(md),
         "body_size": b["body_size"], "head_sizes": b["head_sizes"],
         "heads": heads[:60],
+        # ★ 목표 길이별 권장 분량. 새 원고 화면이 이걸 표로 깐다 — 사람이 「몇 장」이
+        #   아니라 **「몇 분짜리」**로 고르게 하려는 것이다(2026-08-14: 19장이
+        #   5분 30초로 나온 뒤). 계산은 core/narration.py 한 곳에서만 한다.
+        "length_options": nr.options(len(md)),
         "sample": [{"no": pg["no"],
                     "text": " ".join(bk.join_lines(
                         [" ".join(x["lines"]) for x in pg["body"]]))[:400]}
@@ -162,6 +202,7 @@ class ProjectIn(BaseModel):
     book: Optional[str] = None         # 책 이름
     pdfs: List[str] = []               # 서버 안의 절대 경로
     id_prefix: Optional[str] = None    # 이름표 앞머리 — `sam` → `sam-03`
+    target_min: int = nr.DEFAULT_MIN   # 목표 영상 길이(분). **여기서 장 수가 나온다**
     slide_budget: int = 40
     drop_head: int = 0
     drop_tail: int = 0
@@ -206,7 +247,13 @@ def create_project(body: ProjectIn) -> Dict[str, Any]:
         "book": (body.book or "").strip(),
         "pdfs": [str(p) for p in good],
         "id_prefix": prefix,
-        "slide_budget": max(5, int(body.slide_budget or 40)),
+        # ★ 길이가 목적이고 장 수는 그 결과다. 목표를 프로젝트에 적어 두면 목차를
+        #   세울 때도, 다 되고 나서 몇 분짜리인지 셀 때도 같은 수를 본다.
+        "target_min": max(1, int(body.target_min or nr.DEFAULT_MIN)),
+        # ★ 0 은 「비워 둠」이다 — 장 나누기(b2)가 그때 원문을 보고 목표 길이에서
+        #   뽑는다. 여러 PDF 를 한꺼번에 고른 경우가 그렇다: 장마다 두께가 달라서
+        #   첫 장의 예산을 나머지에 물려주면 안 된다.
+        "slide_budget": max(0, int(body.slide_budget or 0)),
         "drop_head": max(0, int(body.drop_head or 0)),
         "drop_tail": max(0, int(body.drop_tail or 0)),
         "tone": (body.tone or "").strip(),
@@ -231,6 +278,56 @@ def get_stages(pid: int) -> Dict[str, Any]:
             "cost_usd": total_cost(pid, doc["slug"])}
 
 
+# ── 목표 길이 ──────────────────────────────────────────────────────────────
+def _length_state(pid: int, doc: Dict[str, Any]) -> Dict[str, Any]:
+    """이 원고가 **몇 분짜리를 노리고 있고, 지금 몇 분짜리인가.**
+
+    ★ 지금 길이는 조립(b6)이 세어 둔 값을 그대로 읽는다. 여기서 다시 세면 조립한
+      원고와 화면이 어긋나는 순간이 온다 — 세는 자리는 하나여야 한다.
+    """
+    slug = doc["slug"]
+    src = cached_data(pid, slug, "b1-pdf") or {}
+    want = nr.plan_of(doc, int(src.get("chars") or 0))
+    built = (cached_data(pid, slug, "b6-assemble") or {}).get("length")
+    # 아직 조립 전이면 목차의 say 로라도 지금 길이를 말해 준다 — 몸통을 쓰기 전에
+    # 「이대로면 6분짜리」를 알아야 목차 단계에서 고칠 수 있다.
+    if not built:
+        says = [s.get("say") or "" for s in (outline_of(pid, slug).get("slides") or [])]
+        built = nr.verdict(nr.count_all(says), want) if says else None
+    return {"target_min": want["minutes"], "plan": want, "now": built,
+            "source_chars": int(src.get("chars") or 0),
+            "options": nr.options(int(src.get("chars") or 0))}
+
+
+@app.get("/api/projects/{pid}/length")
+def get_length(pid: int) -> Dict[str, Any]:
+    return _length_state(pid, _find(pid))
+
+
+class LengthIn(BaseModel):
+    target_min: int
+
+
+@app.post("/api/projects/{pid}/length")
+def post_length(pid: int, body: LengthIn) -> Dict[str, Any]:
+    """목표 길이를 바꾼다 — **장 예산도 같이 따라간다.**
+
+    이미 만든 원고도 여기서 15분으로 올릴 수 있다. 목차(b2)가 `target_min` 을 읽으므로
+    바꾸는 즉시 그 단계가 낡은 것으로 잡히고, 다시 돌리면 그 길이에 맞는 장 수와
+    말 길이로 다시 짜인다.
+    """
+    doc = _find(pid)
+    src = cached_data(pid, doc["slug"], "b1-pdf") or {}
+    chars = int(src.get("chars") or 0)
+    p = nr.plan(chars, body.target_min)
+    doc["target_min"] = p["minutes"]
+    # 아직 책을 안 읽었으면 장 예산은 **비워 둔다.** 원문을 모르는 채로 뽑은 수를
+    # 적어 두면 그 수가 진짜 값인 척 남는다.
+    doc["slide_budget"] = p["slides"] if chars else 0
+    ws.save_project(pid, doc["slug"], doc)
+    return _length_state(pid, doc)
+
+
 @app.get("/api/projects/{pid}/activity")
 def get_activity(pid: int) -> Dict[str, Any]:
     doc = _find(pid)
@@ -245,7 +342,6 @@ def get_outline(pid: int) -> Dict[str, Any]:
     o = outline_of(pid, doc["slug"])
     draft = (cached_data(pid, doc["slug"], "b3-write") or {}).get("slides") or {}
     figs = (cached_data(pid, doc["slug"], "b4-figure") or {}).get("figures") or {}
-    ledger = ws.load_ledger(pid, doc["slug"]).get("by_id") or {}
     check = {v["id"]: v for v in
              ((cached_data(pid, doc["slug"], "b7-check") or {}).get("violations") or [])}
 
@@ -258,7 +354,7 @@ def get_outline(pid: int) -> Dict[str, Any]:
             "blocks": body.get("blocks") or [],
             "lines": body.get("lines") or 0,
             "has_svg": bool(figs.get(did)),
-            "has_prompt": bool((ledger.get(did) or {}).get("prompt")),
+            "say_chars": nr.count(s.get("say") or ""),
             "flags": (check.get(did) or {}).get("flags") or [],
             "height": (check.get(did) or {}).get("height"),
         })
@@ -294,59 +390,12 @@ def post_overrides(pid: int, body: OverrideIn) -> Dict[str, Any]:
     return {"ok": True, "outline_rev": doc["outline_rev"]}
 
 
-# ── 이미지 프롬프트 ────────────────────────────────────────────────────────
-@app.get("/api/projects/{pid}/prompts")
-def get_prompts(pid: int) -> Dict[str, Any]:
-    """원장 그대로 + **이번에 내보내면 몇 번이 될지.**
-
-    번호를 미리 보여 주는 이유: 사람이 알고 싶은 것은 「이 장 그림이 몇 번 파일인가」
-    이고, 그 답은 원장에 없다(원장은 이름표로만 기억한다). 여기서 지금 순서로
-    매겨 보여 준다 — 내보내기 전에도 무엇이 밀렸는지 보인다.
-    """
-    doc = _find(pid)
-    book = ws.load_ledger(pid, doc["slug"])
-    by_id = book.get("by_id") or {}
-    order = (cached_data(pid, doc["slug"], "b6-assemble") or {}).get("order") or \
-            [s["data_id"] for s in (outline_of(pid, doc["slug"]).get("slides") or [])]
-    plan = lg.number(book, order, start=2)
-
-    rows = []
-    for did in order:
-        e = by_id.get(did) or {}
-        rows.append({
-            "data_id": did, "n": plan["n_of"].get(did),
-            "last_n": e.get("last_n"), "title": e.get("title") or "",
-            "level": e.get("level") or "", "prompt": e.get("prompt") or "",
-            "keywords": e.get("keywords") or [],
-            "state": ("새로" if did in plan["fresh"] else
-                      "밀림" if any(r[2] == did for r in plan["renames"]) else "그대로"),
-        })
-    retired = [k for k, v in by_id.items() if v.get("retired")]
-    return {"ready": bool(rows), "slides": rows,
-            "renames": [[o, n, i] for o, n, i in plan["renames"]],
-            "retired": retired,
-            "aspect": config.load()["image"]["aspect"]}
-
-
-class PromptIn(BaseModel):
-    prompt: str
-
-
-@app.post("/api/projects/{pid}/prompts/{data_id}")
-def put_prompt(pid: int, data_id: str, body: PromptIn) -> Dict[str, Any]:
-    """프롬프트 손편집. **원장에 바로 쓴다.**
-
-    b5 를 다시 돌려도 안 지워진다 — 손으로 고친 것은 몸통 해시가 그대로인 한
-    「그대로 쓴다」 쪽으로 떨어지기 때문이다. 몸통을 고치면 그때는 다시 만들어진다.
-    """
-    doc = _find(pid)
-    book = ws.load_ledger(pid, doc["slug"])
-    by_id = dict(book.get("by_id") or {})
-    if data_id not in by_id:
-        raise HTTPException(status_code=404, detail=f"원장에 없는 이름표: {data_id}")
-    by_id[data_id] = {**by_id[data_id], "prompt": (body.prompt or "").strip()}
-    ws.save_ledger(pid, doc["slug"], {"by_id": by_id})
-    return {"ok": True}
+# ── 이미지 프롬프트 — **이 앱에서 뺐다** ───────────────────────────────────
+#
+# 2026-08-14 결정: 그림 지시는 다른 에이전트가 만든다. 여기 있던 두 엔드포인트
+# (`GET /api/projects/{pid}/prompts` · `POST …/prompts/{data_id}`)와 그것을 쓰던
+# 화면(`static/js/image.js`)이 같이 빠졌다. 원장을 다루던 코드는 `core/ledger.py`
+# 에 그대로 있다 — 되살릴 때 이 자리에 다시 붙이면 된다(git 이력에 통째로 있다).
 
 
 # ── 원고 미리보기 · 내려받기 ───────────────────────────────────────────────
@@ -367,17 +416,21 @@ def list_files(pid: int) -> Dict[str, Any]:
     doc = _find(pid)
     d = ws.step_dir(pid, doc["slug"], "export", create=False)
     if not d.is_dir():
-        return {"dir": str(d), "files": []}
-    return {"dir": str(d),
-            "files": [{"name": f.name, "kb": round(f.stat().st_size / 1024)}
-                      for f in sorted(d.iterdir()) if f.is_file()]}
+        return {"dir": str(d), "files": [], "bak": []}
+
+    def rows(folder: Path) -> List[Dict[str, Any]]:
+        return [{"name": f.name, "kb": round(f.stat().st_size / 1024)}
+                for f in sorted(folder.iterdir()) if f.is_file()] if folder.is_dir() else []
+
+    # 넘기는 것과 안 넘기는 것을 **폴더로 가른다.** 위 칸에 있는 것이 곧 넘길 것이다.
+    return {"dir": str(d), "files": rows(d), "bak": rows(d / "bak")}
 
 
 @app.get("/api/projects/{pid}/files/{name}")
-def get_file(pid: int, name: str):
+def get_file(pid: int, name: str, bak: bool = False):
     doc = _find(pid)
     d = ws.step_dir(pid, doc["slug"], "export", create=False)
-    f = ws.safe_child(d, name)
+    f = ws.safe_child(d / "bak" if bak else d, name)
     if not f:
         raise HTTPException(status_code=404, detail="없는 파일입니다")
     return FileResponse(str(f), filename=f.name)

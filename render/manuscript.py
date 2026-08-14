@@ -25,7 +25,16 @@ from __future__ import annotations
 
 import html
 import json
+import re
 from typing import Any, Dict, List, Optional
+
+from core import speech
+
+
+def count_say(s: Optional[str]) -> int:
+    """공백을 뺀 글자 수. `core/narration.py::count` 와 **같은 셈법이어야 한다** —
+    원고 머리말에 적히는 길이와 화면·대본이 말하는 길이가 갈리면 안 된다."""
+    return len(re.sub(r"\s+", "", s or ""))
 
 # ── 원고 스타일 ────────────────────────────────────────────────────────────
 #
@@ -148,6 +157,15 @@ def esc(s: str) -> str:
 _LEAD_NO = __import__("re").compile(r"^\s*\d{1,3}(?:\.\d{1,2})*[.)]?\s+")
 
 
+def _dot(n: str) -> str:
+    """번호 뒤에 **온점을 찍는다** — `1 제목` 이 아니라 `1. 제목`.
+
+    2026-08-14 지시. 온점이 없으면 화면에서 번호와 제목의 첫 낱말이 한 덩이로
+    붙어 읽힌다(「1 경제 전체를 보는 눈」). 이미 `.` 이나 `)` 로 끝나면 그대로 둔다.
+    """
+    return n if not n or n[-1] in ".)" else n + "."
+
+
 def slide_label(no: Optional[str], title: Optional[str]) -> str:
     """화면에 뜰 한 줄. **번호를 두 번 적지 않는다.**
 
@@ -155,14 +173,21 @@ def slide_label(no: Optional[str], title: Optional[str]) -> str:
     「5 5 분기점은 소득 25,000달러」가 된다. 실제로 그렇게 나왔다. 제목이 이미
     번호로 시작하면 그 제목만 쓴다 — 어느 쪽이 맞는지는 사람이 목차 화면에서
     고칠 수 있고, 여기서는 겹치는 것만 막는다.
+
+    ★ 제목이 이미 번호로 시작하는 경우에도 **온점은 여기서 채운다**(`3 소비함수`
+      → `3. 소비함수`). 겹치는 것을 막는 자리와 모양을 맞추는 자리가 갈리면,
+      어느 쪽으로 들어왔느냐에 따라 화면이 달라진다.
     """
     n = (no or "").strip()
     t = (title or "").strip()
     if not t:
-        return n
-    if not n or _LEAD_NO.match(t):
+        return _dot(n)
+    if m := _LEAD_NO.match(t):
+        lead = m.group(0)
+        return _dot(lead.strip()) + " " + t[len(lead):].lstrip()
+    if not n:
         return t
-    return f"{n} {t}"
+    return f"{_dot(n)} {t}"
 
 
 def page_badge(pages: List[int]) -> str:
@@ -208,19 +233,65 @@ def _body(blocks: List[Dict[str, Any]], svg: Optional[str]) -> List[str]:
 
 def build(*, title: str, book: str, groups: List[Dict[str, Any]],
           slides: List[Dict[str, Any]], figures: Dict[str, str],
-          prompts: Dict[str, Dict[str, Any]]) -> str:
+          intro: str = "", outro: str = "",
+          prompts: Optional[Dict[str, Dict[str, Any]]] = None) -> str:
     """원고 한 파일. `slides` 는 **화면에 나갈 순서 그대로** 온다.
 
     각 `slide` 는 `{data_id, group, no, title, say, pages, blocks}` 다.
+
+    ★ `prompts` 는 **이제 안 온다.** 그림 지시는 다른 에이전트가 만든다(2026-08-14).
+      비면 `data-img` 도 `#imgprompts` 블록도 아예 안 만든다 — 빈 껍데기를 남기면
+      받는 쪽이 「값이 없는 것」과 「자리를 안 쓰는 것」을 구별하지 못한다.
+      인자를 남겨 둔 것은 그 단계를 되살릴 때 여기를 안 고쳐도 되게 하려는 것이다.
     """
+    prompts = prompts or {}
+    # ★ 파일 첫머리에 **읽는 법을 적는다.** 이 원고는 사람보다 다른 파이프라인이
+    #   먼저 여는 파일이다(2026-08-14: "저 친구가 알 수 있게 만드신 거죠?"). 넘길 때
+    #   편지를 같이 보내지만, 편지와 파일은 헤어진다 — 파일 혼자 남아도 무엇이
+    #   대본이고 무엇이 화면 글인지 알 수 있어야 한다.
+    said = sum(count_say(s.get("say")) for s in slides) + count_say(intro) + count_say(outro)
+    head_note = [
+        "<!--",
+        f"  작가 에이전트 (book2summaryhtml) — {title}",
+        "",
+        "  이 파일을 읽는 파이프라인에게:",
+        "    h3 하나 = 슬라이드 한 판. 그 밑의 p·li·table·svg 가 그 판의 몸통이다.",
+        "    h3 의 data-say 가 **그 장에서 읽을 대본**이다. 화면 글이 아니라 소리다.",
+        "      - 내레이션을 새로 짓지 말고 이 글을 그대로 읽혀라. 목표 길이에 맞춰 썼다.",
+        "      - **자막은 data-say, TTS 에 넣을 것은 data-read** 다. 뜻은 같고 표기만",
+        "        다르다 — 「1946년·GDP·25%」를 「천구백사십육 년·지디피·이십오 퍼센트」로",
+        "        풀어 둔 것이다. data-read 가 없는 장은 바꿀 것이 없어서 없는 것이니",
+        "        그때는 data-say 를 그대로 읽히면 된다.",
+        f"      - 대본 합계 {said:,}자 · 420자/분 기준 {said // 420}분 {round(said % 420 / 7):02d}초",
+        "      - 화면 글(p·li)과 일부러 다르다. 같으면 보는 사람이 읽기와 듣기를",
+        "        동시에 하게 되어 둘 다 안 들어온다.",
+        "    h1 에는 앞뒤 장의 대본이 붙어 있다 — 표지에서 읽을 data-say, 마무리에서",
+        "      읽을 data-outro-say(각각 …-read 가 따라온다). 표지·마무리 장을 만들지",
+        "      않는다면 그냥 무시하면 된다.",
+        "    h3 의 data-id 는 **안 바뀌는 이름표**다. 그림 파일을 번호가 아니라",
+        "      여기에 매달아라 — 장이 하나 끼어들면 번호는 전부 밀린다.",
+        "    한 판은 944 × 507px 안에 여섯 줄 이내로 재어 두었다(실측.json 참고).",
+        "-->",
+    ]
     parts: List[str] = [
         "<!DOCTYPE html>", '<html lang="ko">', "<head>",
         '<meta charset="utf-8">',
         f"<title>{esc(title)}</title>",
+        *head_note,
         "<style>", DOC_CSS, "</style>",
         "</head>", "<body>",
-        f"<h1>{esc(title)}</h1>",
     ]
+    # ★ 표지와 마무리의 대본은 **h1 에 매단다.** 발표 쇼케이스가 앞뒤로 한 장씩
+    #   붙이는데, 그 두 장에서도 아바타는 말을 한다(2026-08-14). 새 요소를 만들지
+    #   않는 이유: 저쪽 분리기가 h1/h2/h3 를 세어 장을 만들기 때문에, 여기서 태그를
+    #   하나 더 만들면 없던 장이 하나 생긴다. 속성은 세지 않는다.
+    h1 = ["<h1"]
+    for key, val in (("say", intro), ("outro-say", outro)):
+        if val:
+            h1.append(f'    data-{key}="{esc(val)}"')
+            if (r := speech.to_read(val)) != val:
+                h1.append(f'    data-{key.replace("say", "read")}="{esc(r)}"')
+    parts.append(("\n".join(h1) if len(h1) > 1 else "<h1") + f">{esc(title)}</h1>")
     if book:
         parts.append(f"<p>{esc(book)}</p>")
 
@@ -231,12 +302,18 @@ def build(*, title: str, book: str, groups: List[Dict[str, Any]],
         g = str(s.get("group") or "")
         if g and g != seen_group:
             seen_group = g
-            parts.append(f"<h2>{esc(g + '. ' + by_group.get(g, ''))}</h2>")
+            parts.append(f"<h2>{esc((_dot(g) + ' ' + by_group.get(g, '')).strip())}</h2>")
 
         did = s["data_id"]
         head = [f'<h3 data-id="{esc(did)}"']
         if say := (s.get("say") or "").strip():
             head.append(f'    data-say="{esc(say)}"')
+            # ★ 자막과 소리를 갈라 둔다. 눈은 「1946년·GDP」가 편하고, TTS 는
+            #   그것을 「일구사육」·영어 발음으로 읽는다(2026-08-14 영상 쪽 지적).
+            #   바꿀 것이 없으면 안 단다 — 같은 글을 두 번 실으면 받는 쪽이
+            #   「무엇이 다른가」를 찾아야 한다.
+            if (read := speech.to_read(say)) != say:
+                head.append(f'    data-read="{esc(read)}"')
         # ★ 그림 지시문을 제목에 심는다. 원고와 그림이 **한 파일 안에서** 짝지어져
         #   있어야, 원고를 고친 사람이 그림도 같이 봐야 한다는 것을 잊지 않는다.
         if img := ((prompts.get(did) or {}).get("prompt") or "").strip():
@@ -251,8 +328,9 @@ def build(*, title: str, book: str, groups: List[Dict[str, Any]],
     #   쓰는 것과 같은 수법이다. `<script>` 는 저쪽이 어차피 제거하므로 원고를
     #   오염시키지 않고, 브라우저에서도 실행되지 않는다(type 이 JSON 이다).
     #   `</script>` 가 값 안에 섞여 태그가 일찍 닫히는 것만 막는다.
-    payload = json.dumps({"by_id": prompts}, ensure_ascii=False)
-    parts += ['<script type="application/json" id="imgprompts">',
-              payload.replace("<", "\\u003c"), "</script>",
-              "</body>", "</html>"]
+    if any((v or {}).get("prompt") for v in prompts.values()):
+        payload = json.dumps({"by_id": prompts}, ensure_ascii=False)
+        parts += ['<script type="application/json" id="imgprompts">',
+                  payload.replace("<", "\\u003c"), "</script>"]
+    parts += ["</body>", "</html>"]
     return "\n".join(parts) + "\n"

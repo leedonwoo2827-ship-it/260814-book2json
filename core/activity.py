@@ -33,10 +33,8 @@ from pipeline.registry import ORDER, STAGES, read_cache, stage_states
 # 를 가른다. **앞의 것부터 먼저 맞는 것을 쓴다** — 부족분은 이름이 더 길다.
 DIST = [
     ("_원고.html", "원고 HTML", "발표 쇼케이스의 참고 자료 칸에 넣으세요"),
-    ("이미지프롬프트_부족분.json", "부족분 프롬프트",
-     "새로 생겼거나 몸통이 바뀐 장만 — 이미 그린 그림은 그대로 둡니다"),
-    ("이미지프롬프트.json", "이미지 프롬프트", "이미지 스튜디오에 통째로 넣으세요"),
-    ("이름바꾸기.txt", "이름 바꾸기 표", "번호가 밀린 그림을 옮길 목록"),
+    ("_대본.txt", "대본", "AI 아바타가 읽을 글. 이 글자 수가 그대로 영상 길이가 됩니다"),
+    ("실측.json", "실측 결과", "장마다 잰 높이와 줄 수. 어긋난 장을 되짚을 때만 보면 됩니다"),
 ]
 
 
@@ -199,16 +197,15 @@ def _stage_note(key: str, data: Any) -> str:
     if key == "b4-figure":
         n = len(data.get("figures") or {})
         return f"그림 {n}개" if n else ""
-    if key == "b5-imgprompt":
-        made, kept = data.get("made") or 0, data.get("kept") or 0
-        return f"새로 {made}개 · 그대로 {kept}개"
+    if key == "b6-assemble":
+        # 조립이 낸 것 중 사람이 궁금한 것은 **몇 분짜리인가** 하나다.
+        ln = data.get("length") or {}
+        return (f"{data.get('slides') or 0}장 · {ln.get('clock')}"
+                if ln.get("clock") else f"{data.get('slides') or 0}장")
     if key == "b7-check":
         bad = data.get("violations") or []
         n = data.get("slides") or 0
         return f"{n}장 · 어긋난 장 {len(bad)}개" if not bad else f"어긋난 장 {len(bad)}개"
-    if key == "b8-export":
-        return f"{data.get('count') or 0}장" + (
-            f" · 부족분 {data['gap']}개" if data.get("gap") else "")
     for k in ("slides", "images"):
         v = data.get(k)
         if isinstance(v, dict) and v:

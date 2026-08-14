@@ -5,9 +5,22 @@
 다 부르면 뒤쪽 장이 뭉개진다(출력이 길어질수록 마지막 장의 품질이 떨어진다).
 그래서 **여덟 장씩 묶어** 부른다. 묶음마다 그 장들의 근거 쪽 원문만 실어 보낸다.
 
-★ 모델이 6줄 규약을 말로만 지킨다. 실제로는 넘긴다. 그래서 **코드가 자른다** —
-  넘친 줄은 버리고 경고를 남긴다. 여기서 안 자르면 b7 이 실측에서 잡는데, 그때는
-  이미 그 장을 다시 쓰는 것 말고는 방법이 없다.
+★ **줄이 넘쳐도 자르지 않는다.** 예전엔 잘랐다 — 「줄 예산 5를 넘겨 뒤를 잘랐습니다」.
+  틀린 태도였다(2026-08-14 지적). 이유 셋:
+
+  1. `blocks_budget` 은 규약이 아니다. b2 가 본문을 보고 **짐작한 수**다. 진짜 규약은
+     944 × 507px 이고 그건 b7 이 브라우저에 띄워 **실제로 잰다.** 짐작을 근거로
+     내용을 지우면, 지운 쪽이 맞았는지 아무도 모른다.
+  2. 지워진 줄은 **되찾을 수 없다.** 캐시에는 수리한 뒤의 것만 남아서, 잘린 문장을
+     다시 보려면 그 장을 통째로 다시 써야 한다($2 짜리 단계다).
+  3. 조용히 틀린다. 원고는 멀쩡해 보이고, 빠진 것은 책과 나란히 놓고 세어야 보인다.
+
+  그래서 지금은 **다 싣고 말한다.** 넘치면 b7 이 그 장을 `over`/`longer` 로 잡고
+  「h3 를 하나 더 만들어 나누세요」라고 적어 준다 — 자르는 것과 나누는 것은 다르다.
+
+★ 태그는 여전히 코드가 씻는다. 모델은 `style=` 이나 `<div>` 를 곧잘 끼워 넣는데,
+  규약이 허용하는 것은 `b·code·br·sub·sup` 뿐이다. 남겨 두면 조립본이 원고 CSS 를
+  벗어난다. **글자를 지우는 것과 태그를 벗기는 것은 다른 일이다.**
 
 ★ 태그도 코드가 씻는다. 모델은 `style=` 이나 `<div>` 를 곧잘 끼워 넣는데, 규약이
   허용하는 것은 `b·code·br·sub·sup` 뿐이다. 남겨 두면 조립본이 원고 CSS 를 벗어난다.
@@ -118,8 +131,10 @@ def _repair(raw: Dict[str, Any], batch: List[Dict[str, Any]]) -> tuple[Dict, Lis
         if base not in want:
             warn.append(f"모르는 이름표라 버렸습니다: {did}")
             continue
+        # 짐작한 예산. **자르는 근거가 아니라 견주는 값이다.**
         budget = min(int(want[base].get("blocks_budget") or 4), MAX_BLOCKS)
-        if want[base].get("visual") == "svg":
+        svg = want[base].get("visual") == "svg"
+        if svg:
             budget = max(1, budget - 1)          # 그림이 한 줄을 먹는다
 
         blocks: List[Dict[str, Any]] = []
@@ -129,12 +144,19 @@ def _repair(raw: Dict[str, Any], batch: List[Dict[str, Any]]) -> tuple[Dict, Lis
             h = clean_html(b.get("html") or "", table=(kind == "table"))
             if not h:
                 continue
-            n = block_lines({"kind": kind, "html": h})
-            if used + n > budget:
-                warn.append(f"{did}: 줄 예산 {budget}을 넘겨 뒤를 잘랐습니다")
-                break
+            # ★ 여기서 끊지 않는다. 모델이 쓴 줄은 **전부 싣는다.**
             blocks.append({"kind": kind, "html": h})
-            used += n
+            used += block_lines({"kind": kind, "html": h})
+
+        # 넘친 것은 **말만 한다.** 한 화면에 안 들어가면 b7 이 재서 잡고, 사람이
+        # 목차 화면에서 장을 나누거나 그 장을 뺀다 — 자르는 것과 나누는 것은 다르다.
+        total = used + (1 if svg else 0)
+        if total > MAX_BLOCKS:
+            warn.append(f"{did}: {total}줄 — 한 화면(6줄)을 넘길 수 있습니다. "
+                        f"자르지 않았으니 실측을 보고 나누거나 빼세요")
+        elif used > budget:
+            warn.append(f"{did}: 줄 예산 {budget}인데 {used}줄 — 그대로 뒀습니다")
+
         if not blocks:
             warn.append(f"{did}: 몸통이 비었습니다")
             continue

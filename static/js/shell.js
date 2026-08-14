@@ -35,7 +35,9 @@ const routes = [
        발표의 장 수다. 바닥인 이유는 제목 입력칸 때문(미저장 텍스트가 산다). */
   { re: /^\/outline$/, nav: "otl", layer: "base", load: () => import("./outline.js") },
   { re: /^\/draft$/,   nav: "drf", layer: "base", load: () => import("./draft.js") },
-  { re: /^\/image$/,   nav: "img", layer: "base", load: () => import("./image.js") },
+  // ★ `/image`(이미지 프롬프트) 길을 끊었다 — 그림 지시는 다른 에이전트가
+  //   만든다(2026-08-14). `image.js` 는 지우지 않았다: 되살릴 때 이 한 줄이면 된다.
+  //   { re: /^\/image$/, nav: "img", layer: "base", load: () => import("./image.js") },
   { re: /^\/export$/,  nav: "exp", layer: "base", load: () => import("./export.js") },
 
   // 부유 패널(위층) — 고르는 곳.
@@ -51,7 +53,7 @@ const routes = [
 
 const HOME = routes[0];
 // 프로젝트가 골라져야 열리는 화면 — 레일에서 잠근다.
-const NEEDS_PROJECT = new Set(["brd", "otl", "drf", "img", "exp"]);
+const NEEDS_PROJECT = new Set(["brd", "otl", "drf", "exp"]);
 
 function parseHash() {
   let raw = (location.hash || "#/board").slice(1) || "/board";

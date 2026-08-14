@@ -35,7 +35,38 @@
   line-height: var(--lh); }
 .rule-row + .rule-row { box-shadow: inset 0 1px 0 var(--hairline-2); }
 
-/* ── 시작 화면 — PDF 고르기 · 앞쪽 미리보기 ────────────────────────────── */
+/* ── 시작 화면 — 끌어다 놓는 자리 ───────────────────────────────────────
+   이 화면에서 사람이 하는 일은 셋뿐이다: 놓기 · 길이 고르기 · 단추 누르기.
+   그래서 첫 요소가 화면의 절반을 차지해도 된다 — 여기가 유일한 입구다. */
+.drop { display: grid; place-items: center; gap: 7px; cursor: pointer;
+  padding: 44px 24px; border-radius: var(--r-lg); text-align: center;
+  background: var(--bone); color: var(--text-2);
+  box-shadow: inset 0 0 0 1.5px var(--hairline);
+  transition: background .12s, box-shadow .12s; }
+.drop:hover { background: var(--sky-wash); }
+/* 끌고 들어왔을 때 — 놓아도 되는 자리라는 것을 색으로 말한다 */
+.drop.over { background: var(--brand-wash); color: var(--brand);
+  box-shadow: inset 0 0 0 2px var(--brand); }
+.drop.busy { opacity: .6; pointer-events: none; }
+.drop-big { font-size: var(--t-lg); font-weight: 800; letter-spacing: -.02em;
+  color: var(--ink); }
+.drop.over .drop-big { color: var(--brand); }
+.drop-sub { font-size: var(--t-2xs); color: var(--text-3); line-height: var(--lh); }
+.droplist { display: grid; gap: 4px; margin-top: 10px; }
+.droprow { display: flex; align-items: center; gap: 10px; padding: 7px 12px;
+  border-radius: var(--r-sm); background: var(--paper-deep);
+  font-size: var(--t-xs); color: var(--text-2); }
+
+/* 매번 답이 같은 질문들은 접어 둔다 — 열어야 보이는 것이 답이다 */
+.more { margin-top: 18px; padding: 0 0 4px; }
+.more > summary { cursor: pointer; padding: 7px 0; color: var(--text-3);
+  font-size: var(--t-xs); font-weight: 700; list-style: none; }
+.more > summary::-webkit-details-marker { display: none; }
+.more > summary::before { content: "▸ "; }
+.more[open] > summary::before { content: "▾ "; }
+.more > summary:hover { color: var(--brand); }
+
+/* ── 시작 화면 — 폴더에서 고르기 · 앞쪽 미리보기 ────────────────────────── */
 .pdflist { display: grid; gap: 4px; margin-top: 10px; }
 .pdfrow { display: flex; align-items: center; gap: 10px; width: 100%;
   padding: 7px 12px; border: 0; border-radius: var(--r-sm); cursor: pointer;
@@ -60,8 +91,36 @@
 .peek-head { color: var(--text-2); font-size: var(--t-2xs); line-height: 1.7;
   white-space: pre-wrap; font-variant-numeric: tabular-nums; }
 
+/* ── 목표 길이 표 — 「몇 장」이 아니라 「몇 분짜리」로 고르는 자리 ────────
+   줄 하나가 곧 선택지다. 그래서 `<table>` 이 아니라 **누를 수 있는 줄**로 짰다
+   (표 안에 단추를 넣으면 어디를 눌러야 하는지가 안 읽힌다). 열 너비는 고정이라
+   세 줄의 숫자가 세로로 줄 맞춰 읽힌다 — 견주려고 만든 표다. */
+.lentab { display: grid; gap: 4px; margin-top: 10px; }
+.lenrow { display: grid; width: 100%; align-items: center;
+  grid-template-columns: 132px 84px 104px 132px 1fr; gap: 10px;
+  padding: 9px 13px; border: 0; border-radius: var(--r-sm); cursor: pointer;
+  background: var(--bone); color: var(--text-2); text-align: left;
+  font-family: inherit; font-size: var(--t-xs);
+  font-variant-numeric: tabular-nums;
+  box-shadow: inset 0 0 0 1px var(--hairline); }
+.lenrow:hover { background: var(--sky-wash); color: var(--brand); }
+.lenrow.on { background: var(--brand-wash); color: var(--brand);
+  box-shadow: inset 0 0 0 1.5px var(--brand); }
+.lenrow.hd { padding: 2px 13px 0; background: none; box-shadow: none;
+  cursor: default; color: var(--text-3); font-size: var(--t-2xs);
+  font-weight: 700; }
+.lenrow.hd:hover { background: none; color: var(--text-3); }
+.len-min { display: flex; align-items: center; gap: 7px; }
+.len-min b { font-size: var(--t-md); font-weight: 800; letter-spacing: -.02em; }
+
+/* bak 칸의 카드 — 있지만 넘기는 것이 아니다. 한 눈에 갈리게 흐리게 둔다. */
+.card.muted { background: var(--paper-deep); box-shadow: none; }
+.card.muted .card-title { color: var(--text-2); }
+
 /* ── 현황판 — 여섯 줄 사다리 ───────────────────────────────────────────── */
 .steps { display: grid; gap: 10px; max-width: 860px; }
+/* 길이 카드는 사다리 위에 따로 선다 — 사다리와 붙어 보이면 「0번 단계」로 읽힌다 */
+.step.lenhead { margin-bottom: 10px; background: var(--white); }
 .step { padding: 14px 17px; border-radius: var(--r-lg); background: var(--bone);
   box-shadow: inset 0 0 0 1px var(--hairline); }
 .step.done { background: var(--white); }

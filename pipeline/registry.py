@@ -157,22 +157,25 @@ class Stage:
 # ── 스테이지 정의 ──────────────────────────────────────────────────────────
 # 순서 = 화면에 보이는 순서 = 실행 순서.
 #
-#   b1 책에서 글 뽑기 → b2 장 나누기 → b3 몸통 쓰기 → b4 그림
-#                    → b5 이미지 프롬프트 → b6 조립 → b7 실측 → b8 내보내기
+#   b1 책에서 글 뽑기 → b2 장 나누기(+대본) → b3 몸통 쓰기 → b4 그림
+#                    → b6 조립 → b7 실측
 #
-# ★ b7(실측)이 b8(내보내기) **앞**이다. 규약을 어긴 원고를 내보내면 repo #1 이
-#   받아서 장이 통째로 비거나 글자 크기가 장마다 들쭉날쭉해진다. 그 사실을
-#   저쪽에서 알게 되면 이미 늦다 — 여기서 걸러야 한다.
+# ★ 마지막이 실측이다. 규약을 어긴 원고를 넘기면 repo #1 이 받아서 장이 통째로
+#   비거나 글자 크기가 장마다 들쭉날쭉해진다. 그 사실을 저쪽에서 알게 되면 이미
+#   늦다 — 여기서 걸러야 한다.
 _DEFS: List[Stage] = [
     # 책은 안 바뀐다. 그래서 결정론이고, 다시 돌려도 돈이 안 든다.
     Stage("b1-pdf", "책에서 글 뽑기", "source", "det",
           reads=["pdfs", "drop_head", "drop_tail"], code_version=1),
     # ★ 장 나누기가 곧 슬라이드 나누기다(규약 2-2: h3 개수 = 슬라이드 개수).
     #   `slide_budget` 을 읽는다 — 예산을 바꾸면 이 단계가 stale 이 되어야 한다.
+    # ★ `target_min`(목표 영상 길이)도 읽는다. 영상 길이를 정하는 것은 화면에 적힌
+    #   줄이 아니라 **장마다 말할 글(`say`)의 총량**이고(core/narration.py 실측),
+    #   그 말은 여기서 쓰인다. 목표를 바꾸면 이 단계가 낡아야 한다.
     Stage("b2-outline", "장 나누기", "outline", "claude",
           deps=["b1-pdf"], prompt="outline.md",
-          reads=["title", "book", "id_prefix", "slide_budget", "models"],
-          code_version=1),
+          reads=["title", "book", "id_prefix", "slide_budget", "target_min", "models"],
+          code_version=3),
     # ★ b2 캐시가 아니라 `outline_of()` 를 읽는다. 그래서 손편집이 낡음의 이유가
     #   되도록 `outline_rev` 를 같이 읽는다 — 제목을 고쳐 놓고 "할 일 없음" 이면
     #   사람이 무엇을 믿어야 할지 알 수 없다.
@@ -183,21 +186,23 @@ _DEFS: List[Stage] = [
     Stage("b4-figure", "그림", "figure", "claude",
           deps=["b3-write"], prompt="figure.md",
           reads=["outline_rev", "models"], code_version=1),
-    # ★ 원장에 있고 몸통 해시가 같은 장은 **부르지 않는다.** 돈도 돈이지만,
-    #   같은 장의 프롬프트가 이유 없이 바뀌면 이미 그려 둔 그림과 어긋난다.
-    Stage("b5-imgprompt", "이미지 프롬프트", "images", "claude",
-          deps=["b3-write"], prompt="imgprompt.md",
-          reads=["title", "book", "image", "models"], code_version=1),
+    # ★ **여기 있던 `b5-imgprompt`(이미지 프롬프트)와 `b8-export`(내보내기)를 뺐다.**
+    #
+    #   2026-08-14 결정: 그림 지시는 **다른 에이전트가 만든다.** 이 앱이 내는 것은
+    #   강의 슬라이드 **원고와 대본**까지다. 원장(`core/ledger.py`)·부족분·이름바꾸기가
+    #   전부 그 프롬프트를 지키려고 있던 장치라 같이 빠졌다.
+    #
+    #   코드는 `pipeline/b5_imgprompt.py`·`b8_export.py` 에 그대로 있다(git 에도).
+    #   되돌리려면 여기 두 줄과 `pipeline/__init__.py` 의 import 를 되살리면 된다.
+    #   그때 b6 의 deps 에 `b5-imgprompt` 도 다시 넣어야 한다.
     Stage("b6-assemble", "원고 조립", "export", "det",
-          deps=["b3-write", "b4-figure", "b5-imgprompt"],
-          reads=["title", "book", "slug", "outline_rev"], code_version=1),
+          deps=["b3-write", "b4-figure"],
+          reads=["title", "book", "slug", "outline_rev", "target_min"], code_version=7),
     # playwright 로 실제 브라우저에 띄워 잰다. 자로 재지 않은 "규약을 지켰다"는
     # 말은 믿을 것이 못 된다 — 규약의 숫자가 전부 픽셀이기 때문이다.
+    # 마지막 단계다. 여기까지 오면 `10_내보내기/` 에 원고·대본·실측이 다 있다.
     Stage("b7-check", "실측 검증", "export", "ext",
-          deps=["b6-assemble"], reads=["manuscript"], code_version=1),
-    Stage("b8-export", "내보내기", "export", "det",
-          deps=["b6-assemble", "b7-check"],
-          reads=["title", "book", "slug", "image"], code_version=1),
+          deps=["b6-assemble"], reads=["manuscript", "target_min"], code_version=4),
 ]
 
 STAGES: Dict[str, Stage] = {s.key: s for s in _DEFS}

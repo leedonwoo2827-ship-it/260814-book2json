@@ -21,7 +21,7 @@ import subprocess
 from pathlib import Path
 from typing import Any, Dict, List
 
-from core import config, workspace as ws
+from core import config, narration as nr, workspace as ws
 from pipeline.registry import STAGES, cached_data, write_cache
 
 APP = Path(__file__).resolve().parent.parent
@@ -29,11 +29,16 @@ SCRIPT = APP / "tools" / "measure.mjs"
 TIMEOUT = 180
 
 # 어긋남의 종류 → 사람에게 할 말. **무엇을 하라고**까지 적는다.
+#
+# ★ `bare`(그림도 표도 없음)가 여기 있었다. 뺐다(2026-08-14 지적) — 그것은 **규약을
+#   어긴 것이 아니라 아직 안 그린 것**이다. 그림 단계(b4)를 안 돌린 원고를 재면
+#   스물한 장이 통째로 「규약에 어긋난 장」으로 뜨는데, 진짜로 어긋난 장(한 화면을
+#   넘친 장)이 그 사이에 묻힌다. 목록이 길면 목록을 안 읽게 된다.
+#   그림이 없는 장 수는 아래에서 **숫자로만** 말한다.
 WHY = {
     "over": ("한 화면을 넘쳤습니다", "h3 를 하나 더 만들어 나누세요 (내용은 그대로)"),
     "longer": ("줄이 너무 많습니다", "여섯 줄 안쪽으로 줄이거나 장을 나누세요"),
     "empty": ("몸통이 없습니다", "b3-write 를 다시 돌리세요"),
-    "bare": ("그림도 표도 없습니다", "b4-figure 를 다시 돌리세요"),
 }
 
 
@@ -76,7 +81,7 @@ def run(job, pid: int, slug: str, project: Dict[str, Any], *, force: bool = Fals
     slides: List[Dict[str, Any]] = report.get("slides") or []
     bad: List[Dict[str, Any]] = []
     for s in slides:
-        flags = [k for k in ("over", "longer", "empty", "bare") if s.get(k)]
+        flags = [k for k in WHY if s.get(k)]
         if flags:
             bad.append({"id": s.get("id") or "", "title": s.get("title") or "",
                         "height": s.get("height"), "lines": s.get("lines"),
@@ -89,7 +94,8 @@ def run(job, pid: int, slug: str, project: Dict[str, Any], *, force: bool = Fals
     n_tab = sum(1 for s in slides if s.get("table"))
     lines = sum(s.get("lines") or 0 for s in slides)
 
-    ws.write_json(ws.step_dir(pid, slug, "export") / "실측.json", report)
+    # 실측은 **되짚을 때만** 보는 값이라 넘기는 칸에 두지 않는다 — `bak/` 으로.
+    ws.write_json(ws.step_dir(pid, slug, "export") / "bak" / "실측.json", report)
 
     # 규약 편지의 「붙임」과 같은 꼴로 찍는다 — 사람이 그 편지와 나란히 읽는다.
     job.add_log(f"{len(slides)}장 · 줄 {lines}개 "
@@ -98,11 +104,28 @@ def run(job, pid: int, slug: str, project: Dict[str, Any], *, force: bool = Fals
                 f"최대 {max((s.get('lines') or 0) for s in slides) if slides else 0})")
     job.add_log(f"높이 최대 {max(heights)}px / {cfg['box_h']}px · "
                 f"한 화면을 넘친 장 {sum(1 for s in slides if s.get('over'))}개")
-    job.add_log(f"그림 {n_svg}장 · 표 {n_tab}장 · 그림도 표도 없는 장 "
-                f"{sum(1 for s in slides if s.get('bare'))}개")
+    # 그림이 없는 장은 **숫자로만.** 「어긋난 장」이 아니라 「아직 안 그린 장」이다.
+    n_bare = sum(1 for s in slides if s.get("bare"))
+    job.add_log(f"그림 {n_svg}장 · 표 {n_tab}장"
+                + (f" · 아직 그림이 없는 장 {n_bare}개 (3번의 그림 단계)" if n_bare else ""))
+    # ★ 실측이 재는 것은 픽셀만이 아니다. **대본 글자 수가 곧 영상 길이**라,
+    #   원고에 실제로 박힌 `data-say` 를 여기서 세어 몇 분짜리인지 말한다.
+    said = (sum(int(s.get("say") or 0) for s in slides)
+            + int(report.get("intro") or 0) + int(report.get("outro") or 0))
+    want = nr.plan_of(project, int((cached_data(pid, slug, "b1-pdf") or {}).get("chars") or 0))
+    length = nr.verdict(said, want)
     job.add_log(f"data-say {n_say}/{len(slides)} · data-img {n_img}/{len(slides)}")
+    job.add_log(f"대본 {said:,}자 → {length['clock']} "
+                f"(목표 {want['minutes']}분 · {length['pct']}%)")
+    thin = [s for s in slides
+            if int(s.get("say") or 0) < want["say_per_slide"] * 0.6]
+    if thin:
+        job.add_log(f"말이 짧은 장 {len(thin)}개: "
+                    + ", ".join(f"{s.get('id')}({s.get('say')}자)" for s in thin[:8]))
 
     warn: List[str] = []
+    if length["short"]:
+        warn.append(length["note"])
     if report.get("wide"):
         warn.append("가로로 밀렸습니다 — 표나 그림이 944px 을 넘습니다")
         job.add_log(warn[-1])
@@ -123,7 +146,7 @@ def run(job, pid: int, slug: str, project: Dict[str, Any], *, force: bool = Fals
                              "max_height": max(heights), "violations": bad,
                              "wide": bool(report.get("wide")),
                              "svg": n_svg, "table": n_tab,
-                             "say": n_say, "img": n_img},
+                             "say": n_say, "img": n_img, "length": length},
                        code_version=stage.code_version,
                        status="degraded" if warn else "ok", warnings=warn)
 
