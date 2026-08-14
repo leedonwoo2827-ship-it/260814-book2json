@@ -1,0 +1,376 @@
+{
+  "deck": "새뮤얼슨의 경제학 · 제20장 거시경제활동의 측정",
+  "style_hint": "clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video)",
+  "aspect": "landscape",
+  "target_box": "wide horizontal panel (3:2), may be cropped to 16:9 for video",
+  "count": 28,
+  "deck_slides": 29,
+  "photos_found": 0,
+  "file_naming": "생성한 이미지는 images/ 폴더에 '슬라이드번호'로 저장하세요. 예: 003.png → 3번 슬라이드. 파일명 앞 숫자만 맞으면 되고 확장자·뒤 설명은 자유입니다(003_저축함수.png).",
+  "prompts": [
+    {
+      "n": 2,
+      "title": "GDP 는 무엇을 재는 숫자인가",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "a large wire sieve stretched across the middle of the frame with a mixed stream of raw materials, half-built machine parts, and gears pouring in from the left, most of the small loose parts falling through the mesh and out of the frame while only finished whole objects like a car and a loaf-shaped block pass through to a neat stack on the right, a single coin-stamped scale sits beneath the sieve catching only what passed through, wide horizontal composition spread across the frame with the pour on the far left and the finished stack on the far right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "sieve filter"
+      ],
+      "place": true,
+      "data_id": "sam20-01"
+    },
+    {
+      "n": 3,
+      "title": "GDP ＝ C ＋ I ＋ G ＋ X",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "four separate horizontal pipes entering from the left at different heights, one carrying shopping bags and household items, one carrying factory machine parts and gears, one carrying stacked government-style ledger boxes, and the thinnest bottom pipe carrying small cargo containers with an arrow that can point backward as easily as forward, all four pipes converging into one large clear glass tank on the right side of the frame, wide horizontal composition spanning the full width with the merge point pushed to the right edge, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "pipes merging"
+      ],
+      "place": true,
+      "data_id": "sam20-02"
+    },
+    {
+      "n": 4,
+      "title": "GDP 로 읽는 대공황과 전후 성장",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "on the left half of the frame a tall stack of coin columns collapsing downward into a much shorter stack with scattered fallen coins around its base, on the right half of the frame a separate staircase of coin columns rising steadily upward step by step toward the upper right corner, a thin horizontal ground line running beneath both scenes connecting the collapse on the left to the climb on the right, wide horizontal composition spread across the full width contrasting fall and rise, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "coin stack collapse"
+      ],
+      "place": true,
+      "data_id": "sam20-03"
+    },
+    {
+      "n": 5,
+      "title": "위쪽 고리와 아래쪽 고리",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "a large circular loop of pipe drawn across the frame split into an upper arc and a lower arc, the upper arc carrying flowing coins and paper bills moving from a household silhouette icon on the left toward a factory building icon on the right, the lower arc carrying flowing coins moving back from the factory building on the right toward the household on the left labeled by small icons of wages coins, rent keys, interest tokens, and dividend chips, the whole loop centered but stretched wide so the household sits at the far left and the factory at the far right, wide horizontal composition spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "circular flow"
+      ],
+      "place": true,
+      "data_id": "sam20-04"
+    },
+    {
+      "n": 6,
+      "title": "두 접근에 각각 무엇이 들어가나",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "two parallel vertical stacks of transparent glass boxes standing side by side across a wide frame, the left stack filled from bottom to top with shopping bags, factory gears, government ledger boxes and small cargo containers, the right stack filled from bottom to top with stacks of paycheck envelopes, business profit coin piles, rent-and-interest tokens, and two thin sliding wedge blocks representing depreciation and taxes near the top, a single balanced beam connecting the tops of both stacks to show they weigh the same, wide horizontal composition with the two stacks pushed toward the left and right thirds of the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "two stacked columns"
+      ],
+      "place": true,
+      "data_id": "sam20-05"
+    },
+    {
+      "n": 7,
+      "title": "두 길이 정확히 일치하는 까닭 — 이윤은 나머지 항목",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a pair of open scissors resting beside a small neat stack of coins on the left side of the frame, a wide horizontal balance scale in the center with one pan holding the same coin stack and the other pan holding three smaller labeled piles representing wages, interest, and rent plus one irregular leftover pile of coins that visibly tips the pan level, thin dotted arrows sweeping from the left coin stack across to the balance scale on the right showing the same value redistributed, wide horizontal composition spanning the full width with scissors on the far left and the balance scale on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "balance scale"
+      ],
+      "place": true,
+      "data_id": "sam20-06"
+    },
+    {
+      "n": 8,
+      "title": "빵은 들어가고 밀가루는 빠진다",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "a closed loop conveyor belt shaped like a rounded rectangle occupying the left two-thirds of the frame, inside the loop small sacks of flour and silicon wafer chips circulate endlessly between two factory gate icons without ever leaving the loop, a single open gate on the right side of the loop lets only a finished loaf of bread and a finished laptop computer exit onto a straight belt that carries them off to the right edge of the frame toward a small shopping basket icon, wide horizontal composition with the circulating loop on the left and the escaping final goods stretching to the right edge, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "closed loop conveyor"
+      ],
+      "place": true,
+      "data_id": "sam20-07"
+    },
+    {
+      "n": 9,
+      "title": "부가가치로 중복을 없앤다 — 빵 한 개의 4단계",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "four production stages arranged left to right along a single conveyor belt, first a small pile of raw wheat grain, then a sack of milled flour slightly larger, then a baked loaf of bread larger still, then the same loaf sitting on a shop shelf at the far right, above each stage a thin rising bar shows only the added sliver of height gained at that stage rather than the full height, a faint ghost outline behind each bar shows the much taller true sale-price bar for contrast, wide horizontal composition with stages evenly spaced from left to right across the full frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "value added stages"
+      ],
+      "place": true,
+      "data_id": "sam20-08"
+    },
+    {
+      "n": 10,
+      "title": "고무줄 잣대 — 명목 GDP와 실질 GDP",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a stretchy rubber measuring tape laid horizontally across the frame, visibly stretched and warped with uneven markings on the left side measuring a stack of goods, next to it on the right a rigid straight metal ruler with even fixed markings measuring an identical stack of the same goods, a small hand adjusting a dial between the two tapes to show one being corrected into the other, wide horizontal composition with the warped rubber tape on the left and the rigid ruler on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "rubber tape measure"
+      ],
+      "place": true,
+      "data_id": "sam20-09"
+    },
+    {
+      "n": 11,
+      "title": "1929년과 1933년 — 디플레이팅해 보면",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "two tall glass columns of coins standing side by side on the left representing a much taller 1929 column and a shorter 1933 column, a large magnifying glass lens hovering between them subtly shrinking the visible price tags inside without changing the physical coin count, on the right side of the frame a second pair of columns rebuilt at matching corrected heights showing the coins after the lens adjustment, wide horizontal composition spanning the full width with the original mismatched pair on the left and the corrected closer pair on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "magnifying lens"
+      ],
+      "place": true,
+      "data_id": "sam20-10"
+    },
+    {
+      "n": 12,
+      "title": "명목이 실질보다 빠르게 자란 80년",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "two long ribbon-like curves stretching from left to right across the frame, the upper golden ribbon rising steeply and ballooning wider as it travels right while the lower blue ribbon rises only gently and stays narrow, a growing wedge of empty air opening up between the two ribbons toward the right side representing an inflating gap, tiny floating coin stacks scattered inside the widening gap to suggest inflated currency, wide horizontal composition spread across the full frame with both ribbons spanning edge to edge, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "nominal vs real GDP"
+      ],
+      "place": true,
+      "data_id": "sam20-11"
+    },
+    {
+      "n": 13,
+      "title": "연쇄가중법 — 가중치를 매년 갈아끼운다",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a long horizontal chain made of interlocking metal links stretching from left to right across the frame, each link slightly different in size and tilt to show yearly recalibration, on the left end a single oversized fixed anchor link labeled by shape alone as an old rigid weight being unhooked and replaced, small silhouettes of an old bulky computer tower shrinking into a slim tablet as the chain moves rightward above the links, wide horizontal composition with the chain spanning the entire width of the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "chain weighting"
+      ],
+      "place": true,
+      "data_id": "sam20-12"
+    },
+    {
+      "n": 14,
+      "title": "소비(C) — GDP의 약 3분의 2",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "a wide horizontal pie-like arc bent flat and stretched across the frame instead of a circle, one large dominant band of stacked household items on the left two-thirds made of a sofa, grocery bags, and a service tray flowing together, and a much smaller band of factory and government blocks compressed into the remaining right third, a faint undulating line beneath the whole arrangement dipping down then spiking then rising again to trace history over time, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "consumption share GDP"
+      ],
+      "place": true,
+      "data_id": "sam20-13"
+    },
+    {
+      "n": 15,
+      "title": "투자(I) — 실물투자와 금융투자는 다르다",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a split horizontal scene, on the left side a hand shaping raw metal into a brand-new factory oven and stacking fresh lumber into a small building frame, both glowing as freshly produced durable objects, on the right side a closed safe with two identical stock certificate papers simply swapping places inside it with no new object appearing, a thin dividing line running vertically down the center separating creation from mere exchange, wide horizontal composition spread across the full frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "real investment vs financial investment"
+      ],
+      "place": true,
+      "data_id": "sam20-14"
+    },
+    {
+      "n": 16,
+      "title": "총투자와 순투자 — 감가상각을 빼야 한다",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a wide horizontal timeline showing new bright factories, cranes, and houses being built and rising up on the left side flowing rightward, while older greyed-out crumbling versions of the same buildings sink and fade away along a parallel lower track, the two tracks converging toward a single smaller building silhouette on the right representing what remains after subtraction, small birth and decay icon shapes echoing the building forms, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "gross vs net investment"
+      ],
+      "place": true,
+      "data_id": "sam20-15"
+    },
+    {
+      "n": 17,
+      "title": "정부구매(G) — 이전지출은 왜 빠지나",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a wide horizontal scene split into two flowing paths, the upper path shows a government hand exchanging coins directly for a school building, a paved road, and military supply crates arranged left to right as goods actually purchased, the lower path shows coins flowing directly into an open palm with no object given in return, representing a one-way gift, a translucent barrier wall standing between the two paths near the center, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "government purchases vs transfer payments"
+      ],
+      "place": true,
+      "data_id": "sam20-16"
+    },
+    {
+      "n": 18,
+      "title": "순수출(X) — 아그로비아의 옥수수 100부셸",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "a wide horizontal flow diagram of golden corn kernels pouring out from a single large silo on the left into four separate streams flowing rightward, three thick streams branching into a household basket, a government building icon, and a warehouse storage bin, a thin fourth stream flowing further right off the edge of the frame toward a small boat, while a separate thinner stream of corn flows inward from the right toward the silo representing imports crossing a dotted border line, wide horizontal composition spread across the full frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "net exports corn example"
+      ],
+      "place": true,
+      "data_id": "sam20-17"
+    },
+    {
+      "n": 19,
+      "title": "GDP, NDP, GNP — 무엇을 빼고 어디를 기준으로 하나",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a wide horizontal scene with a large dotted rectangular border fence on the left representing a national territory boundary filled with factories and fields, and on the right a loose scattering of small human silhouette outlines connected by thin threads reaching both inside and far outside the fence to represent ownership by people rather than location, a small pile of worn broken gears being physically removed and set aside near the center to represent subtracted depreciation, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "GDP NDP GNP comparison"
+      ],
+      "place": true,
+      "data_id": "sam20-18"
+    },
+    {
+      "n": 20,
+      "title": "2007년 미국 GDP — 두 접근이 같은 값에 닿는다",
+      "type": "photo",
+      "level": "평가",
+      "prompt": "a wide horizontal scene of two separate vertical stacks of differently shaped blocks on the left and right sides of the frame, the left stack built from household goods, factory equipment, government building blocks, and a small negative recessed block representing net exports, the right stack built from wage envelopes, profit coin piles, and worn depreciation gears, both stacks rising to meet at exactly the same height marked by a single balanced horizontal beam bridging across the top connecting both towers, wide horizontal composition spread across the full frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "expenditure approach vs income approach"
+      ],
+      "place": true,
+      "data_id": "sam20-19"
+    },
+    {
+      "n": 21,
+      "title": "GDP 에서 국민소득으로, 다시 가처분소득으로",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "a wide horizontal descending staircase made of large blocks starting tall on the left labeled by size alone as gross domestic product, each successive step slightly narrower as small pieces are chiseled away by floating hand tools representing depreciation and taxes being removed, with a small additional block being placed back onto one lower step representing transfer payments added in, the staircase ending on the right in a modest final platform where a small household basket and a coin jar sit side by side, wide horizontal composition spread across the full frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "GDP to disposable income staircase"
+      ],
+      "place": true,
+      "data_id": "sam20-20"
+    },
+    {
+      "n": 22,
+      "title": "저축과 투자는 정의상 일치한다",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "two parallel horizontal pipes stretching across the frame, the upper pipe carrying a stream of identical blocks labeled by shape as total output splitting at a fork into one channel flowing into a large open basket and another thinner channel flowing downward, the lower pipe carrying an identical stream representing total income splitting the same way, both thin downward channels converging at a single perfectly balanced beam scale in the center of the frame with equal weights resting on each pan, wide horizontal composition spread across the full width with the two pipes filling the upper and lower thirds and the scale anchoring the center, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "balance scale"
+      ],
+      "place": true,
+      "data_id": "sam20-21"
+    },
+    {
+      "n": 23,
+      "title": "GDP 가 빠트리는 시장 밖의 활동",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a wide open ledger book lying flat across the left half of the frame with neat stacks of coins arranged in its ruled columns, while across the right half of the frame identical everyday objects sit outside the ledger's border in soft shadow and untouched by any coin stack — a broom leaning alone, a large hourglass tipped on its side, a stack of folded laundry, and an open textbook with no coins near it, a faint dotted boundary line separating the counted columns from the uncounted objects, wide horizontal composition spread across the full width contrasting left and right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "household chores unpaid"
+      ],
+      "place": true,
+      "data_id": "sam20-22"
+    },
+    {
+      "n": 24,
+      "title": "환경피해는 어느 쪽에도 적히지 않는다",
+      "type": "photo",
+      "level": "평가",
+      "prompt": "a row of power plant smokestacks on the left side of the frame releasing a bright golden stream of coins that flows rightward into a tidy stack sitting on a bright balance scale, while from the same smokestacks a separate dark plume of smoke drifts further to the right and settles as a grey haze over a small distant landscape with no scale or ledger beneath it, the coin stream brightly lit and carefully weighed while the smoke plume fades unmeasured into open sky, wide horizontal composition spread across the full width contrasting the counted left with the uncounted right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "externality pollution"
+      ],
+      "place": true,
+      "data_id": "sam20-23"
+    },
+    {
+      "n": 25,
+      "title": "물가상승과 물가하락, 그리고 상승률",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "a long ascending staircase of solid blocks climbing steadily from the lower left corner toward the upper right corner of the frame, each step slightly taller than the last with a small upward arrow drawn between consecutive steps indicating the size of each rise, but one single step near the left end of the staircase dips downward below the previous step's height with a small downward arrow marking that lone drop before the staircase resumes its climb, wide horizontal composition with the staircase spanning nearly the full width low across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "price level staircase"
+      ],
+      "place": true,
+      "data_id": "sam20-24"
+    },
+    {
+      "n": 26,
+      "title": "대표적인 물가지수 세 가지",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "three separate wide measuring scales arranged side by side spanning the frame from left to right, the left scale weighing a shopping basket filled with everyday consumer goods like bread loaves and small bottles, the middle scale weighing a broader tray holding a miniature house, a small factory building, and a tiny cargo ship together, the right scale weighing stacked wooden pallets and crates typical of a wholesale warehouse, each scale's needle pointing to a different position, wide horizontal composition with the three scales evenly spaced across the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "price index comparison"
+      ],
+      "place": true,
+      "data_id": "sam20-25"
+    },
+    {
+      "n": 27,
+      "title": "CPI 의 바구니 — 무엇이 얼마나 무겁나",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "a single large woven basket stretched wide across the frame and divided internally by thin partitions into unequal compartments of very different sizes, the largest compartment on the left taking up nearly half the basket and holding a miniature house model, several noticeably smaller compartments to the right each holding a small item such as a folded shirt, a loaf of bread, and a tiny toy car in the smallest compartment of all, the compartment sizes visibly proportional to their contents' importance, wide horizontal composition with the basket spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "CPI basket weights"
+      ],
+      "place": true,
+      "data_id": "sam20-26"
+    },
+    {
+      "n": 28,
+      "title": "CPI 상승률은 이렇게 계산된다",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "a wide horizontal balance mechanism with several hanging pans strung along a long beam spanning the frame, the largest and heaviest pan on the left rising only a small distance, a smaller lighter pan further right rising a much greater distance, and a tiny pan near the far right dipping slightly downward, thin strings from every pan converging toward a single central rod that tilts and points to one combined position on a dial mounted below the beam, wide horizontal composition with the beam and pans stretched across the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "weighted average mechanism"
+      ],
+      "place": true,
+      "data_id": "sam20-27"
+    },
+    {
+      "n": 29,
+      "title": "CPI 는 왜 물가상승을 과대평가하나",
+      "type": "photo",
+      "level": "평가",
+      "prompt": "on the left side of the frame a rigid metal shopping basket bolted in a fixed frame holding the exact same unchanging items even as a fuel canister beside it visibly doubles in size, illustrating an inability to substitute, on the right side of the frame a fine mesh sieve with small upgraded objects like a slim lightbulb and a tiny music player falling straight through its holes uncounted into a bin below, wide horizontal composition spread across the full width contrasting the rigid basket on the left with the leaking sieve on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "fixed weight bias"
+      ],
+      "place": true,
+      "data_id": "sam20-28"
+    }
+  ]
+}

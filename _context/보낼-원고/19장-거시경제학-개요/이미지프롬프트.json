@@ -1,0 +1,363 @@
+{
+  "deck": "새뮤얼슨의 경제학 · 제19장 거시경제학 개요",
+  "style_hint": "clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video)",
+  "aspect": "landscape",
+  "target_box": "wide horizontal panel (3:2), may be cropped to 16:9 for video",
+  "count": 27,
+  "deck_slides": 28,
+  "photos_found": 0,
+  "file_naming": "생성한 이미지는 images/ 폴더에 '슬라이드번호'로 저장하세요. 예: 003.png → 3번 슬라이드. 파일명 앞 숫자만 맞으면 되고 확장자·뒤 설명은 자유입니다(003_저축함수.png).",
+  "prompts": [
+    {
+      "n": 2,
+      "title": "경제 전체를 보는 눈 — 거시경제학과 미시경제학",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "on the left side a single magnifying glass hovers low over one tiny gear, one small coin, and one narrow box sitting isolated on a workbench, while on the right side a much larger wide-angle telescope lens looks outward over an entire sprawling network of interconnected pipes, gears, factories, and conveyor belts spanning the whole horizon, a faint dividing line down the middle separating the close-up cluster from the panoramic network, wide horizontal composition spread across the frame with the small isolated objects on the left and the vast interconnected system on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "magnifying glass"
+      ],
+      "place": true,
+      "data_id": "sam19-01"
+    },
+    {
+      "n": 3,
+      "title": "거시경제학이 쫓는 두 가지 움직임",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "on the left a short jagged wave line oscillating up and down rapidly like a heartbeat monitor over a compact stretch of track, and on the right a long smooth staircase climbing steadily upward toward the horizon over a much longer stretch of track, both tracks running left to right and joined at a single starting point, wide horizontal composition spread across the frame with the oscillating wave occupying the left half and the rising staircase occupying the right half, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "business cycle wave"
+      ],
+      "place": true,
+      "data_id": "sam19-02"
+    },
+    {
+      "n": 4,
+      "title": "대공황이 낳은 학문, 고용법이 준 임무",
+      "type": "photo",
+      "level": "기억",
+      "prompt": "on the left a cracked and crumbling stone bridge collapsing into a dark chasm with scattered coins and gears falling through the gap, and on the right a large official stone tablet standing upright and freshly built with a balanced scale and a sturdy gear resting on top of it, a faint bridge of light connecting the collapsed structure to the new tablet, wide horizontal composition spread across the frame with the ruin on the left and the solid tablet on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "collapsed bridge"
+      ],
+      "place": true,
+      "data_id": "sam19-03"
+    },
+    {
+      "n": 5,
+      "title": "케인스가 뒤집은 것",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "on the left a set of ocean tide markers rising and falling helplessly against a seawall with no gates to control them, and on the right the same seawall now fitted with large mechanical sluice gates and levers being pulled by hands to hold back and release the water in controlled amounts, a single continuous shoreline running through both scenes, wide horizontal composition spread across the frame with the uncontrolled tide on the left and the operated sluice gates on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "ocean tide"
+      ],
+      "place": true,
+      "data_id": "sam19-04"
+    },
+    {
+      "n": 6,
+      "title": "고용법에 담긴 세 가지 질문",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "three tall question-mark shaped signposts standing in a row spanning the width of a wide open field, the first signpost surrounded by empty factory silhouettes and idle gears, the middle signpost surrounded by rising balloon-like price tags floating upward, and the third signpost surrounded by an ascending staircase of stacked blocks, all three connected by a single dirt path running left to right, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "question mark signpost"
+      ],
+      "place": true,
+      "data_id": "sam19-05"
+    },
+    {
+      "n": 7,
+      "title": "왜 산출과 고용이 무너지는가",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "a wide scene of a house-shaped block and a tall stock-chart tower both cracking and toppling on the left side, sending a shockwave of falling dominoes across the middle that knock over a row of factory gears and worker tool silhouettes, ending on the right with a vault-like bank door slamming shut and chains wrapping around it, wide horizontal composition spread across the frame showing the collapse traveling from left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "housing collapse"
+      ],
+      "place": true,
+      "data_id": "sam19-06"
+    },
+    {
+      "n": 8,
+      "title": "물가상승률, 나라마다 이렇게 다르다",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "a row of identical balloons tied along a horizontal string stretched across the frame, the leftmost balloon barely inflated and low to the ground, each successive balloon growing larger and rising higher until the rightmost balloon is enormous, straining, and floating far above the others near the top edge, wide horizontal composition spread across the frame showing gradual escalation from small balloon on the left to giant balloon on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "inflating balloons"
+      ],
+      "place": true,
+      "data_id": "sam19-07"
+    },
+    {
+      "n": 9,
+      "title": "장기 성장을 떠받치는 다섯 가지",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "five distinct stone pillars of varying textures standing side by side supporting a single wide flat platform above them, one pillar carved like an open marketplace stall, another shaped like a steady balanced scale, another built from stacked coins, another wrapped with a globe-and-ship motif, and another topped with an unbroken clean column, a small tree growing upward from the platform above the pillars representing rising prosperity, wide horizontal composition spread across the frame with the five pillars evenly spaced left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "five pillars"
+      ],
+      "place": true,
+      "data_id": "sam19-08"
+    },
+    {
+      "n": 10,
+      "title": "목적 셋, 수단 둘",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "on the right side three separate glowing targets arranged vertically representing distinct goals, one shaped like an ascending bar chart, one shaped like a group of gear-worker icons, one shaped like a flat steady line, and on the left side two large control levers, one connected to a stack of bonds and coins, the other connected to a government building silhouette, with thin mechanical cables stretching from both levers across the frame to reach all three targets, wide horizontal composition spread across the frame with levers on the left and targets on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "control levers"
+      ],
+      "place": true,
+      "data_id": "sam19-09"
+    },
+    {
+      "n": 11,
+      "title": "GDP를 재는 두 가지 가격",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "a wide factory conveyor belt carrying an identical set of goods split into two parallel paths on either side, the upper path passing through a shimmering golden price-tag stamping machine that inflates each tag larger and larger as it moves right, the lower path passing through a steady unchanging gray price-tag stamping machine that keeps every tag the same fixed size all the way across, both paths starting from the same stack of goods on the left and ending at two separate scales on the right, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "conveyor belt goods"
+      ],
+      "place": true,
+      "data_id": "sam19-10"
+    },
+    {
+      "n": 12,
+      "title": "실질 GDP 성장률로 재는 경제의 맥박",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "a long jagged line like a heartbeat pulse or seismograph trace running horizontally across the frame from left to right, with deep sharp valleys near the left portion representing violent drops, tall sudden spikes in the middle portion, and increasingly smooth gentle small waves toward the right portion showing calming oscillations, a stethoscope or pulse-monitor motif faintly echoed in the line's rhythm, wide horizontal composition spread across the frame with the pulse line stretching the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "heartbeat line graph"
+      ],
+      "place": true,
+      "data_id": "sam19-11"
+    },
+    {
+      "n": 13,
+      "title": "잠재 GDP와 실제 GDP의 간격",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "two horizontal ribbons stretching left to right across the frame, the upper ribbon a smooth gently rising straight band representing a steady ceiling, the lower ribbon a wavy jagged band that dips sharply below the upper one in places and pokes above it in others, with a visible gap or shadow filled between the two ribbons at the point of widest separation on the left side, small stacked coin towers sitting inside that gap to suggest lost value, wide horizontal composition spread across the frame with both ribbons spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "potential vs actual output gap"
+      ],
+      "place": true,
+      "data_id": "sam19-12"
+    },
+    {
+      "n": 14,
+      "title": "경기후퇴·경기침체·경기확장",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a wide staircase-like terrain spanning the frame from left to right, showing a gentle downward staircase of descending platforms on the left labeled by height alone representing mild decline, a much deeper canyon or sunken pit in the middle representing a severe collapse, and a rising staircase of ascending platforms on the right reaching upward beyond the topmost level representing expansion past capacity, small silhouette figures climbing or standing on the platforms for scale, wide horizontal composition spread across the frame with the terrain occupying the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "staircase terrain economy"
+      ],
+      "place": true,
+      "data_id": "sam19-13"
+    },
+    {
+      "n": 15,
+      "title": "실업률은 무엇을 세는가",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "a wide horizontal crowd of simple silhouette figures spread across the frame, most figures standing inside a large bright circle representing the labor force on the left and center, a smaller cluster of silhouettes standing apart holding empty toolboxes or briefcases representing job seekers without work, and a few separate silhouettes standing outside the circle entirely turned away and walking off toward the right edge representing people not looking for work at all, wide horizontal composition spread across the frame with the crowd and circle spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "labor force silhouette diagram"
+      ],
+      "place": true,
+      "data_id": "sam19-14"
+    },
+    {
+      "n": 16,
+      "title": "물가 수준과 물가상승률",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "a wide horizontal shopping basket sitting on the left side overflowing with everyday goods like bread, a small carton, and a folded cloth, connected by a rising dotted arc or ramp to a second identical but slightly larger basket on the right side, a thin gauge or dial needle mounted between them ticking slightly upward to suggest a small rise, wide horizontal composition spread across the frame with the two baskets and the connecting arc spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "shopping basket price index"
+      ],
+      "place": true,
+      "data_id": "sam19-15"
+    },
+    {
+      "n": 17,
+      "title": "물가가 움직이는 네 가지 속도",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "four glass water pipes standing side by side spanning the frame from left to right, the first pipe on the far left showing water flowing slightly downward and draining out the bottom to suggest falling prices, the second pipe showing a slow gentle trickle rising steadily, the third pipe showing water rushing upward rapidly with visible turbulence, and the fourth pipe on the far right showing the glass cracked and shattering with water bursting violently out in all directions, wide horizontal composition spread across the frame with all four pipes arranged evenly across the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "four pipes water pressure"
+      ],
+      "place": true,
+      "data_id": "sam19-16"
+    },
+    {
+      "n": 18,
+      "title": "재정정책 — 정부지출과 과세",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "a large two-pan balance scale positioned centrally but with its arms stretched wide across the frame, the left pan piled with government-style objects like a small gavel, a road-building tool, and stacked coins representing spending, the right pan holding a large hand-crank tax funnel pouring coins downward into a household-shaped container below it representing taxation reshaping disposable income, wide horizontal composition spread across the frame with the scale's arms extending to both edges, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "balance scale government spending"
+      ],
+      "place": true,
+      "data_id": "sam19-17"
+    },
+    {
+      "n": 19,
+      "title": "통화정책 — 금리에서 지출까지",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "a wide horizontal chain of interlocking gears and pipes running left to right, a large central gear engraved with a dial symbol representing an interest rate target on the left, turning a sequence of smaller connected gears labeled only by size representing stock charts, house shapes, and currency symbols in the middle, finally driving a set of pipes on the right that channel flowing coins into a house outline, a factory silhouette, a small appliance shape, and a ship icon, wide horizontal composition spread across the frame with the gear chain spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "interconnected gears mechanism"
+      ],
+      "place": true,
+      "data_id": "sam19-18"
+    },
+    {
+      "n": 20,
+      "title": "세계와 이어진 경제 — 경상수지",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a wide ocean horizon spanning the frame with two opposing currents of coins flowing as streams, one stream of coins flowing outward from a small island silhouette on the left toward the horizon representing exports, and a much thicker wider stream of coins flowing back from the horizon toward the island representing imports and transfers, with a visible imbalance shown as an extra current of coins arriving from ships on the right to fill the gap, wide horizontal composition spread across the frame with the ocean and coin currents spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "ocean coin currents trade"
+      ],
+      "place": true,
+      "data_id": "sam19-19"
+    },
+    {
+      "n": 21,
+      "title": "경제를 움직이는 두 힘 — 총공급과 총수요",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a large pair of open scissor blades stretched horizontally across the frame, the upper blade formed from a line of factory and assembly-line silhouettes feeding into the pivot point representing supply, the lower blade formed from a line of shopping carts, houses, and coin stacks feeding into the same pivot point representing demand, the two blades crossing at a bright intersection point in the center that radiates outward, wide horizontal composition spread across the frame with the scissor blades extending to both edges, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "scissors blades supply demand"
+      ],
+      "place": true,
+      "data_id": "sam19-20"
+    },
+    {
+      "n": 22,
+      "title": "AD 곡선과 AS 곡선",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "a wide platform split by two intersecting ramps, the left ramp descending steeply from upper left toward lower right and losing height as it goes, the right ramp climbing steadily from lower left toward upper right and gaining height as it goes, a small rolling sphere sliding down the descending ramp while stacked wooden blocks climb the ascending ramp, both ramps crossing near the center of the frame, wide horizontal composition spread across the frame with the ramps stretching from edge to edge, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "supply and demand curve"
+      ],
+      "place": true,
+      "data_id": "sam19-21"
+    },
+    {
+      "n": 23,
+      "title": "두 곡선이 만나는 점 E",
+      "type": "photo",
+      "level": "이해",
+      "prompt": "a single wide horizontal platform where two long ramps cross exactly once at the center, a perfectly balanced scale resting precisely on the crossing point with equal stacks of coins on each pan, soft spotlight illuminating only that meeting point while the rest of the ramps fade into shadow toward the edges, wide horizontal composition spread across the frame with the crossing point placed centrally but the ramps extending far to both sides, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "equilibrium point"
+      ],
+      "place": true,
+      "data_id": "sam19-22"
+    },
+    {
+      "n": 24,
+      "title": "균형이 아니면 무슨 일이 생기나",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a long market shelf stretching across the frame with unsold crates and boxes piling higher and higher near the right side while a forklift silhouette pushes some of them back down toward the left, a tilted balance scale nearby showing one pan sinking under the extra weight, faint arrows curving from the overloaded shelf back toward a calmer balanced section on the left, wide horizontal composition spread across the frame with the imbalance shown on one side and the resolution on the other, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "surplus goods"
+      ],
+      "place": true,
+      "data_id": "sam19-23"
+    },
+    {
+      "n": 25,
+      "title": "전시 호황 — AD가 오른쪽으로",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "a wide industrial scene where a rising curved ramp on the left, fed by streams of coins pouring from two separate open vaults, merges into a second steeper ramp further right that is fed by stacked military crates and gears, the combined ramp pushing a large glass gauge needle further right past a marked capacity limit into a glowing red zone, wide horizontal composition spread across the frame with the vaults and crates on the left and the overheating gauge on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "wartime spending"
+      ],
+      "place": true,
+      "data_id": "sam19-24"
+    },
+    {
+      "n": 26,
+      "title": "통화 긴축 1979~1982 — AD를 왼쪽으로",
+      "type": "photo",
+      "level": "적용",
+      "prompt": "a wide scene where a massive steel vault door on the left is slowly closing, and rows of dominoes representing houses, cars, factory silhouettes and cargo ships topple one after another toward the right as a large pressure gauge needle spikes upward above them, while a second smaller gauge further right shows its needle gradually settling down from a high peak, wide horizontal composition spread across the frame stretching from the closing vault to the settling gauge, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "monetary tightening"
+      ],
+      "place": true,
+      "data_id": "sam19-25"
+    },
+    {
+      "n": 27,
+      "title": "성장의 세기 — AS의 대이동",
+      "type": "photo",
+      "level": "분석",
+      "prompt": "a long rising staircase spanning the entire frame from a small humble workshop with a single wheel and simple tools at the bottom left to a towering complex of factories, gears, and stacked crates reaching high into the upper right corner, a thin vertical column of coins growing taller and taller alongside the staircase from short at the left to very tall at the right, wide horizontal composition spread across the frame moving diagonally from lower left to upper right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "economic growth staircase"
+      ],
+      "place": true,
+      "data_id": "sam19-26"
+    },
+    {
+      "n": 28,
+      "title": "정책이 할 수 있는 일, 할 수 없는 일",
+      "type": "photo",
+      "level": "평가",
+      "prompt": "a wide scene split into two calmer and rougher sections of the same winding road, the left section showing gentle smooth hills that have been leveled flatter than the rough jagged hills still visible as ghostly outlines behind them, and on the right a tall pouring vessel acting as a last-resort water source dousing a small fire near a row of bank-like columns to keep it from spreading further, with an empty pedestal further right where a bottle labeled as a cure might sit but stands empty, wide horizontal composition spread across the frame from the smoothed hills to the empty pedestal, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.",
+      "negative": "text, letters, watermark, logo, low quality, distorted",
+      "keywords": [
+        "great moderation"
+      ],
+      "place": true,
+      "data_id": "sam19-27"
+    }
+  ]
+}

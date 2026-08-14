@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>제21장 소비와 투자</title>
+<style>
+body { font-family: "Noto Sans KR", "Pretendard", "Malgun Gothic", "맑은 고딕",
+                    system-ui, sans-serif;
+       font-size: 16px; line-height: 1.75; color: #334155;
+       letter-spacing: -0.005em; padding: 8px 4px 40px; }
+
+/* 제목 — 원고 파일을 사람이 열어 볼 때만 보인다(영상에는 쇼케이스 제목이 뜬다).
+   가이드의 「2색 제목」을 따라 기본은 슬레이트, 강조는 파랑으로 둔다. */
+h1 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.03em;
+     margin: 0 0 6px; color: #334155; }
+h1 + p { margin: 0 0 22px; padding-bottom: 14px; color: #94A3B8;
+         font-size: 0.9rem; border-bottom: 1px solid #E2E8F0; }
+h2 { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em;
+     margin: 2.4em 0 0.8em; padding: 0 0 0 11px; color: #1F4E79;
+     border-left: 4px solid #2E75B6; line-height: 1.5; }
+h3 { font-size: 1.06rem; font-weight: 700; letter-spacing: -0.02em;
+     margin: 1.7em 0 0.5em; color: #334155; line-height: 1.55; }
+h2 .q, h3 .q { display: inline-block; font-weight: 400; font-size: 0.72em;
+               line-height: 1.5; vertical-align: middle; white-space: normal; }
+
+/* ── 몸통 — 여기부터가 영상에 그대로 들어간다 ──────────────────────────── */
+
+p { line-height: 1.75; margin: 0.45em 0; }
+
+/* ★ 가이드의 「리드(한 줄 요약)」. 첫 문단을 굵은 파랑으로 세워 그 장이 무엇을
+   말하는지 한 줄로 먼저 읽히게 한다. **마크업을 안 바꾸고** 자리로만 고른다 —
+   원고를 쓰는 쪽(b3)이 한 줄을 더 신경 쓸 필요가 없고, 줄 세기도 안 흔들린다. */
+.doc > p:first-child { font-weight: 700; color: #1F4E79; letter-spacing: -0.015em;
+                       margin: 0 0 0.7em; }
+
+/* 목록 — 가이드의 「큰 숫자를 연하게」. 기본 불릿을 버리고 연한 파랑 사각형을
+   쓴다. 점보다 각이 진 표가 슬라이드에서 또렷하게 읽힌다. */
+ul, ol { margin: 0.45em 0 0.85em; padding-left: 0; list-style: none; }
+li { position: relative; margin: 0.4em 0; padding-left: 17px; line-height: 1.7; }
+li::before { content: ""; position: absolute; left: 0; top: 0.62em;
+             width: 7px; height: 7px; background: #9DC3E6; border-radius: 2px; }
+ol { counter-reset: n; }
+ol > li::before { content: counter(n); counter-increment: n;
+                  width: auto; height: auto; top: 0; background: none;
+                  color: #CBD5E1; font-weight: 700; font-size: 0.95em; }
+
+/* 강조 — 굵게만 하지 않고 색까지 준다. 가이드가 제목에서 쓰는 2색 규칙을
+   본문에서도 같은 뜻으로 반복하는 것이다. */
+b, strong { font-weight: 700; color: #1F4E79; }
+code { background: #F1F5F9; color: #334155; padding: 1px 5px; border-radius: 3px;
+       font-size: 0.92em; }
+
+/* 표 — 가이드 그대로. 머리행 진한 파랑 채움 + 흰 글자, 본문 행 교차, 테두리 연회색 */
+table { border-collapse: collapse; width: 100%; margin: 0.6em 0 0.9em;
+        font-size: 0.94em; table-layout: fixed; }
+th, td { border: 1px solid #E2E8F0; padding: 0.46em 0.66em;
+         text-align: left; vertical-align: top; line-height: 1.6; }
+th { background: #2E75B6; color: #ffffff; font-weight: 700;
+     letter-spacing: -0.01em; border-color: #2E75B6; }
+tbody tr:nth-child(even) td, tr:nth-child(even) td { background: #F8FAFC; }
+figure { margin: 10px 0; text-align: center; }
+
+/* ★ 근거 쪽 — **접어 둔다.** 눌러야 쪽 범위가 보인다.
+   JS 를 쓰지 않는다: 이 원고를 받는 쪽(발표 쇼케이스)이 <script> 를 전부 제거하고
+   innerHTML 로 넣기 때문에, JS 로 만들면 안 접힌다. label + checkbox 로 CSS 만
+   써서 만든다. <label>·<input>·<b>·<span> 은 전부 phrasing 이라 <h3> 안에 넣어도 된다. */
+.q { display: inline; margin-left: 7px; cursor: pointer; user-select: none;
+     font-size: .78em; font-weight: 700; color: #94A3B8;
+     background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 999px;
+     padding: 1px 8px; white-space: nowrap; vertical-align: middle; }
+.q:hover { background: #E2E8F0; }
+.q > input { position: absolute; opacity: 0; width: 0; height: 0; }
+.q > b::before { content: "\25B8"; margin-right: 3px; font-weight: 400; }
+.q > input:checked ~ b::before { content: "\25BE"; }
+.q > .qn { display: none; }
+.q > input:checked ~ .qn { display: inline; margin-left: 6px; font-weight: 400;
+                           color: #94A3B8; white-space: normal; }
+/* 배지 안의 숫자까지 파랗게 굵어지면 안 된다 — 위 `b` 규칙을 여기서만 되돌린다 */
+.q b { color: inherit; font-weight: 700; }
+
+/* ★ 그림 높이 상한. **폭만 막으면 안 된다** — 인라인 SVG 는 viewBox 비율대로 폭에
+   맞춰 늘어나므로, 가로로 넓은 도식이 화면 절반을 먹는다. `width:auto` +
+   `max-height` 로 비율을 지키면서 높이로 자른다. */
+svg, img { max-height: 240px; width: auto; max-width: 100%; height: auto;
+           display: block; margin: 12px auto 10px; }
+
+/* ★ 어떤 경우에도 가로로 밀지 않는다. 이 원고는 화면이 되므로 마지막 방어선이다. */
+* { max-width: 100%; }
+body { overflow-x: hidden; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+<h1>제21장 소비와 투자</h1>
+<p>새뮤얼슨의 경제학</p>
+<h2>1. 소비, 무엇에 얼마를 쓰는가</h2>
+<h3 data-id="sam21-01"
+    data-say="이 장에 한 장을 통째로 쓰는 이유부터 말합니다. 소비는 지난 십 년간 총지출의 70%로 가장 큰 덩어리이고, 투자는 덩어리는 작아도 변동이 가장 심합니다. 크기와 변동, 두 이유로 이 둘을 함께 봅니다."
+    data-img="a giant weighted pie divided into pieces sitting on the left side of the frame with one enormous slice labeled by size alone taking up most of the circle representing a dominant share and small slices beside it, while on the right side a single jagged zigzag line inside a narrow glass tube rises and falls sharply showing constant motion, wide horizontal composition spread across the frame with the calm large mass on the left and the volatile thin line on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">1 소비는 총지출의 70%다<label class="q"><input type="checkbox"><b>74</b><span class="qn">74–75쪽</span></label></h3>
+<p>소비와 투자는 거시경제학에서 매우 중요하기 때문에 한 장을 할애해 살펴본다.</p>
+<ul>
+  <li>소비 — GDP에서 가장 큰 비중을 차지하는 지출 요소로, 지난 십 년 동안 연간 총지출의 <b>70%</b>다.</li>
+  <li>투자 — 덩어리는 작지만 <b>변동</b>이 가장 심한 요소다.</li>
+</ul>
+<svg viewBox="0 0 520 168" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="총지출 100% 띠를 소비 70%와 나머지 30%로 나누고, 소비는 가장 큰 덩어리, 투자는 변동이 가장 큰 요소임을 대비한 그림">
+  <text x="40" y="14" fill="#94A3B8" font-size="10">해마다의 변동 폭</text>
+  <polyline points="60,34 94,31 128,36 162,32 196,35 230,31 264,36 298,32 330,34" fill="none" stroke="#9DC3E6" stroke-width="2"/>
+  <polyline points="348,33 358,21 368,44 378,22 388,45 398,23 408,41 418,29" fill="none" stroke="#2E75B6" stroke-width="2"/>
+
+  <rect x="40" y="55" width="308" height="50" fill="#1F4E79"/>
+  <rect x="348" y="55" width="70" height="50" fill="#2E75B6"/>
+  <rect x="418" y="55" width="62" height="50" fill="#DEEBF7"/>
+  <rect x="40" y="55" width="440" height="50" fill="none" stroke="#CBD5E1"/>
+
+  <text x="194" y="76" fill="#FFFFFF" text-anchor="middle">소비</text>
+  <text x="194" y="95" fill="#FFFFFF" text-anchor="middle" font-size="16">70%</text>
+  <text x="383" y="78" fill="#FFFFFF" text-anchor="middle" font-size="11">투자</text>
+  <text x="383" y="94" fill="#FFFFFF" text-anchor="middle" font-size="10">약 30% 중 일부</text>
+  <text x="449" y="84" fill="#334155" text-anchor="middle" font-size="9">정부·순수출</text>
+
+  <text x="194" y="124" fill="#1F4E79" text-anchor="middle" font-size="11">가장 큰 덩어리</text>
+  <text x="383" y="124" fill="#1F4E79" text-anchor="middle" font-size="11">가장 변동이 큰 요소</text>
+
+  <text x="40" y="148" fill="#94A3B8" font-size="10">가로 길이 = 연간 총지출 100% (지난 십 년 평균)</text>
+  <text x="40" y="162" fill="#94A3B8" font-size="10">위쪽 선의 흔들림 = 해마다 얼마나 출렁이는가</text>
+</svg>
+<h3 data-id="sam21-02"
+    data-say="품목 자체는 낯익지만 비중을 보면 이야기가 달라집니다. 서비스가 이미 60%이고 그 안에서 의료서비스와 주거가 가장 큽니다. 식품 같은 필수품이 확보되면 소비의 무게중심이 서비스로 옮겨갑니다."
+    data-img="three stacked horizontal bars of very different lengths lying side by side from top to bottom across the frame, the shortest bar made of small hard blocks on the left end, a medium bar made of soft wrapped packages in the middle, and by far the longest bar made of overlapping curved ribbons and service icons like a stethoscope shape and a house silhouette stretching far to the right, wide horizontal composition spread across the frame with the longest bar dominating the right two-thirds, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">2 소비는 세 범주로 나뉜다 — 서비스가 60%<label class="q"><input type="checkbox"><b>74</b><span class="qn">74–75쪽</span></label></h3>
+<p>품목 자체는 낯익지만, 각 품목의 상대적 중요성과 점점 늘어나는 <b>서비스</b>의 비중을 눈여겨볼 필요가 있다.</p>
+<table><tr><th>소비의 범주</th><th>소비지출액 (십억 달러, 2007년)</th><th>비중(%)</th></tr><tr><td>내구재</td><td>1,083</td><td>11.2</td></tr><tr><td>비내구재</td><td>2,833</td><td>29.2</td></tr><tr><td>서비스</td><td>5,794</td><td>59.7</td></tr><tr><td>개인소비지출 총계</td><td>9,710</td><td>100.0</td></tr></table>
+<h3 data-id="sam21-03"
+    data-say="가구마다 다르게 쓰는 듯해도 수천 건의 가계조사에는 규칙성이 있습니다. 소득이 높아지면 식품비는 액수는 늘어도 비중이 떨어지고, 의류·위락·자동차는 소득보다 빠르게 늘며, 저축은 가장 가파르게 늘어납니다. 어떤 의미에서 저축이 가장 사치스러운 지출 항목입니다."
+    data-img="a rising staircase of coins ascending from left to right, and at each step a different small object sits proportioned to its own growth rate: a loaf of bread that barely grows in size across steps, a folded shirt and a small car model that grow moderately larger at each higher step, and a piggy bank that grows dramatically larger at the topmost steps overshadowing everything else, wide horizontal composition spread across the frame following the ascending staircase, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">3 소득이 오르면 지출의 구성이 바뀐다<label class="q"><input type="checkbox"><b>75</b><span class="qn">75–77쪽</span></label></h3>
+<p>수천 건의 가계조사를 보면 질적인 면에서 놀라울 정도로 비슷한 일반적 행동 유형이 드러난다.</p>
+<ul>
+  <li>식품 — 소득이 높아지면 소비량은 늘지만 총지출에서 차지하는 <b>비중</b>은 낮아진다.</li>
+  <li>의류·위락·자동차 — 세후 소득의 증가보다 더 빠르게 증가한다.</li>
+  <li>저축 — 소득이 높아질수록 가파르게 증가한다. 어떤 의미에서 사치성이 가장 큰 ‘지출’ 항목이다.</li>
+</ul>
+<svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="가처분소득이 높아질수록 식품 비중은 낮아지고 저축은 커지는 누적 영역 그림. 저소득 구간에서는 지출이 소득선을 넘어 음의 저축이 된다">
+  <defs>
+    <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1F4E79"/>
+    </marker>
+  </defs>
+
+  <polygon points="70,112 460,142 460,160 70,160" fill="#2E75B6"/>
+  <polygon points="70,76 460,120 460,142 70,112" fill="#9DC3E6"/>
+  <polygon points="70,58 460,106 460,120 70,76" fill="#DEEBF7"/>
+  <polygon points="70,16 460,76 460,106 70,58" fill="#9DC3E6"/>
+  <polygon points="226,40 460,40 460,76" fill="#1F4E79"/>
+
+  <line x1="70" y1="40" x2="460" y2="40" stroke="#334155" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <line x1="70" y1="16" x2="460" y2="76" stroke="#1F4E79" stroke-width="1.5"/>
+
+  <line x1="70" y1="10" x2="70" y2="160" stroke="#CBD5E1"/>
+  <line x1="70" y1="160" x2="470" y2="160" stroke="#CBD5E1"/>
+
+  <line x1="110" y1="39" x2="110" y2="24" stroke="#1F4E79" stroke-width="1.5" marker-end="url(#a3)"/>
+  <text x="116" y="20" fill="#1F4E79" font-size="10">음(−)의 저축</text>
+
+  <text x="95" y="141" fill="#FFFFFF" font-size="10">식품</text>
+  <text x="95" y="98" fill="#334155" font-size="10">주거</text>
+  <text x="95" y="70" fill="#334155" font-size="9">교통</text>
+  <text x="290" y="72" fill="#334155" font-size="9">의료·기타</text>
+  <text x="398" y="58" fill="#FFFFFF" font-size="10">저축(+)</text>
+
+  <text x="462" y="37" fill="#94A3B8" font-size="9">소득 100%</text>
+  <text x="70" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">0</text>
+  <text x="265" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">50,000</text>
+  <text x="460" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">100,000</text>
+  <text x="265" y="192" fill="#94A3B8" font-size="10" text-anchor="middle">가처분소득(달러)</text>
+  <text x="20" y="90" fill="#94A3B8" font-size="10" text-anchor="middle" transform="rotate(-90 20 90)">소득 대비 비중</text>
+</svg>
+<h2>2. 소비함수와 저축함수</h2>
+<h3 data-id="sam21-04"
+    data-say="정의를 숫자로 확인합니다. 개인소득에서 세금을 빼면 가처분소득, 거기서 소비와 이자를 빼고 남은 것이 개인저축입니다. 2007년 미국의 가계지출은 가처분소득의 99.4%였고, 개인저축률은 0.6%에 불과했습니다. 이 숫자가 뒤에 나올 저축률 이야기의 출발점입니다."
+    data-img="a wide horizontal pipe carrying a flowing stream of coins entering from the left, passing through a large funnel-shaped valve in the middle that diverts almost the entire stream downward into a wide basin on the lower right, while only a single thin trickle of coins continues through a narrow side tube into a tiny jar on the far right edge, wide horizontal composition spread across the frame showing the flow diverging left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">4 소득에서 소비를 뺀 것이 저축이다<label class="q"><input type="checkbox"><b>77</b><span class="qn">77쪽</span></label></h3>
+<p>2007년 미국의 가계지출은 가처분소득의 99.4%에 달했고, 남은 <b>개인저축률</b>은 고작 0.6%였다.</p>
+<table><tr><th>항목</th><th>금액(십억 달러, 2007년)</th></tr><tr><td>가처분 개인소득</td><td>10,171</td></tr><tr><td>차감: 개인지출 (소비와 이자)</td><td>10,113</td></tr><tr><td>＝개인저축</td><td>57.4</td></tr><tr><td>개인저축／가처분 개인소득(%)</td><td>0.6</td></tr></table>
+<h3 data-id="sam21-05"
+    data-say="가상 자료로 소득·소비·저축의 관계를 봅니다. 소득 25,000달러에서 소비가 소득과 정확히 같아 저축이 0이고, 그보다 낮은 소득에서는 음의 저축이 나타납니다. 소득이 1,000달러 늘 때 소비는 800달러, 저축은 200달러 늘어난다는 점을 미리 눈에 담아두십시오."
+    data-img="a long balance beam stretched horizontally across the frame resting on a single central pivot fulcrum, with stacked coin towers of increasing height placed along the beam from left to right, the coin tower exactly above the fulcrum perfectly level, coin towers to the left of the fulcrum tipping the beam downward into a shadowed pit, and coin towers to the right tipping the beam upward with small overflow coins spilling into a basket, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">5 분기점은 소득 25,000달러<label class="q"><input type="checkbox"><b>78</b><span class="qn">78쪽</span></label></h3>
+<p>저축을 보태지도 축내지도 않고 소득을 전부 소비하는 <b>분기점</b>은 25,000달러의 소득 수준이다.</p>
+<table><tr><th></th><th>가처분소득($)</th><th>순저축(＋) 혹은 음의 저축(－)($)</th><th>소비($)</th></tr><tr><td>A</td><td>24,000</td><td>－200</td><td>24,200</td></tr><tr><td>B</td><td>25,000</td><td>0</td><td>25,000</td></tr><tr><td>C</td><td>26,000</td><td>200</td><td>25,800</td></tr><tr><td>G</td><td>30,000</td><td>1,000</td><td>29,000</td></tr></table>
+<h3 data-id="sam21-06"
+    data-say="앞 표의 일곱 점을 좌표에 찍어 이으면 소비함수가 됩니다. 케인스가 도입한 개념으로, 소비와 소득 사이에 안정적인 관계가 있다는 가설에 바탕을 둡니다. 우상향한다는 것 자체가 소득이 늘면 소비도 늘어난다는 뜻입니다."
+    data-img="a smooth upward sloping curved ramp made of glass rising diagonally from the lower left corner toward the upper right corner of the frame, with seven glowing marble spheres placed along the ramp at increasing height connected by a faint guiding line tracing the ramp&#x27;s path, wide horizontal composition spread across the frame with the ramp spanning nearly the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">6 소비함수 — 소비와 가처분소득의 관계<label class="q"><input type="checkbox"><b>79</b><span class="qn">79–80쪽</span></label></h3>
+<p>거시경제학에서 가장 중요한 관계 중 하나가 <b>소비함수</b>다.</p>
+<ul>
+  <li>소비함수 — 소비지출과 가처분소득의 관계를 나타낸다.</li>
+  <li>케인스가 처음 도입한 개념으로, 소비와 소득 간에 안정적 관계가 존재한다는 가설에 바탕을 둔다.</li>
+  <li>표 21-3의 7단계 소득 수준을 좌표로 찍어 이으면, 소득이 증가함에 따라 소비도 같이 증가한다.</li>
+</ul>
+<svg viewBox="0 0 520 196" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="가처분소득을 가로축, 소비지출을 세로축으로 하여 A부터 G까지 일곱 점을 이은 우상향 소비함수 그림">
+  <line x1="70" y1="25" x2="70" y2="160" stroke="#CBD5E1"/>
+  <line x1="70" y1="160" x2="470" y2="160" stroke="#CBD5E1"/>
+
+  <line x1="66" y1="144.6" x2="70" y2="144.6" stroke="#CBD5E1"/>
+  <line x1="66" y1="102.9" x2="70" y2="102.9" stroke="#CBD5E1"/>
+  <line x1="66" y1="61.3" x2="70" y2="61.3" stroke="#CBD5E1"/>
+  <text x="63" y="148" fill="#94A3B8" font-size="9" text-anchor="end">24,000</text>
+  <text x="63" y="106" fill="#94A3B8" font-size="9" text-anchor="end">26,000</text>
+  <text x="63" y="65" fill="#94A3B8" font-size="9" text-anchor="end">28,000</text>
+
+  <text x="70" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">24,000</text>
+  <text x="197" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">26,000</text>
+  <text x="323" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">28,000</text>
+  <text x="450" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">30,000</text>
+  <text x="265" y="190" fill="#94A3B8" font-size="10" text-anchor="middle">가처분소득(달러)</text>
+  <text x="18" y="92" fill="#94A3B8" font-size="10" text-anchor="middle" transform="rotate(-90 18 92)">소비지출(달러)</text>
+
+  <polyline points="70,142.3 133.3,123.8 196.7,107.1 260,90.4 323.3,73.8 386.7,57.1 450,40.4" fill="none" stroke="#2E75B6" stroke-width="2.5"/>
+
+  <circle cx="70" cy="142.3" r="3.5" fill="#1F4E79"/>
+  <circle cx="133.3" cy="123.8" r="3.5" fill="#1F4E79"/>
+  <circle cx="196.7" cy="107.1" r="3.5" fill="#1F4E79"/>
+  <circle cx="260" cy="90.4" r="3.5" fill="#1F4E79"/>
+  <circle cx="323.3" cy="73.8" r="3.5" fill="#1F4E79"/>
+  <circle cx="386.7" cy="57.1" r="3.5" fill="#1F4E79"/>
+  <circle cx="450" cy="40.4" r="3.5" fill="#1F4E79"/>
+
+  <text x="76" y="136" fill="#334155" font-size="9">A</text>
+  <text x="139" y="118" fill="#334155" font-size="9">B</text>
+  <text x="202" y="101" fill="#334155" font-size="9">C</text>
+  <text x="265" y="84" fill="#334155" font-size="9">D</text>
+  <text x="329" y="68" fill="#334155" font-size="9">E</text>
+  <text x="392" y="51" fill="#334155" font-size="9">F</text>
+  <text x="455" y="35" fill="#334155" font-size="9">G</text>
+
+  <text x="330" y="36" fill="#2E75B6" font-size="11">소비함수</text>
+  <text x="110" y="158" fill="#94A3B8" font-size="9">소득이 늘면 소비도 늘어난다 — 우상향</text>
+</svg>
+<h3 data-id="sam21-07"
+    data-say="45°선 위에서는 소비가 소득과 정확히 같습니다. 그래서 소비함수가 45°선과 만나는 B가 분기점이고, 오른쪽에서 두 선 사이의 수직 거리가 순저축, 왼쪽에서의 수직 거리가 음의 저축입니다. 소득 28,000달러인 E 가구는 소비가 27,400달러이므로 그 차이만큼이 저축입니다."
+    data-img="two diagonal ramps crossing at a single point in the middle of the frame, a straight steep reference ramp and a slightly curved second ramp that lies below the reference ramp on the left side and rises above it on the right side, with vertical measuring rods standing between the two ramps at several points showing gaps of different heights, the rods on the right pointing upward in gold and the rods on the left pointing downward in a darker tone, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">7 45°선이 저축의 크기를 눈으로 보여준다<label class="q"><input type="checkbox"><b>80</b><span class="qn">80–81쪽</span></label></h3>
+<p>45°선상의 점들은 모두 소비와 가처분소득이 정확히 일치한다.</p>
+<ul>
+  <li><b>분기점</b> B — 소비함수가 45°선과 교차하는 지점. 이 가구는 빚을 지지도 저축을 하지도 않는다.</li>
+  <li>저축의 크기는 소비함수와 45°선 사이의 수직 거리다. 45°선 아래면 양, 위면 음의 저축이다.</li>
+  <li>점 E의 가구는 소득이 28,000달러, 소비가 27,400달러다.</li>
+</ul>
+<svg viewBox="0 0 520 196" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="소비함수에 45도선을 겹쳐 분기점 B와 점 E의 순저축 600달러, A 부근의 음의 저축을 표시한 그림">
+  <defs>
+    <marker id="a7e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1F4E79"/>
+    </marker>
+    <marker id="a7s" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M10,0 L0,5 L10,10 z" fill="#1F4E79"/>
+    </marker>
+  </defs>
+
+  <line x1="70" y1="25" x2="70" y2="160" stroke="#CBD5E1"/>
+  <line x1="70" y1="160" x2="470" y2="160" stroke="#CBD5E1"/>
+  <text x="70" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">24,000</text>
+  <text x="197" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">26,000</text>
+  <text x="323" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">28,000</text>
+  <text x="450" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">30,000</text>
+  <text x="265" y="190" fill="#94A3B8" font-size="10" text-anchor="middle">가처분소득(달러)</text>
+  <text x="18" y="92" fill="#94A3B8" font-size="10" text-anchor="middle" transform="rotate(-90 18 92)">소비지출(달러)</text>
+
+  <line x1="70" y1="144.6" x2="450" y2="19.6" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="356" y="22" fill="#94A3B8" font-size="10">45°선 (소비＝소득)</text>
+
+  <polyline points="70,142.3 133.3,123.8 196.7,107.1 260,90.4 323.3,73.8 386.7,57.1 450,40.4" fill="none" stroke="#2E75B6" stroke-width="2.5"/>
+  <text x="336" y="46" fill="#2E75B6" font-size="10">소비함수</text>
+
+  <circle cx="70" cy="142.3" r="3.5" fill="#1F4E79"/>
+  <circle cx="196.7" cy="107.1" r="3" fill="#1F4E79"/>
+  <circle cx="260" cy="90.4" r="3" fill="#1F4E79"/>
+  <circle cx="386.7" cy="57.1" r="3" fill="#1F4E79"/>
+  <circle cx="450" cy="40.4" r="3" fill="#1F4E79"/>
+  <circle cx="133.3" cy="123.8" r="5" fill="#1F4E79"/>
+  <circle cx="323.3" cy="73.8" r="5" fill="#1F4E79"/>
+
+  <line x1="323.3" y1="73.8" x2="323.3" y2="61.3" stroke="#1F4E79" stroke-width="1.6" marker-end="url(#a7e)" marker-start="url(#a7s)"/>
+  <text x="336" y="66" fill="#1F4E79" font-size="10">순저축 600달러</text>
+  <text x="336" y="80" fill="#334155" font-size="9">E — 소득 28,000 · 소비 27,400</text>
+
+  <text x="142" y="137" fill="#1F4E79" font-size="10">분기점 B (25,000달러)</text>
+  <polyline points="148,148 100,148 76,145" fill="none" stroke="#CBD5E1" stroke-width="1"/>
+  <text x="152" y="152" fill="#334155" font-size="9">A 부근 — 소비 &gt; 소득 → 음(−)의 저축</text>
+</svg>
+<h3 data-id="sam21-08"
+    data-say="45°선에서 소비함수를 수직으로 뺀 것이 저축함수입니다. 그래서 분기점은 소비함수와 똑같이 25,000달러이고, 그 왼쪽은 0선 아래, 오른쪽은 0선 위입니다. 두 함수는 별개의 이론이 아니라 같은 사실의 두 표현입니다."
+    data-img="a single flat horizontal reference line stretching across the middle of the frame, below it on the left side a curved ribbon dips downward into a shadowed trench, and on the right side the same ribbon rises upward above the line into a sunlit ridge, with small measuring pegs marking the crossing point exactly at the center of the frame, wide horizontal composition spread across the frame with the dip on the left and the rise on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">8 저축함수는 소비함수를 뒤집은 꼴<label class="q"><input type="checkbox"><b>81</b><span class="qn">81쪽</span></label></h3>
+<p><b>저축함수</b> — 45°선에서 소비함수를 수직으로 뺀 거리.</p>
+<ul>
+  <li>분기점 B는 소비함수와 마찬가지로 25,000달러다.</li>
+  <li>B 왼쪽에서는 제로 저축선 밑, 오른쪽에서는 제로 저축선 위에 놓인다.</li>
+</ul>
+<svg viewBox="0 0 520 196" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="가처분소득에 대한 순저축을 나타낸 우상향 저축함수. 25,000달러에서 제로 저축선을 통과한다">
+  <line x1="70" y1="25" x2="70" y2="160" stroke="#CBD5E1"/>
+  <line x1="70" y1="160" x2="470" y2="160" stroke="#CBD5E1"/>
+
+  <polygon points="133.3,135 196.7,115 260,95 323.3,75 386.7,55 450,35 450,135" fill="#DEEBF7"/>
+  <polygon points="70,135 133.3,135 70,146" fill="#9DC3E6"/>
+
+  <line x1="70" y1="135" x2="460" y2="135" stroke="#334155" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="400" y="148" fill="#94A3B8" font-size="9">제로 저축선</text>
+
+  <polyline points="70,146 133.3,135 196.7,115 260,95 323.3,75 386.7,55 450,35" fill="none" stroke="#2E75B6" stroke-width="2.5"/>
+
+  <circle cx="70" cy="146" r="3" fill="#1F4E79"/>
+  <circle cx="196.7" cy="115" r="3" fill="#1F4E79"/>
+  <circle cx="260" cy="95" r="3" fill="#1F4E79"/>
+  <circle cx="323.3" cy="75" r="3" fill="#1F4E79"/>
+  <circle cx="386.7" cy="55" r="3" fill="#1F4E79"/>
+  <circle cx="450" cy="35" r="3" fill="#1F4E79"/>
+  <circle cx="133.3" cy="135" r="5" fill="#1F4E79"/>
+
+  <text x="76" y="156" fill="#334155" font-size="9">A</text>
+  <text x="455" y="30" fill="#334155" font-size="9">G</text>
+  <text x="140" y="131" fill="#1F4E79" font-size="10">분기점 B — 25,000달러</text>
+
+  <text x="85" y="42" fill="#94A3B8" font-size="10">45°선에서 소비함수를 뺀 수직 거리</text>
+  <text x="330" y="98" fill="#2E75B6" font-size="11">저축함수</text>
+  <text x="290" y="128" fill="#334155" font-size="9">B 오른쪽 — 0선 위</text>
+  <text x="76" y="120" fill="#334155" font-size="9">B 왼쪽 — 0선 아래</text>
+
+  <line x1="66" y1="155" x2="70" y2="155" stroke="#CBD5E1"/>
+  <line x1="66" y1="135" x2="70" y2="135" stroke="#CBD5E1"/>
+  <line x1="66" y1="85" x2="70" y2="85" stroke="#CBD5E1"/>
+  <line x1="66" y1="35" x2="70" y2="35" stroke="#CBD5E1"/>
+  <text x="63" y="158" fill="#94A3B8" font-size="9" text-anchor="end">−200</text>
+  <text x="63" y="138" fill="#94A3B8" font-size="9" text-anchor="end">0</text>
+  <text x="63" y="88" fill="#94A3B8" font-size="9" text-anchor="end">500</text>
+  <text x="63" y="38" fill="#94A3B8" font-size="9" text-anchor="end">1,000</text>
+
+  <text x="70" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">24,000</text>
+  <text x="197" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">26,000</text>
+  <text x="323" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">28,000</text>
+  <text x="450" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">30,000</text>
+  <text x="265" y="190" fill="#94A3B8" font-size="10" text-anchor="middle">가처분소득(달러)</text>
+  <text x="18" y="92" fill="#94A3B8" font-size="10" text-anchor="middle" transform="rotate(-90 18 92)">순저축(달러)</text>
+</svg>
+<h3 data-id="sam21-09"
+    data-say="소득 한 단위가 더 생길 때 얼마를 더 쓰는지가 한계소비성향입니다. B에서 C로 소득이 1,000달러 늘 때 소비는 800달러 늘었으니 MPC는 0.8, 나머지가 저축되므로 MPS는 0.2입니다. 소득은 소비 아니면 저축이므로 언제나 MPC+MPS=1입니다."
+    data-img="a single coin entering a splitting mechanical funnel from the top of the frame, dividing into two separate chutes, a wide chute on the left carrying the larger portion of coins down into a large overflowing basket labeled only by its large size, and a narrow chute on the right carrying a much smaller portion of coins into a small jar, both chutes and containers arranged side by side across the width of the frame, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">9 소득 1달러가 더 생기면 0.8은 쓰고 0.2는 남는다<label class="q"><input type="checkbox"><b>82</b><span class="qn">82–84쪽</span></label></h3>
+<p><b>한계소비성향</b>(MPC) — 가처분소득이 한 단위 증가할 때 추가로 소비하는 금액.</p>
+<table><tr><th></th><th>가처분소득($)</th><th>소비지출($)</th><th>순저축($)</th><th>MPC</th><th>MPS</th></tr><tr><td>B</td><td>25,000</td><td>25,000</td><td>0</td><td>—</td><td>—</td></tr><tr><td>C</td><td>26,000</td><td>25,800</td><td>200</td><td>800/1,000=0.8</td><td>200/1,000=0.2</td></tr><tr><td>D</td><td>27,000</td><td>26,600</td><td>400</td><td>800/1,000=0.8</td><td>200/1,000=0.2</td></tr></table>
+<ul>
+  <li>가처분소득은 언제나 소비와 저축의 합이므로 어느 소득 수준에서든 <b>MPC＋MPS＝1</b>이다.</li>
+</ul>
+<h3 data-id="sam21-10"
+    data-say="한계소비성향은 그래프에서 소비함수의 기울기입니다. 밑변 1,000달러, 높이 800달러인 직각삼각형을 그리면 0.8이 그대로 읽힙니다. 이 예처럼 소비함수가 직선이면 MPC는 모든 소득 구간에서 일정하고, 같은 논리로 MPS는 저축함수의 기울기입니다."
+    data-img="a diagonal glass ramp rising from lower left to upper right with a bright right triangle drawn beneath one segment of the ramp, the triangle&#x27;s horizontal base long and its vertical height noticeably shorter, a glowing marble resting at the top corner of the triangle where it touches the ramp, wide horizontal composition spread across the frame with the triangle positioned in the left-center and the ramp continuing to the right edge, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">10 기울기가 곧 한계성향이다<label class="q"><input type="checkbox"><b>83</b><span class="qn">83–85쪽</span></label></h3>
+<p>한계소비성향은 그래프에서 <b>소비함수의 기울기</b>다.</p>
+<ul>
+  <li>B에서 C로 갈 때 밑변은 소득 1,000달러, 높이는 소비 800달러 — 800/1,000＝0.8.</li>
+  <li>소비함수가 직선이면 MPC는 어느 소득 구간에서나 0.8로 일정하다.</li>
+  <li>같은 논리로 한계저축성향은 <b>저축함수의 기울기</b>다.</li>
+</ul>
+<svg viewBox="0 0 520 196" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="소비함수 위 B에서 C 구간에 밑변 1000달러 높이 800달러의 직각삼각형을 그려 기울기가 한계소비성향 0.8임을 보이는 그림">
+  <line x1="70" y1="25" x2="70" y2="160" stroke="#CBD5E1"/>
+  <line x1="70" y1="160" x2="470" y2="160" stroke="#CBD5E1"/>
+  <text x="70" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">24,000</text>
+  <text x="197" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">26,000</text>
+  <text x="323" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">28,000</text>
+  <text x="450" y="174" fill="#94A3B8" font-size="9" text-anchor="middle">30,000</text>
+  <text x="265" y="190" fill="#94A3B8" font-size="10" text-anchor="middle">가처분소득(달러)</text>
+  <text x="18" y="92" fill="#94A3B8" font-size="10" text-anchor="middle" transform="rotate(-90 18 92)">소비지출(달러)</text>
+
+  <polygon points="133.3,123.8 196.7,123.8 196.7,107.1" fill="#DEEBF7" stroke="#1F4E79" stroke-width="1.2"/>
+
+  <polyline points="70,142.3 133.3,123.8 196.7,107.1 260,90.4 323.3,73.8 386.7,57.1 450,40.4" fill="none" stroke="#2E75B6" stroke-width="2.5"/>
+
+  <circle cx="133.3" cy="123.8" r="4.5" fill="#1F4E79"/>
+  <circle cx="196.7" cy="107.1" r="4.5" fill="#1F4E79"/>
+  <text x="124" y="118" fill="#334155" font-size="9">B</text>
+  <text x="200" y="101" fill="#334155" font-size="9">C</text>
+
+  <text x="165" y="136" fill="#334155" font-size="9" text-anchor="middle">소득 +1,000달러</text>
+  <text x="203" y="120" fill="#334155" font-size="9">소비 +800달러</text>
+
+  <text x="150" y="56" fill="#1F4E79" font-size="12">기울기 = MPC = 800 / 1,000 = 0.8</text>
+  <text x="150" y="72" fill="#94A3B8" font-size="10">직선이므로 어느 구간에서나 0.8로 일정</text>
+
+  <text x="296" y="150" fill="#94A3B8" font-size="9">같은 논리 — MPS는 저축함수의 기울기</text>
+</svg>
+<h2>3. 나라 전체의 소비는 무엇에 반응하는가</h2>
+<h3 data-id="sam21-11"
+    data-say="개별 가구에서 나라 전체로 시야를 넓혀도 관계는 유지됩니다. 1970~2008년 자료를 보면 경기후퇴기에 가처분소득이 줄면 소비도 함께 줄고, 1981~83년 감세기에는 함께 늘었습니다. 연간 자료를 산포도로 놓고 직선을 그리면 기울기가 대략 0.96, 즉 총소비함수의 MPC입니다."
+    data-img="a single long diagonal line of small identical wooden blocks rising steadily from lower left to upper right across a wide surface, with a loose scatter of small stone markers clustered tightly around the line, a dip in the block trail near the left third and a rise near the right third mirroring each other in height, wide horizontal composition spread across the frame with the trail spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">11 나라 전체의 소비도 가처분소득을 따라간다<label class="q"><input type="checkbox"><b>85</b><span class="qn">85–91쪽</span></label></h3>
+<p>개별 가구에서 나라 전체로 시야를 넓혀도 소득과 소비의 관계는 그대로다.</p>
+<ul>
+  <li>경기후퇴기에 가처분소득이 감소하면 소비도 같이 감소한다.</li>
+  <li>1981~83년 개인세가 큰 폭으로 인하되자 가처분소득과 소비가 함께 증가했다.</li>
+  <li>1970~2008년 산포도를 가로지르는 근사 소비함수의 기울기는 대략 <b>0.96</b>이다.</li>
+</ul>
+<svg viewBox="0 0 520 190" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="가처분 개인소득과 개인소비지출의 산포도. 45도선과 기울기 0.96의 근사 소비함수 직선, 1970·1990·2008년 점 표시"><defs><marker id="a11" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E75B6"/></marker></defs><line x1="62" y1="18" x2="62" y2="168" stroke="#CBD5E1"/><line x1="62" y1="168" x2="215" y2="168" stroke="#CBD5E1"/><text x="58" y="171" font-size="9" fill="#94A3B8" text-anchor="end">0</text><text x="58" y="96" font-size="9" fill="#94A3B8" text-anchor="end">6,000</text><text x="58" y="22" font-size="9" fill="#94A3B8" text-anchor="end">12,000</text><text x="137" y="96" font-size="9" fill="#94A3B8" text-anchor="middle">6,000</text><text x="212" y="182" font-size="9" fill="#94A3B8" text-anchor="end">가처분 개인소득(십억 달러)</text><text x="16" y="96" font-size="9" fill="#94A3B8" text-anchor="middle" transform="rotate(-90 16 96)">개인소비지출</text><line x1="62" y1="168" x2="212" y2="18" stroke="#CBD5E1" stroke-dasharray="4 3"/><text x="190" y="14" font-size="9" fill="#94A3B8">45°선</text><line x1="62" y1="163" x2="212" y2="26" stroke="#2E75B6" stroke-width="2"/><circle cx="84" cy="148" r="2.5" fill="#9DC3E6"/><circle cx="98" cy="134" r="2.5" fill="#9DC3E6"/><circle cx="131" cy="106" r="2.5" fill="#9DC3E6"/><circle cx="149" cy="90" r="2.5" fill="#9DC3E6"/><circle cx="166" cy="75" r="2.5" fill="#9DC3E6"/><circle cx="181" cy="58" r="2.5" fill="#9DC3E6"/><circle cx="71" cy="160" r="3.5" fill="#1F4E79"/><text x="78" y="163" font-size="9" fill="#334155">1970</text><circle cx="116" cy="120" r="3.5" fill="#1F4E79"/><text x="123" y="123" font-size="9" fill="#334155">1990</text><circle cx="197" cy="42" r="3.5" fill="#1F4E79"/><text x="192" y="56" font-size="9" fill="#334155" text-anchor="end">2008</text><rect x="246" y="24" width="262" height="28" fill="#1F4E79"/><text x="256" y="43" fill="#FFFFFF">근사 소비함수 기울기 ≈ 0.96</text><text x="256" y="64" font-size="11" fill="#334155">= 총소비함수의 MPC</text><circle cx="250" cy="85" r="3" fill="#2E75B6"/><text x="260" y="89" font-size="11.5" fill="#334155">경기후퇴 — 소득↓ 이면 소비↓</text><circle cx="250" cy="110" r="3" fill="#2E75B6"/><text x="260" y="114" font-size="11.5" fill="#334155">1981~83 감세 — 함께 증가</text><circle cx="250" cy="135" r="3" fill="#2E75B6"/><text x="260" y="139" font-size="11.5" fill="#334155">가구 → 나라 전체, 관계는 그대로</text><text x="250" y="162" font-size="9.5" fill="#94A3B8">1970~2008년 연간 자료</text></svg>
+<h3 data-id="sam21-12"
+    data-say="그해 소득만으로는 설명되지 않는 소비가 있습니다. 흉작을 만난 농민은 저축을 꺼내 쓰고, 법률대학원생은 미래 소득을 보고 빚을 냅니다. 영구소득 이론은 추세적 소득이 소비를 좌우한다고 보고, 생애주기 가설은 은퇴 후를 위해 평생에 걸쳐 소비를 고르게 안배한다고 봅니다."
+    data-img="on the left a farmer&#x27;s hand reaching into a half-empty grain sack beside a withered wheat field under a flat horizon, on the right a stack of blank diploma scrolls tied with ribbon next to an open ledger book with coins spilling forward across the page, a thin dotted path connecting both scenes across the middle distance, wide horizontal composition spread across the frame with the two scenes anchored at opposite edges, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">12 영구소득 이론과 생애주기 가설<label class="q"><input type="checkbox"><b>86</b><span class="qn">86–88쪽</span></label></h3>
+<p>흉작을 만난 농민은 모아둔 저축을 꺼내 쓰고, 법률대학원생은 졸업 후 소득을 보고 빚을 낸다.</p>
+<table><tr><th>이론</th><th>핵심 가정</th><th>시사점</th></tr><tr><td>영구소득 이론</td><td>소비는 추세적 소득 수준에 반응한다</td><td>일시적 소득 증가는 주로 저축, 영구적 증가는 주로 소비</td></tr><tr><td>생애주기 가설</td><td>평생에 걸쳐 소비를 골고루 안배한다</td><td>근로기에 은퇴밑천 저축, 말년에 인출 — 사회보장이 후하면 중년층 저축 감소</td></tr></table>
+<ul>
+  <li>두 이론이 답하는 질문은 하나다 — <b>과도한 채무를 피하면서 지금 쓸 수 있는 돈은 얼마인가.</b></li>
+</ul>
+<h3 data-id="sam21-13"
+    data-say="같은 5만 달러를 벌어도 은행에 20만 달러가 있는 사람은 그 일부를 소비합니다. 재산은 보통 천천히 변하지만 급변할 때 소비를 크게 흔듭니다. 1929년 주가 붕괴는 대공황의 골을 깊게 했고, 2000~06년 7조 달러의 주택 가치 증가는 소비를 밀어올렸다가 2009년 30% 하락으로 되돌려놓았습니다."
+    data-img="a large old-fashioned balance scale on the right side holding a tall pile of coins and a small house model on one pan and a modest stack of banknotes on the other, behind it a jagged line graph carved into a stone slab rising then plunging sharply like a cliff edge, on the left a small shopping cart rolling toward the scale, wide horizontal composition spread across the frame with the scale and cliff graph spanning right to left, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">13 부의 효과 — 재산이 소비를 흔든다<label class="q"><input type="checkbox"><b>88</b><span class="qn">88–90쪽</span></label></h3>
+<p>같은 5만 달러를 벌어도 은행에 20만 달러가 있는 사람은 그 <b>부의 일부를 소비</b>한다.</p>
+<ul>
+  <li>부는 해를 거듭해도 천천히 변하지만, 급격히 변할 때는 소비지출을 크게 흔든다.</li>
+  <li>1929년 주가 붕괴 뒤의 부의 감소는 대공황의 골을 깊게 만든 원인 중 하나였다.</li>
+  <li>2000~06년 가계 부동산 가치는 7조 달러 넘게 늘었고, 2009년 초 주택 평균가격은 정점 대비 거의 30% 하락했다.</li>
+</ul>
+<svg viewBox="0 0 520 190" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="부의 변화가 소비지출을 흔드는 인과 도식. 위쪽 분기는 주택가치 증가로 소비 증가, 아래쪽 분기는 주가 붕괴와 주택가격 하락으로 소비 위축"><defs><marker id="a13" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E75B6"/></marker></defs><rect x="14" y="62" width="120" height="66" fill="#1F4E79"/><text x="74" y="89" fill="#FFFFFF" font-size="14" text-anchor="middle">부(자산가치)</text><text x="74" y="108" fill="#FFFFFF" font-size="10.5" text-anchor="middle">의 변화</text><path d="M134,80 C160,80 160,44 186,44" fill="none" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a13)"/><path d="M134,110 C160,110 160,146 186,146" fill="none" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a13)"/><rect x="190" y="22" width="162" height="44" fill="#9DC3E6"/><text x="271" y="41" font-size="11.5" fill="#334155" text-anchor="middle">2000~06 주택가치</text><text x="271" y="57" font-size="11.5" fill="#1F4E79" text-anchor="middle">+7조 달러</text><line x1="354" y1="44" x2="378" y2="44" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a13)"/><rect x="382" y="22" width="124" height="44" fill="#2E75B6"/><text x="444" y="49" fill="#FFFFFF" font-size="13" text-anchor="middle">소비 증가</text><rect x="190" y="116" width="162" height="58" fill="#DEEBF7"/><text x="271" y="135" font-size="11" fill="#334155" text-anchor="middle">1929 주가 붕괴</text><text x="271" y="152" font-size="11" fill="#334155" text-anchor="middle">2006~09 주택가격</text><text x="271" y="167" font-size="11" fill="#1F4E79" text-anchor="middle">−30%</text><line x1="354" y1="145" x2="378" y2="145" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a13)"/><rect x="382" y="123" width="124" height="44" fill="#2E75B6"/><text x="444" y="150" fill="#FFFFFF" font-size="13" text-anchor="middle">소비 위축</text><text x="14" y="22" font-size="11" fill="#334155">같은 5만 달러를 벌어도 예금 20만 달러가 있으면 그 부의 일부를 소비한다</text><text x="14" y="40" font-size="10" fill="#94A3B8">부는 대개 천천히 변하지만, 급변할 때 소비를 크게 흔든다</text></svg>
+<h2>4. 개인저축률은 왜 떨어졌나</h2>
+<h3 data-id="sam21-14"
+    data-say="20세기 대부분 기간 미국의 개인저축률은 8%대였지만 1980년경부터 가파르게 떨어져 지금은 0에 가깝습니다. 이것이 걱정스러운 이유는 장기적으로 나라의 자본스톡 증가가 저축률에 달려 있기 때문입니다. 저축률이 낮으면 설비와 공장이 낙후되고 사회간접자본도 쇠퇴합니다."
+    data-img="a long staircase descending gently from left to right, each step holding a single stacked coin pile that grows shorter and shorter until the final step on the right holds almost no coins at all, in the background a row of aging factory silhouettes with cracked walls and dimming smokestacks, wide horizontal composition spread across the frame with the staircase spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">14 개인저축률 8%에서 0%로<label class="q"><input type="checkbox"><b>88</b><span class="qn">88–90쪽</span></label></h3>
+<p>20세기 대부분의 기간 미국의 개인저축률은 8%대였지만, 1980년경부터 떨어져 지금은 거의 <b>0</b>에 근접했다.</p>
+<ul>
+  <li>장기적으로 나라의 자본스톡이 얼마나 증가하느냐는 주로 저축률이 결정한다.</li>
+  <li>저축률이 낮은 나라는 설비와 공장이 낙후되고 사회간접자본도 쇠퇴하기 시작한다.</li>
+</ul>
+<svg viewBox="0 0 520 190" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="1950년부터 2010년까지 미국 개인저축률 추이. 1980년경 정점 이후 0에 가깝게 하락"><line x1="65" y1="25" x2="65" y2="158" stroke="#CBD5E1"/><line x1="65" y1="158" x2="470" y2="158" stroke="#CBD5E1"/><text x="60" y="161" font-size="9" fill="#94A3B8" text-anchor="end">0</text><text x="60" y="117" font-size="9" fill="#94A3B8" text-anchor="end">4</text><text x="60" y="73" font-size="9" fill="#94A3B8" text-anchor="end">8</text><text x="60" y="29" font-size="9" fill="#94A3B8" text-anchor="end">12</text><text x="18" y="92" font-size="9" fill="#94A3B8" text-anchor="middle" transform="rotate(-90 18 92)">개인저축률(%)</text><line x1="65" y1="69" x2="470" y2="69" stroke="#CBD5E1" stroke-dasharray="4 3"/><line x1="267" y1="47" x2="267" y2="158" stroke="#CBD5E1" stroke-dasharray="3 3"/><polyline points="65,91 99,85 132,78 166,69 200,63 234,54 267,47 301,67 335,91 369,107 402,129 436,147 470,140" fill="none" stroke="#2E75B6" stroke-width="2.2"/><circle cx="267" cy="47" r="3.5" fill="#1F4E79"/><text x="267" y="38" font-size="10" fill="#1F4E79" text-anchor="middle">1980년 — 변곡</text><circle cx="436" cy="147" r="3.5" fill="#1F4E79"/><text x="466" y="124" font-size="10.5" fill="#1F4E79" text-anchor="end">지금은 0에 근접</text><text x="92" y="61" font-size="10" fill="#94A3B8">전후 8%대</text><text x="65" y="172" font-size="9" fill="#94A3B8" text-anchor="middle">1950</text><text x="200" y="172" font-size="9" fill="#94A3B8" text-anchor="middle">1970</text><text x="335" y="172" font-size="9" fill="#94A3B8" text-anchor="middle">1990</text><text x="470" y="172" font-size="9" fill="#94A3B8" text-anchor="middle">2010</text><text x="65" y="186" font-size="10" fill="#334155">저축률이 낮으면 — 자본스톡 증가 둔화 · 설비와 공장 낙후 · 사회간접자본 쇠퇴</text></svg>
+<h3 data-id="sam21-15"
+    data-say="경제학자들이 꼽는 원인은 세 갈래입니다. 사회보장과 각종 보험이 만일을 대비한 저축의 필요를 줄였고, 금융시장 발달과 신용카드가 차입을 쉽게 만들었으며, 주가와 집값 상승에 따른 부의 효과만으로도 2000년대 말 저축률이 3%포인트 떨어졌다는 계산이 있습니다."
+    data-img="three separate mechanical gears arranged side by side across a wide workbench, the left gear connected to a small safety-net structure, the middle gear connected to a credit card slotted into a slot machine, the right gear connected to a rising house and an ascending arrow-shaped stock chart, all three gears linked by a single horizontal chain that feeds into a shrinking coin jar on the far right, wide horizontal composition spread across the frame with the three gears evenly spaced left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">15 저축률이 떨어진 세 가지 이유<label class="q"><input type="checkbox"><b>88</b><span class="qn">88–89쪽</span></label></h3>
+<p>경제학자들이 지적하는 <b>잠재적 원인</b>은 세 갈래다.</p>
+<table><tr><th>원인</th><th>작동 경로</th></tr><tr><td>사회보장</td><td>사회보장급여·실업보험·의료보장이 은퇴와 만일을 대비한 저축 동기를 떨어뜨림</td></tr><tr><td>금융시장</td><td>신용카드와 비우량 주택저당채권 등 새 융자 수단으로 차입이 쉬워짐</td></tr><tr><td>금융자산의 급증</td><td>주가와 주택 가격 상승의 부의 효과만으로 2000년대 말 저축률 3%포인트 하락에 기여</td></tr></table>
+<h3 data-id="sam21-16"
+    data-say="저축을 어떻게 재느냐에 따라 그림이 달라집니다. 국민계정 기준은 가처분소득에서 소비를 뺀 값이고, 대차대조표 기준은 실질 순자산의 변화라서 자본이득이 들어갑니다. 1997~2007년 후자는 17%였지만 안도할 일은 아닙니다. 늘어난 것이 주로 장부가치상의 부이고, 경제는 생산적 자산이 늘 때만 실제로 부유해집니다."
+    data-img="two different measuring rulers lying side by side across the frame, the shorter ruler on the left marked with small evenly spaced coin stacks, the much longer ruler on the right marked with a mix of coin stacks and translucent glass blocks representing paper gains, both rulers pointing toward a single house-shaped object in the distance, wide horizontal composition spread across the frame with the two rulers spanning left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">16 저축을 재는 두 개의 자 — 2%와 17%<label class="q"><input type="checkbox"><b>91</b><span class="qn">91–92쪽</span></label></h3>
+<p>저축은 <b>어떻게 재느냐</b>에 따라 다르게 나타난다.</p>
+<table><tr><th>기준</th><th>측정 방식</th><th>1997~2007년 저축률</th></tr><tr><td>국민계정</td><td>가처분소득(자본이득 제외) − 소비</td><td>2%</td></tr><tr><td>대차대조표</td><td>실질 순자산의 변화, 실질 자본이득 포함 (가구당 157,000→191,000달러)</td><td>17%</td></tr></table>
+<ul>
+  <li>17%를 보고 안도하기는 힘들다 — 늘어난 것은 주로 <b>장부가치상의 부</b>이고, 경제는 생산적 자산이 증가할 때에만 실제로 부유해진다.</li>
+</ul>
+<h2>5. 투자를 결정하는 세 요소</h2>
+<h3 data-id="sam21-17"
+    data-say="민간지출에서 두 번째로 큰 요소인 투자는 거시경제학에서 두 역할을 합니다. 단기적으로는 비중이 크고 변동이 심해 총수요를 흔들며 경기순환을 좌우하고, 장기적으로는 건물과 설비의 저량을 늘려 잠재 산출량과 경제성장을 밀어올립니다."
+    data-img="a single large gear on the left spinning fast with motion blur lines radiating outward representing short-term fluctuation, connected by a long driveshaft to a slow steady tower of stacked building blocks and factory pieces growing taller on the right representing long-term accumulation, a winding road beneath both connecting them, wide horizontal composition spread across the frame with the fast gear and the growing tower at opposite ends, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">17 투자의 두 얼굴 — 총수요와 자본축적<label class="q"><input type="checkbox"><b>92</b><span class="qn">92쪽</span></label></h3>
+<p>민간지출에서 소비 다음으로 중요한 둘째 요소가 투자다. 투자는 거시경제학에서 <b>두 가지</b> 역할을 한다.</p>
+<ul>
+  <li>단기 — 비중이 크고 변동이 심한 지출이라 <b>총수요</b>를 흔들고 경기순환에 영향을 미친다.</li>
+  <li>장기 — 건물과 설비의 저량을 늘려 <b>잠재 산출량</b>을 키우고 경제성장을 촉진한다.</li>
+</ul>
+<svg viewBox="0 0 520 190" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="투자의 두 역할 도식. 단기에는 총수요를 통해 산출량과 경기순환에, 장기에는 자본 형성을 통해 잠재 산출량과 성장에 영향"><defs><marker id="a17" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E75B6"/></marker></defs><rect x="20" y="62" width="100" height="66" fill="#1F4E79"/><text x="70" y="92" fill="#FFFFFF" font-size="17" text-anchor="middle">투자</text><text x="70" y="111" fill="#FFFFFF" font-size="9.5" text-anchor="middle">민간지출 둘째 요소</text><path d="M120,82 C146,82 146,46 166,46" fill="none" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a17)"/><path d="M120,108 C146,108 146,146 166,146" fill="none" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a17)"/><text x="170" y="18" font-size="10.5" fill="#94A3B8">단기 — 비중이 크고 변동이 심한 지출</text><rect x="170" y="24" width="92" height="44" fill="#2E75B6"/><text x="216" y="51" fill="#FFFFFF" font-size="13" text-anchor="middle">총수요</text><line x1="264" y1="46" x2="288" y2="46" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a17)"/><rect x="292" y="24" width="196" height="44" fill="#DEEBF7"/><text x="390" y="51" fill="#334155" text-anchor="middle">단기 산출량 · 경기순환</text><rect x="170" y="124" width="92" height="44" fill="#2E75B6"/><text x="216" y="151" fill="#FFFFFF" font-size="13" text-anchor="middle">자본 형성</text><line x1="264" y1="146" x2="288" y2="146" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a17)"/><rect x="292" y="124" width="196" height="44" fill="#DEEBF7"/><text x="390" y="151" fill="#334155" text-anchor="middle">잠재 산출량 · 장기 성장</text><text x="170" y="184" font-size="10.5" fill="#94A3B8">장기 — 건물과 설비의 저량을 늘린다</text></svg>
+<h3 data-id="sam21-18"
+    data-say="기업이 자본재를 사는 이유는 결국 이윤을 기대하기 때문이고, 그 첫 조건은 더 많이 팔 수 있느냐입니다. 그래서 전반적인 산출 수준, 즉 GDP가 투자를 결정하는 중요한 요인입니다. 공장을 놀리는 기업이 많으면 새 공장을 지을 이유가 없습니다. 투자가 경기순환에 아주 민감한 까닭입니다."
+    data-img="a row of factory buildings stretching across the frame, the leftmost factories dark and idle with closed gates, the rightmost factories bright and active with trucks loading crates and smoke rising steadily, an upward sloping conveyor belt of boxes running from the active factories toward a large open cash register on the far right, wide horizontal composition spread across the frame with the idle-to-active factories spanning left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">18 첫째 요소 — 수입(매출)<label class="q"><input type="checkbox"><b>92</b><span class="qn">92–93쪽</span></label></h3>
+<p>기업이 자본재를 사는 이유는 하나다. 투자비용보다 <b>수입</b>이 더 클 것이라고 기대하기 때문이다.</p>
+<ul>
+  <li>수입을 더 올리려면 상품을 더 많이 팔아야 한다. 그래서 전반적인 산출, 즉 <b>GDP</b> 수준이 투자를 결정한다.</li>
+  <li>공장을 놀리는 기업이 많다면 새 공장을 마련할 필요가 없다. 투자가 <b>경기순환</b>에 아주 민감한 까닭이다.</li>
+</ul>
+<svg viewBox="0 0 520 190" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="투자를 결정하는 첫째 요소인 수입의 흐름도. GDP 수준이 예상 매출을 거쳐 투자 결정으로 이어지고, 유휴 공장이 많으면 신규 투자가 불필요하다는 분기"><defs><marker id="a18" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E75B6"/></marker></defs><rect x="16" y="28" width="146" height="46" fill="#2E75B6"/><text x="89" y="49" fill="#FFFFFF" font-size="13" text-anchor="middle">GDP</text><text x="89" y="66" fill="#FFFFFF" font-size="10" text-anchor="middle">전반적 산출 수준</text><line x1="164" y1="51" x2="190" y2="51" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a18)"/><text x="177" y="22" font-size="9.5" fill="#94A3B8" text-anchor="middle">더 많이 판다</text><rect x="194" y="28" width="146" height="46" fill="#9DC3E6"/><text x="267" y="57" fill="#334155" font-size="13" text-anchor="middle">예상 수입(매출) ↑</text><line x1="342" y1="51" x2="368" y2="51" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a18)"/><text x="355" y="22" font-size="9.5" fill="#94A3B8" text-anchor="middle">수입 &gt; 비용</text><rect x="372" y="28" width="132" height="46" fill="#1F4E79"/><text x="438" y="57" fill="#FFFFFF" font-size="13" text-anchor="middle">자본재 투자</text><line x1="89" y1="76" x2="89" y2="114" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a18)"/><text x="96" y="99" font-size="9.5" fill="#94A3B8">반례</text><rect x="16" y="118" width="146" height="44" fill="#DEEBF7"/><text x="89" y="139" fill="#334155" font-size="11" text-anchor="middle">가동하지 않는</text><text x="89" y="155" fill="#334155" font-size="11" text-anchor="middle">공장이 많다</text><line x1="164" y1="140" x2="190" y2="140" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a18)"/><rect x="194" y="118" width="146" height="44" fill="#DEEBF7"/><text x="267" y="146" fill="#334155" font-size="12" text-anchor="middle">신규 투자 불필요</text><text x="372" y="134" font-size="11.5" fill="#1F4E79">그래서 투자는</text><text x="372" y="152" font-size="11.5" fill="#1F4E79">경기순환에 아주 민감하다</text></svg>
+<h3 data-id="sam21-19"
+    data-say="자본재는 여러 해 쓰이므로 비용 계산이 복잡합니다. 자본비용에는 자본재 가격뿐 아니라 투자자금을 빌릴 때 무는 금리, 그리고 이윤에 붙는 세금이 들어갑니다. 법인소득세 한계세율은 35%여서 1달러를 더 벌면 35센트를 냅니다. 반대로 정부는 주택 보유자의 이자 공제처럼 감면으로 특정 투자를 장려하기도 합니다."
+    data-img="a large capital good like an industrial press or turbine sitting at center, tethered on one side by a thick chain to a spinning percentage-marked dial representing interest rate, and on the other side by a chain to a large pair of scissors cutting into a stack of banknotes representing tax, with a small house-shaped token receiving a lighter thinner chain as a discount exemption, wide horizontal composition spread across the frame with the machine flanked by the two chains, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">19 둘째 요소 — 비용: 금리와 세금<label class="q"><input type="checkbox"><b>93</b><span class="qn">93–94쪽</span></label></h3>
+<p>투자재는 여러 해 동안 사용되기 때문에, 비용 계산이 석탄이나 밀 같은 상품보다 복잡하다.</p>
+<ul>
+  <li>자본비용 — 자본재의 가격, 투자자금을 차입할 때 무는 <b>금리</b>, 이윤에 부과되는 세금이 함께 들어간다.</li>
+  <li>1년 동안 1,000달러를 빌리면 대략 8%의 금리를 문다. 자금은 보통 모기지 채권이나 회사채로 조달한다.</li>
+  <li>법인소득세 한계세율은 <b>35%</b>다. 1달러를 더 벌면 35센트를 세금으로 낸다. 반대로 주택 담보대출 이자 공제처럼 감면도 있다.</li>
+</ul>
+<svg viewBox="0 0 520 190" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="자본비용의 구성 도식. 자본재 가격, 차입 금리 8퍼센트, 법인세 한계세율 35퍼센트가 합쳐지고 세금 감면은 비용을 낮춘다"><defs><marker id="a19" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E75B6"/></marker></defs><rect x="14" y="14" width="196" height="38" fill="#DEEBF7"/><text x="26" y="38" fill="#334155" font-size="12">자본재의 가격</text><rect x="14" y="58" width="196" height="38" fill="#9DC3E6"/><text x="26" y="75" fill="#334155" font-size="11.5">차입 금리 — 연 8%</text><text x="26" y="90" fill="#334155" font-size="9.5">1,000달러 차입 · 모기지채·회사채</text><rect x="14" y="102" width="196" height="38" fill="#9DC3E6"/><text x="26" y="119" fill="#334155" font-size="11.5">법인세 한계세율 35%</text><text x="26" y="134" fill="#334155" font-size="9.5">1달러를 더 벌면 35센트를 낸다</text><path d="M212,33 C236,33 236,74 254,74" fill="none" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a19)"/><line x1="212" y1="77" x2="254" y2="79" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a19)"/><path d="M212,121 C236,121 236,84 254,84" fill="none" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a19)"/><rect x="258" y="30" width="132" height="98" fill="#1F4E79"/><text x="324" y="78" fill="#FFFFFF" font-size="16" text-anchor="middle">자본비용</text><text x="324" y="98" fill="#FFFFFF" font-size="9.5" text-anchor="middle">세 항목의 합</text><line x1="410" y1="79" x2="392" y2="79" stroke="#2E75B6" stroke-width="1.6" marker-end="url(#a19)"/><rect x="412" y="52" width="94" height="56" fill="#9DC3E6"/><text x="459" y="74" fill="#334155" font-size="12" text-anchor="middle">세금 감면</text><text x="459" y="89" fill="#334155" font-size="9.5" text-anchor="middle">담보대출 이자 공제</text><text x="459" y="102" fill="#1F4E79" font-size="10.5" text-anchor="middle">비용 ↓</text><text x="14" y="166" font-size="10" fill="#94A3B8">투자재는 여러 해 동안 사용된다 — 석탄이나 밀 같은 상품보다 비용 계산이 복잡하다</text></svg>
+<h3 data-id="sam21-20"
+    data-say="투자는 미래에 돈을 거는 도박입니다. 확실한 현재 비용과 불확실한 미래 이익을 견주어야 하니, 정치 불안은 투자를 막고 새 시장에 대한 낙관은 투자를 끌어냅니다. 케인스는 여기에 계산이 아닌 즉흥적 낙관, 즉 야성적 충동이 작동한다고 보았습니다. 그래서 투자 결정은 기대라는 불확실한 줄에 매달려 있습니다."
+    data-img="a single tightrope stretched across a wide chasm from a solid stone platform on the left to a hazy fog-covered platform on the right, a small rolling cart loaded with coins balanced midway on the rope, storm clouds gathering above the left platform and a faint glowing sunrise breaking through mist above the right platform, wide horizontal composition spread across the frame with the tightrope spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">20 셋째 요소 — 기대와 야성적 충동<label class="q"><input type="checkbox"><b>94</b><span class="qn">94–95쪽</span></label></h3>
+<p>투자는 결론적으로 미래에 돈을 거는 <b>도박</b>이다. 현재의 확실한 비용과 미래의 불확실한 이익을 견주어야 한다.</p>
+<ul>
+  <li>불안정한 러시아의 정치 상황을 우려하면 투자를 꺼리고, 인터넷 상거래에서 큰돈을 벌 수 있다고 보면 투자가 늘어난다.</li>
+  <li>케인스가 짚은 <b>야성적 충동</b> — 확률을 곱한 가중평균이 아니라 즉흥적 낙관론이 결정을 감행시킨다.</li>
+</ul>
+<svg viewBox="0 0 520 190" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="천칭 도식: 왼쪽 접시의 현재의 확실한 비용과 오른쪽 접시의 미래의 불확실한 이익을 견주고, 야성적 충동이 오른쪽 접시를 밀어올린다"><defs><marker id="a20" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E75B6"/></marker></defs><text x="260" y="16" text-anchor="middle" fill="#334155" font-size="13">투자 = 미래에 돈을 거는 도박</text><text x="512" y="40" text-anchor="end" fill="#94A3B8" font-size="11">정치 불안 ↓ · 새 시장 낙관 ↑</text><polygon points="260,90 242,166 278,166" fill="#DEEBF7" stroke="#CBD5E1"/><line x1="218" y1="167" x2="302" y2="167" stroke="#CBD5E1" stroke-width="2"/><line x1="132" y1="104" x2="388" y2="72" stroke="#1F4E79" stroke-width="4" stroke-linecap="round"/><circle cx="260" cy="88" r="4" fill="#1F4E79"/><line x1="132" y1="104" x2="132" y2="120" stroke="#CBD5E1" stroke-width="2"/><rect x="74" y="120" width="116" height="36" rx="4" fill="#2E75B6"/><text x="132" y="135" text-anchor="middle" fill="#FFFFFF">현재의 확실한</text><text x="132" y="149" text-anchor="middle" fill="#FFFFFF">비용</text><text x="132" y="172" text-anchor="middle" fill="#94A3B8" font-size="11">계산 가능</text><line x1="388" y1="72" x2="388" y2="88" stroke="#CBD5E1" stroke-width="2"/><rect x="330" y="88" width="116" height="36" rx="4" fill="#9DC3E6"/><text x="388" y="103" text-anchor="middle" fill="#334155">미래의 불확실한</text><text x="388" y="117" text-anchor="middle" fill="#334155">이익</text><line x1="388" y1="158" x2="388" y2="130" stroke="#2E75B6" stroke-width="2.5" marker-end="url(#a20)"/><text x="388" y="176" text-anchor="middle" fill="#1F4E79">야성적 충동(케인스)</text></svg>
+<h2>6. 투자수요 곡선</h2>
+<h3 data-id="sam21-21"
+    data-say="여덟 개 투자 계획을 수익률 순으로 늘어놓고, 연간 수익에서 차입 이자를 뺀 순이익을 봅니다. 금리 5%에서는 A부터 G까지 일곱 계획이 이익이 나 투자수요가 5,500만 달러지만, 금리가 10%로 오르면 F와 G가 손실로 돌아서 3,000만 달러로 줄어듭니다. 이익과 손실을 가르는 경계선이 금리에 따라 움직입니다."
+    data-img="eight rectangular wooden blocks of varying heights lined up left to right in descending order like a staircase, each resting on a thin horizontal beam that represents a break-even line, with a glowing golden threshold bar sliding across the row so that on the left side blocks stand above the bar in bright light while on the right side two of the shortest blocks now dip below the bar into shadow, a small pair of scale weights sits beside the shifting bar to suggest rising interest cost, wide horizontal composition spread across the full frame with the descending blocks and shifting threshold bar clearly separated left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">21 금리가 오르면 이익 나는 계획이 줄어든다<label class="q"><input type="checkbox"><b>95</b><span class="qn">95–96쪽</span></label></h3>
+<p>금리 5%에서는 A부터 G까지 일곱 계획이 이익이 나 투자수요가 5,500만 달러다. 금리가 10%로 오르면 <b>F와 G</b>가 손실로 돌아서 3,000만 달러로 준다.</p>
+<table><tr><td>계획</td><td>총투자자금(백만$)</td><td>1,000$당 연간 수익</td><td>순이익 (금리 10%)</td><td>순이익 (금리 5%)</td></tr><tr><td>B</td><td>4</td><td>220</td><td>120</td><td>170</td></tr><tr><td>C</td><td>10</td><td>160</td><td>60</td><td>110</td></tr><tr><td>F</td><td>15</td><td>90</td><td>-10</td><td>40</td></tr><tr><td>G</td><td>10</td><td>60</td><td>-40</td><td>10</td></tr></table>
+<h3 data-id="sam21-22"
+    data-say="각 금리 수준에서 이익 나는 계획을 모두 합하면 투자수요 계획이 됩니다. 금리 5%의 점 M에서 5,500만 달러, 10%의 점 M&#x27;에서 3,000만 달러인 계단 모양 곡선입니다. 금리와 투자가 반대로 움직이기 때문에 우하향하고, 그래서 중앙은행이 조절하는 금리가 정부가 투자에 영향을 미치는 주된 수단이 됩니다."
+    data-img="a smooth staircase-shaped curve descending from upper left to lower right across an open grid-lined plane, two glowing marker orbs sitting on the curve at a higher-left position and a lower-right position connected by faint dashed guide lines to the axes, a large lever or dial mechanism stands at the left edge of the frame as if controlling the height of the curve, wide horizontal composition with the descending staircase curve stretched fully across the frame from left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">22 우하향하는 투자수요 곡선<label class="q"><input type="checkbox"><b>96</b><span class="qn">96–97쪽</span></label></h3>
+<p>각 금리 수준에서 순수익이 양인 계획을 모두 합하면 <b>투자수요 계획</b>이 된다.</p>
+<ul>
+  <li>금리 5%의 점 M에서 5,500만 달러, 금리 10%의 점 M'에서 3,000만 달러인 계단 모양 곡선이다.</li>
+  <li>투자의 수익성은 금리와 반대 방향으로 움직인다. 그래서 곡선이 <b>우하향</b>한다.</li>
+  <li>중앙은행이 조절하는 금리는 정부가 투자에 영향을 미치는 <b>주된 수단</b>이다.</li>
+</ul>
+<svg viewBox="0 0 520 190" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="우하향하는 계단형 투자수요 곡선. 금리 5퍼센트의 점 M에서 5500만 달러, 금리 10퍼센트의 점 M프라임에서 3000만 달러"><text x="8" y="22" fill="#94A3B8" font-size="10">금리 · 투자수익률(%)</text><line x1="60" y1="30" x2="60" y2="160" stroke="#CBD5E1" stroke-width="1.5"/><line x1="60" y1="160" x2="470" y2="160" stroke="#CBD5E1" stroke-width="1.5"/><text x="52" y="164" text-anchor="end" fill="#94A3B8" font-size="10">0</text><text x="52" y="131" text-anchor="end" fill="#94A3B8" font-size="10">5</text><text x="52" y="99" text-anchor="end" fill="#94A3B8" font-size="10">10</text><text x="52" y="66" text-anchor="end" fill="#94A3B8" font-size="10">15</text><text x="52" y="34" text-anchor="end" fill="#94A3B8" font-size="10">20</text><line x1="60" y1="128" x2="368" y2="128" stroke="#CBD5E1" stroke-dasharray="4 3"/><line x1="368" y1="128" x2="368" y2="160" stroke="#CBD5E1" stroke-dasharray="4 3"/><line x1="60" y1="95" x2="228" y2="95" stroke="#CBD5E1" stroke-dasharray="4 3"/><line x1="228" y1="95" x2="228" y2="160" stroke="#CBD5E1" stroke-dasharray="4 3"/><polyline points="60,43 116,43 116,69 172,69 172,95 228,95 228,115 312,115 312,128 368,128 368,140 452,140" fill="none" stroke="#2E75B6" stroke-width="2.5"/><circle cx="228" cy="95" r="4.5" fill="#1F4E79"/><circle cx="368" cy="128" r="4.5" fill="#1F4E79"/><text x="238" y="90" fill="#1F4E79" font-size="11">M′ (10%, 3,000만)</text><text x="378" y="123" fill="#1F4E79" font-size="11">M (5%, 5,500만)</text><text x="468" y="52" text-anchor="end" fill="#94A3B8" font-size="11">우하향 — 금리와 투자는 반대 방향</text><text x="60" y="174" text-anchor="middle" fill="#94A3B8" font-size="10">0</text><text x="228" y="174" text-anchor="middle" fill="#94A3B8" font-size="10">30</text><text x="368" y="174" text-anchor="middle" fill="#94A3B8" font-size="10">55</text><text x="452" y="174" text-anchor="middle" fill="#94A3B8" font-size="10">70</text><text x="470" y="186" text-anchor="end" fill="#94A3B8" font-size="10">투자지출(백만 달러)</text></svg>
+<h3 data-id="sam21-23"
+    data-say="금리 변화는 곡선 위를 따라가는 이동이고, 곡선 자체를 옮기는 요인은 따로 있습니다. GDP가 늘면 밖으로, 기업이익 세율이 오르면 안으로 움직이며, 1990년대 말 인터넷 낙관론처럼 분위기가 분출하면 밖으로 밀렸다가 2000년 거품이 터지자 난폭하게 되돌아왔습니다. 요인들이 이토록 불확실하니 투자가 가장 변동이 심한 지출 요소입니다."
+    data-img="a single descending staircase curve in the center of an open plane, flanked on the left by a bright expanding arrow pushing a duplicate ghost curve outward and on the right by a shrinking gear-like wedge pulling another ghost curve inward, above the curve a translucent bubble stretches upward and then bursts into scattered fragments snapping sharply back toward the center line, wide horizontal composition with the three forces spread across the full width acting on the central curve from both sides, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">23 곡선 자체를 움직이는 세 충격<label class="q"><input type="checkbox"><b>98</b><span class="qn">98쪽</span></label></h3>
+<ul>
+  <li>산출량 증가 — GDP가 늘면 투자수요 곡선이 <b>바깥쪽</b>으로 이동한다.</li>
+  <li>세율 인상 — 기업이익과 자본소득에 붙는 세율이 높아지면 순수익이 줄어 곡선이 안쪽으로 이동한다.</li>
+  <li>낙관적 분위기 — 1990년대 말 인터넷 열기로 밖으로 밀렸다가, 2000년 기술주 거품이 터지자 <b>난폭하게</b> 되돌아왔다.</li>
+</ul>
+<p>투자를 좌우하는 요인들이 이토록 불확실하니, 투자는 가장 변동이 심한 지출 요소다.</p>
+<svg viewBox="0 0 520 190" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="투자수요 곡선 자체를 움직이는 세 충격: 산출량 증가는 바깥쪽, 세율 인상은 안쪽, 낙관적 분위기는 바깥쪽"><defs><marker id="a23" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E75B6"/></marker></defs><text x="260" y="16" text-anchor="middle" fill="#334155" font-size="12">금리 변화 = 곡선 위의 이동 · 아래 세 요인 = 곡선 자체의 이동</text><line x1="174" y1="28" x2="174" y2="178" stroke="#CBD5E1"/><line x1="340" y1="28" x2="340" y2="178" stroke="#CBD5E1"/><text x="91" y="38" text-anchor="middle" fill="#1F4E79" font-weight="bold" font-size="12">(a) 산출량 증가</text><line x1="24" y1="50" x2="24" y2="140" stroke="#CBD5E1" stroke-width="1.5"/><line x1="24" y1="140" x2="158" y2="140" stroke="#CBD5E1" stroke-width="1.5"/><line x1="34" y1="58" x2="114" y2="134" stroke="#9DC3E6" stroke-width="2.5"/><line x1="58" y1="58" x2="138" y2="134" stroke="#1F4E79" stroke-width="2.5"/><line x1="80" y1="96" x2="104" y2="96" stroke="#2E75B6" stroke-width="2" marker-end="url(#a23)"/><text x="91" y="160" text-anchor="middle" fill="#94A3B8" font-size="10">GDP가 늘면 바깥쪽으로</text><text x="257" y="38" text-anchor="middle" fill="#1F4E79" font-weight="bold" font-size="12">(b) 세율 인상</text><line x1="190" y1="50" x2="190" y2="140" stroke="#CBD5E1" stroke-width="1.5"/><line x1="190" y1="140" x2="324" y2="140" stroke="#CBD5E1" stroke-width="1.5"/><line x1="216" y1="58" x2="296" y2="134" stroke="#9DC3E6" stroke-width="2.5"/><line x1="196" y1="58" x2="276" y2="134" stroke="#1F4E79" stroke-width="2.5"/><line x1="254" y1="96" x2="232" y2="96" stroke="#2E75B6" stroke-width="2" marker-end="url(#a23)"/><text x="257" y="160" text-anchor="middle" fill="#94A3B8" font-size="10">순수익이 줄어 안쪽으로</text><text x="423" y="38" text-anchor="middle" fill="#1F4E79" font-weight="bold" font-size="12">(c) 낙관적 분위기</text><line x1="356" y1="50" x2="356" y2="140" stroke="#CBD5E1" stroke-width="1.5"/><line x1="356" y1="140" x2="490" y2="140" stroke="#CBD5E1" stroke-width="1.5"/><line x1="366" y1="58" x2="446" y2="134" stroke="#9DC3E6" stroke-width="2.5"/><line x1="390" y1="58" x2="470" y2="134" stroke="#1F4E79" stroke-width="2.5"/><line x1="412" y1="90" x2="436" y2="90" stroke="#2E75B6" stroke-width="2" marker-end="url(#a23)"/><line x1="436" y1="110" x2="412" y2="110" stroke="#2E75B6" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#a23)"/><text x="423" y="160" text-anchor="middle" fill="#94A3B8" font-size="10">인터넷 열기 → 바깥쪽</text><text x="423" y="174" text-anchor="middle" fill="#94A3B8" font-size="10">2000년 거품 붕괴 → 복귀</text><text x="24" y="186" fill="#334155" font-size="10">요인이 불확실하니 투자는 가장 변동이 심한 지출 요소다</text></svg>
+<h3 data-id="sam21-24"
+    data-say="여기까지가 거시경제학의 기초 도구입니다. 소비와 투자의 결정요인을 갖췄으니 다음은 이것들이 총수요를 통해 산출량과 고용, 물가를 어떻게 흔드는지 봅니다. 금융시장 충격이나 정부지출·조세의 변화는 소비의 변화를 통해 증폭되며, 재정·통화정책은 그 진폭을 줄일 수도 키울 수도 있습니다."
+    data-img="a set of solid foundation blocks stacked at the far left forming a base, from which a smooth wave line rises and flows rightward across the frame growing taller and shorter in alternating swells like a business cycle, small ripple rings radiate outward from points along the wave suggesting amplification, and two lever handles are positioned beneath the wave near the right side as if able to dampen or stretch its swings, wide horizontal composition with the foundation on the left flowing into the undulating wave stretched across the rest of the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.">24 다음 장으로 — 경기순환과 총수요<label class="q"><input type="checkbox"><b>99</b><span class="qn">99–100쪽</span></label></h3>
+<p>여기까지가 거시경제학의 기초 개념이다. 앞으로의 내용은 <b>경기순환</b>과 경제성장 두 분야로 나뉜다.</p>
+<ul>
+  <li>경기순환 — 산출량, 고용, 물가가 오르락내리락하는 단기 변동이다.</li>
+  <li>금융시장 충격과 투자·정부지출·과세·대외무역의 변화는 유발된 소비의 변화를 통해 <b>증폭</b>되어 총수요를 좌우한다.</li>
+</ul>
+<svg viewBox="0 0 520 190" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif" font-size="12" role="img" aria-label="소비함수와 투자수요 곡선이 총수요로 합류하고, 거기서 단기 경기순환과 장기 경제성장으로 갈라지는 길목 도식"><defs><marker id="a24" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E75B6"/></marker></defs><text x="260" y="15" text-anchor="middle" fill="#334155" font-size="12">거시경제학의 기초 → 앞으로의 두 분야</text><text x="76" y="32" text-anchor="middle" fill="#94A3B8" font-size="10">이 장에서 얻은 두 도구</text><rect x="16" y="40" width="120" height="36" rx="4" fill="#9DC3E6"/><text x="76" y="63" text-anchor="middle" fill="#334155">소비함수</text><rect x="16" y="104" width="120" height="36" rx="4" fill="#9DC3E6"/><text x="76" y="127" text-anchor="middle" fill="#334155">투자수요 곡선</text><path d="M136,58 C164,58 162,84 184,84" fill="none" stroke="#2E75B6" stroke-width="2" marker-end="url(#a24)"/><path d="M136,122 C164,122 162,100 184,100" fill="none" stroke="#2E75B6" stroke-width="2" marker-end="url(#a24)"/><rect x="190" y="72" width="112" height="40" rx="4" fill="#1F4E79"/><text x="246" y="97" text-anchor="middle" fill="#FFFFFF">총수요</text><path d="M302,88 C326,88 322,52 344,52" fill="none" stroke="#2E75B6" stroke-width="2" marker-end="url(#a24)"/><path d="M302,98 C326,98 322,132 344,132" fill="none" stroke="#2E75B6" stroke-width="2" marker-end="url(#a24)"/><rect x="350" y="32" width="154" height="40" rx="4" fill="#2E75B6"/><text x="427" y="57" text-anchor="middle" fill="#FFFFFF">경기순환 (단기)</text><text x="427" y="88" text-anchor="middle" fill="#94A3B8" font-size="10">산출량 · 고용 · 물가 변동</text><rect x="350" y="112" width="154" height="40" rx="4" fill="#DEEBF7"/><text x="427" y="137" text-anchor="middle" fill="#334155">경제성장 (장기)</text><text x="427" y="166" text-anchor="middle" fill="#94A3B8" font-size="10">생산능력의 확대</text><text x="16" y="180" fill="#334155" font-size="10">금융시장 충격 · 정부지출 · 조세 → 유발된 소비를 통해 증폭</text></svg>
+<script type="application/json" id="imgprompts">
+{"by_id": {"sam21-01": {"retired": false, "title": "소비는 총지출의 70%다", "body_hash": "48fd0edb8030fac5", "level": "기억", "type": "photo", "prompt": "a giant weighted pie divided into pieces sitting on the left side of the frame with one enormous slice labeled by size alone taking up most of the circle representing a dominant share and small slices beside it, while on the right side a single jagged zigzag line inside a narrow glass tube rises and falls sharply showing constant motion, wide horizontal composition spread across the frame with the calm large mass on the left and the volatile thin line on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["pie chart concept"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 2}, "sam21-02": {"retired": false, "title": "소비는 세 범주로 나뉜다 — 서비스가 60%", "body_hash": "4c3c2b620e9fa637", "level": "이해", "type": "photo", "prompt": "three stacked horizontal bars of very different lengths lying side by side from top to bottom across the frame, the shortest bar made of small hard blocks on the left end, a medium bar made of soft wrapped packages in the middle, and by far the longest bar made of overlapping curved ribbons and service icons like a stethoscope shape and a house silhouette stretching far to the right, wide horizontal composition spread across the frame with the longest bar dominating the right two-thirds, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["durable goods"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 3}, "sam21-03": {"retired": false, "title": "소득이 오르면 지출의 구성이 바뀐다", "body_hash": "8cf0c7b825ae5161", "level": "분석", "type": "photo", "prompt": "a rising staircase of coins ascending from left to right, and at each step a different small object sits proportioned to its own growth rate: a loaf of bread that barely grows in size across steps, a folded shirt and a small car model that grow moderately larger at each higher step, and a piggy bank that grows dramatically larger at the topmost steps overshadowing everything else, wide horizontal composition spread across the frame following the ascending staircase, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["income elasticity"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 4}, "sam21-04": {"retired": false, "title": "소득에서 소비를 뺀 것이 저축이다", "body_hash": "d88c1c2e72303b36", "level": "기억", "type": "photo", "prompt": "a wide horizontal pipe carrying a flowing stream of coins entering from the left, passing through a large funnel-shaped valve in the middle that diverts almost the entire stream downward into a wide basin on the lower right, while only a single thin trickle of coins continues through a narrow side tube into a tiny jar on the far right edge, wide horizontal composition spread across the frame showing the flow diverging left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["disposable income flow"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 5}, "sam21-05": {"retired": false, "title": "분기점은 소득 25,000달러", "body_hash": "9e0317f1b9f1b4b4", "level": "적용", "type": "photo", "prompt": "a long balance beam stretched horizontally across the frame resting on a single central pivot fulcrum, with stacked coin towers of increasing height placed along the beam from left to right, the coin tower exactly above the fulcrum perfectly level, coin towers to the left of the fulcrum tipping the beam downward into a shadowed pit, and coin towers to the right tipping the beam upward with small overflow coins spilling into a basket, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["breakeven point"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 6}, "sam21-06": {"retired": false, "title": "소비함수 — 소비와 가처분소득의 관계", "body_hash": "899c59bb64411a93", "level": "이해", "type": "photo", "prompt": "a smooth upward sloping curved ramp made of glass rising diagonally from the lower left corner toward the upper right corner of the frame, with seven glowing marble spheres placed along the ramp at increasing height connected by a faint guiding line tracing the ramp's path, wide horizontal composition spread across the frame with the ramp spanning nearly the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["consumption function"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 7}, "sam21-07": {"retired": false, "title": "45°선이 저축의 크기를 눈으로 보여준다", "body_hash": "6c456e6d49981ee4", "level": "분석", "type": "photo", "prompt": "two diagonal ramps crossing at a single point in the middle of the frame, a straight steep reference ramp and a slightly curved second ramp that lies below the reference ramp on the left side and rises above it on the right side, with vertical measuring rods standing between the two ramps at several points showing gaps of different heights, the rods on the right pointing upward in gold and the rods on the left pointing downward in a darker tone, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["45 degree line"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 8}, "sam21-08": {"retired": false, "title": "저축함수는 소비함수를 뒤집은 꼴", "body_hash": "430fd5be55a333f1", "level": "분석", "type": "photo", "prompt": "a single flat horizontal reference line stretching across the middle of the frame, below it on the left side a curved ribbon dips downward into a shadowed trench, and on the right side the same ribbon rises upward above the line into a sunlit ridge, with small measuring pegs marking the crossing point exactly at the center of the frame, wide horizontal composition spread across the frame with the dip on the left and the rise on the right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["saving function"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 9}, "sam21-09": {"retired": false, "title": "소득 1달러가 더 생기면 0.8은 쓰고 0.2는 남는다", "body_hash": "04cdd8a28e38029c", "level": "적용", "type": "photo", "prompt": "a single coin entering a splitting mechanical funnel from the top of the frame, dividing into two separate chutes, a wide chute on the left carrying the larger portion of coins down into a large overflowing basket labeled only by its large size, and a narrow chute on the right carrying a much smaller portion of coins into a small jar, both chutes and containers arranged side by side across the width of the frame, wide horizontal composition spread across the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["marginal propensity to consume"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 10}, "sam21-10": {"retired": false, "title": "기울기가 곧 한계성향이다", "body_hash": "76c07f8806c0f5c3", "level": "이해", "type": "photo", "prompt": "a diagonal glass ramp rising from lower left to upper right with a bright right triangle drawn beneath one segment of the ramp, the triangle's horizontal base long and its vertical height noticeably shorter, a glowing marble resting at the top corner of the triangle where it touches the ramp, wide horizontal composition spread across the frame with the triangle positioned in the left-center and the ramp continuing to the right edge, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["slope of a line"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 11}, "sam21-11": {"retired": false, "title": "나라 전체의 소비도 가처분소득을 따라간다", "body_hash": "0a5384523f89deb5", "level": "이해", "type": "photo", "prompt": "a single long diagonal line of small identical wooden blocks rising steadily from lower left to upper right across a wide surface, with a loose scatter of small stone markers clustered tightly around the line, a dip in the block trail near the left third and a rise near the right third mirroring each other in height, wide horizontal composition spread across the frame with the trail spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["scatter plot line"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 12}, "sam21-12": {"retired": false, "title": "영구소득 이론과 생애주기 가설", "body_hash": "1efe8110260a89ee", "level": "분석", "type": "photo", "prompt": "on the left a farmer's hand reaching into a half-empty grain sack beside a withered wheat field under a flat horizon, on the right a stack of blank diploma scrolls tied with ribbon next to an open ledger book with coins spilling forward across the page, a thin dotted path connecting both scenes across the middle distance, wide horizontal composition spread across the frame with the two scenes anchored at opposite edges, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["permanent income hypothesis"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 13}, "sam21-13": {"retired": false, "title": "부의 효과 — 재산이 소비를 흔든다", "body_hash": "b106f17189397b41", "level": "분석", "type": "photo", "prompt": "a large old-fashioned balance scale on the right side holding a tall pile of coins and a small house model on one pan and a modest stack of banknotes on the other, behind it a jagged line graph carved into a stone slab rising then plunging sharply like a cliff edge, on the left a small shopping cart rolling toward the scale, wide horizontal composition spread across the frame with the scale and cliff graph spanning right to left, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["wealth effect"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 14}, "sam21-14": {"retired": false, "title": "개인저축률 8%에서 0%로", "body_hash": "f2dd946943452d12", "level": "기억", "type": "photo", "prompt": "a long staircase descending gently from left to right, each step holding a single stacked coin pile that grows shorter and shorter until the final step on the right holds almost no coins at all, in the background a row of aging factory silhouettes with cracked walls and dimming smokestacks, wide horizontal composition spread across the frame with the staircase spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["declining savings rate"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 15}, "sam21-15": {"retired": false, "title": "저축률이 떨어진 세 가지 이유", "body_hash": "c915877d65f4cf52", "level": "분석", "type": "photo", "prompt": "three separate mechanical gears arranged side by side across a wide workbench, the left gear connected to a small safety-net structure, the middle gear connected to a credit card slotted into a slot machine, the right gear connected to a rising house and an ascending arrow-shaped stock chart, all three gears linked by a single horizontal chain that feeds into a shrinking coin jar on the far right, wide horizontal composition spread across the frame with the three gears evenly spaced left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["three gears savings decline"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 16}, "sam21-16": {"retired": false, "title": "저축을 재는 두 개의 자 — 2%와 17%", "body_hash": "6513a41ff7145486", "level": "분석", "type": "photo", "prompt": "two different measuring rulers lying side by side across the frame, the shorter ruler on the left marked with small evenly spaced coin stacks, the much longer ruler on the right marked with a mix of coin stacks and translucent glass blocks representing paper gains, both rulers pointing toward a single house-shaped object in the distance, wide horizontal composition spread across the frame with the two rulers spanning left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["two savings measures"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 17}, "sam21-17": {"retired": false, "title": "투자의 두 얼굴 — 총수요와 자본축적", "body_hash": "79c64c31ffd1c52c", "level": "이해", "type": "photo", "prompt": "a single large gear on the left spinning fast with motion blur lines radiating outward representing short-term fluctuation, connected by a long driveshaft to a slow steady tower of stacked building blocks and factory pieces growing taller on the right representing long-term accumulation, a winding road beneath both connecting them, wide horizontal composition spread across the frame with the fast gear and the growing tower at opposite ends, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["investment dual role"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 18}, "sam21-18": {"retired": false, "title": "첫째 요소 — 수입(매출)", "body_hash": "047217c17e23f5e6", "level": "적용", "type": "photo", "prompt": "a row of factory buildings stretching across the frame, the leftmost factories dark and idle with closed gates, the rightmost factories bright and active with trucks loading crates and smoke rising steadily, an upward sloping conveyor belt of boxes running from the active factories toward a large open cash register on the far right, wide horizontal composition spread across the frame with the idle-to-active factories spanning left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["idle factories versus active factories"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 19}, "sam21-19": {"retired": false, "title": "둘째 요소 — 비용: 금리와 세금", "body_hash": "0319765bc015e166", "level": "적용", "type": "photo", "prompt": "a large capital good like an industrial press or turbine sitting at center, tethered on one side by a thick chain to a spinning percentage-marked dial representing interest rate, and on the other side by a chain to a large pair of scissors cutting into a stack of banknotes representing tax, with a small house-shaped token receiving a lighter thinner chain as a discount exemption, wide horizontal composition spread across the frame with the machine flanked by the two chains, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["cost of capital"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 20}, "sam21-20": {"retired": false, "title": "셋째 요소 — 기대와 야성적 충동", "body_hash": "17452cc0e1c453f4", "level": "평가", "type": "photo", "prompt": "a single tightrope stretched across a wide chasm from a solid stone platform on the left to a hazy fog-covered platform on the right, a small rolling cart loaded with coins balanced midway on the rope, storm clouds gathering above the left platform and a faint glowing sunrise breaking through mist above the right platform, wide horizontal composition spread across the frame with the tightrope spanning the full width, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["animal spirits investment"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 21}, "sam21-21": {"retired": false, "title": "금리가 오르면 이익 나는 계획이 줄어든다", "body_hash": "f5e52f9e0108b562", "level": "분석", "type": "photo", "prompt": "eight rectangular wooden blocks of varying heights lined up left to right in descending order like a staircase, each resting on a thin horizontal beam that represents a break-even line, with a glowing golden threshold bar sliding across the row so that on the left side blocks stand above the bar in bright light while on the right side two of the shortest blocks now dip below the bar into shadow, a small pair of scale weights sits beside the shifting bar to suggest rising interest cost, wide horizontal composition spread across the full frame with the descending blocks and shifting threshold bar clearly separated left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["investment ranking bars"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 22}, "sam21-22": {"retired": false, "title": "우하향하는 투자수요 곡선", "body_hash": "fcb661f5a2d432b0", "level": "이해", "type": "photo", "prompt": "a smooth staircase-shaped curve descending from upper left to lower right across an open grid-lined plane, two glowing marker orbs sitting on the curve at a higher-left position and a lower-right position connected by faint dashed guide lines to the axes, a large lever or dial mechanism stands at the left edge of the frame as if controlling the height of the curve, wide horizontal composition with the descending staircase curve stretched fully across the frame from left to right, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["downward sloping demand curve"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 23}, "sam21-23": {"retired": false, "title": "곡선 자체를 움직이는 세 충격", "body_hash": "1814636f607ce0f1", "level": "분석", "type": "photo", "prompt": "a single descending staircase curve in the center of an open plane, flanked on the left by a bright expanding arrow pushing a duplicate ghost curve outward and on the right by a shrinking gear-like wedge pulling another ghost curve inward, above the curve a translucent bubble stretches upward and then bursts into scattered fragments snapping sharply back toward the center line, wide horizontal composition with the three forces spread across the full width acting on the central curve from both sides, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["shifting demand curve"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 24}, "sam21-24": {"retired": false, "title": "다음 장으로 — 경기순환과 총수요", "body_hash": "d5494be26614455a", "level": "이해", "type": "photo", "prompt": "a set of solid foundation blocks stacked at the far left forming a base, from which a smooth wave line rises and flows rightward across the frame growing taller and shorter in alternating swells like a business cycle, small ripple rings radiate outward from points along the wave suggesting amplification, and two lever handles are positioned beneath the wave near the right side as if able to dampen or stretch its swings, wide horizontal composition with the foundation on the left flowing into the undulating wave stretched across the rest of the frame, no text. clean modern educational illustration, flat vector with subtle depth, consistent line weight, no gradient mesh, deep teal (#2f6b66) and warm sand (#d8b779) accents, generous negative space, uncluttered, wide horizontal 3:2 composition with the subject spread across the full width and safe margins on the left and right (the image may be cropped to 16:9 for video). No text, no watermark, no logo.", "keywords": ["business cycle waves"], "made_at": "2026-08-14T16:07:47", "dirty": false, "last_n": 25}}}
+</script>
+</body>
+</html>
