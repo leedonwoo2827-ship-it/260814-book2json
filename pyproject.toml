@@ -1,7 +1,7 @@
 [project]
 name = "book-agent"
 version = "0.1.0"
-description = "책 원고 에이전트 — 단행본 PDF 를 발표 쇼케이스가 먹는 이론 요약 HTML 한 장으로"
+description = "작가 에이전트 — 단행본 PDF 를 발표 쇼케이스가 먹는 이론 요약 HTML 한 장으로"
 requires-python = ">=3.10,<3.14"
 dependencies = [
   "fastapi>=0.110",

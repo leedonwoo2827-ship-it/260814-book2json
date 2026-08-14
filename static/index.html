@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>책 원고 에이전트</title>
+<title>작가 에이전트</title>
 <meta name="description" content="단행본 PDF 를 넣으면 발표 쇼케이스가 그대로 먹는 이론 요약 HTML 한 장이 나오는 로컬 콘솔" />
 <meta name="color-scheme" content="light" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%232f6b66'/%3E%3Ctext x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='%23ffffff' text-anchor='middle'%3E%EC%B1%85%3C/text%3E%3C/svg%3E" />
@@ -21,8 +21,10 @@
 <div class="app">
   <nav class="rail" id="rail" aria-label="주 메뉴">
     <div class="side-brand">
-      <button class="brand-mark" id="brand-mark" type="button" title="메뉴 펼치기">단행본 → 원고</button>
-      <span class="brand-name">책 원고 에이전트</span>
+      <!-- ★ 앞의 칩이 **유형** 자리다. 색이 들어가는 칸은 여기 하나뿐이라,
+           흐름("단행본 → 원고")이 아니라 **무엇을 읽는 에이전트인가**를 적는다. -->
+      <button class="brand-mark" id="brand-mark" type="button" title="메뉴 펼치기">단행본</button>
+      <span class="brand-name">작가 에이전트</span>
       <button class="rail-toggle" id="rail-toggle" type="button"
               title="메뉴 접기 (Ctrl+B)" aria-label="메뉴 접기">
         <span data-icon="panelLeft" data-icon-size="16"></span>

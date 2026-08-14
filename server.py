@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""책 원고 에이전트 — 로컬 콘솔 서버.
+"""작가 에이전트 — 로컬 콘솔 서버.
 
 FastAPI + 무빌드 바닐라 SPA. 구조는 `260812-summary-shocase/server.py` 와 같다.
 그 앱은 원고를 **받아서** 발표로 만들고, 이 앱은 그 원고를 **써서** 넘긴다.
@@ -49,7 +49,7 @@ async def lifespan(_app: FastAPI):
     yield
 
 
-app = FastAPI(title="책 원고 에이전트", docs_url=None, redoc_url=None, lifespan=lifespan)
+app = FastAPI(title="작가 에이전트", docs_url=None, redoc_url=None, lifespan=lifespan)
 
 
 # ── 정적 ───────────────────────────────────────────────────────────────────

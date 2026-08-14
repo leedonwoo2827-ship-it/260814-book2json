@@ -1,4 +1,4 @@
-# 책 원고 에이전트 — book2summaryhtml
+# 작가 에이전트 — book2summaryhtml
 
 > 레포 `book2summaryhtml` · 작업 폴더 `260814-book2json`
 > 폴더 이름은 만들 때 붙인 것이라 레포 이름과 다르다. 설정 키(`BOOK2JSON_*`)와

@@ -10,7 +10,7 @@ import { el, icon } from "./util.js";
 import { navigate } from "./shell.js";
 
 export const meta = {
-  title: "책 원고 에이전트",
+  title: "작가 에이전트",
   subtitle: "단행본 PDF 를 넣으면 발표 쇼케이스가 그대로 먹는 이론 요약 HTML 한 장이 나옵니다",
 };
 
