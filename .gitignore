@@ -32,6 +32,9 @@ _contex/
 # 같은 폴더의 편지와 이 폴더의 README 는 우리가 쓴 글이라 올린다.
 _context/보낼-원고/*
 !_context/보낼-원고/README.md
+!_context/보낼-원고/bak/
+_context/보낼-원고/bak/*
+!_context/보낼-원고/bak/README.md
 
 # 산출물은 앱 폴더 **밖**(../book2json-out-260814)에 쌓이므로 여기서 막을 것이 없다.
 # 혹시 워크스페이스를 안쪽으로 돌려놓았을 때를 대비해 한 줄 남긴다.
