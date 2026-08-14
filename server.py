@@ -101,6 +101,8 @@ def health() -> Dict[str, Any]:
 def get_settings() -> Dict[str, Any]:
     cfg = dict(config.load())
     cfg["workspace"] = ws.describe()
+    # 새 원고 화면이 「PDF 폴더」 칸을 이 값으로 **채워** 둔다(placeholder 아님)
+    cfg["suggest_pdf_dir"] = config.suggest_pdf_dir()
     return cfg
 
 

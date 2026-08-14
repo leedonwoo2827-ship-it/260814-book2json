@@ -16,7 +16,7 @@
 "use strict";
 
 import { el, api, icon, toast, debounce } from "./util.js";
-import { state } from "./store.js";
+import { state, guard } from "./store.js";
 import { navigate } from "./shell.js";
 
 export const meta = {
@@ -27,6 +27,7 @@ export const meta = {
 const TONE = {"그대로": "ok", "새로": "warn", "밀림": "warn"};
 
 export async function mount(root) {
+  if (!guard(root)) return;
   const page = el("div", "ipage");
   root.appendChild(page);
   page.appendChild(el("div", "side-empty", "읽는 중…"));

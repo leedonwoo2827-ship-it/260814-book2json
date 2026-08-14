@@ -14,7 +14,7 @@
 "use strict";
 
 import { el, api, icon, toast } from "./util.js";
-import { state } from "./store.js";
+import { state, guard } from "./store.js";
 import { navigate } from "./shell.js";
 
 export const meta = {
@@ -32,6 +32,7 @@ const FLAG_TXT = {
 };
 
 export async function mount(root) {
+  if (!guard(root)) return;
   const page = el("div", "dpage");
   root.appendChild(page);
   page.appendChild(el("div", "side-empty", "읽는 중…"));

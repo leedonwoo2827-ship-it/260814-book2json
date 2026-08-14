@@ -13,7 +13,7 @@
 "use strict";
 
 import { $, el, api, icon, toast } from "./util.js";
-import { state, getStages, invalidateStages } from "./store.js";
+import { state, getStages, invalidateStages, guard } from "./store.js";
 import { navigate } from "./shell.js";
 import { runSteps } from "./runner.js";
 
@@ -52,6 +52,7 @@ const STATE_TXT = {
 };
 
 export async function mount(root) {
+  if (!guard(root)) return;
   const page = el("div", "bpage");
   const list = el("div", "steps");
   page.appendChild(list);

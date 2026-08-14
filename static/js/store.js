@@ -8,7 +8,7 @@
  */
 "use strict";
 
-import { api } from "./util.js";
+import { api, el } from "./util.js";
 
 const K_PROJECT = "sa.project";
 
@@ -84,6 +84,23 @@ export async function getStages(force = false) {
   if (_stages && _stages.project_id === id && !force) return _stages;
   _stages = await api(`/api/projects/${id}/stages`);
   return _stages;
+}
+
+/* 원고가 안 골라졌으면 화면을 그리지 말고 **그렇게 말한다.**
+ *
+ * ★ 예전엔 각 화면이 그냥 `/api/projects/null/...` 를 불렀다. 서버는 422 를 냈고,
+ *   화면에는 그 JSON 이 통째로 찍혔다("Input should be a valid integer …").
+ *   주소를 직접 치거나 원고를 지운 뒤 돌아오면 늘 그랬다. 레일이 잠가 주긴 하지만
+ *   **잠금은 길을 막을 뿐 도착한 사람에게 아무 말도 안 해 준다.**
+ *
+ * 돌려주는 값이 false 면 화면은 바로 return 한다.
+ */
+export function guard(root, what = "원고") {
+  if (state.projectId) return true;
+  const box = el("div", "side-empty",
+    `아직 ${what}를 고르지 않았습니다. 왼쪽에서 고르거나 「새 원고」를 누르세요.`);
+  root.appendChild(box);
+  return false;
 }
 
 export function invalidate() {

@@ -14,7 +14,7 @@
 "use strict";
 
 import { el, api, icon, toast, debounce } from "./util.js";
-import { state, invalidateStages } from "./store.js";
+import { state, invalidateStages, guard } from "./store.js";
 import { navigate } from "./shell.js";
 
 export const meta = {
@@ -28,6 +28,7 @@ const FLAG_TXT = {
 };
 
 export async function mount(root) {
+  if (!guard(root)) return;
   const page = el("div", "opage");
   root.appendChild(page);
   page.appendChild(el("div", "side-empty", "읽는 중…"));
@@ -150,7 +151,7 @@ export async function mount(root) {
 
     if ((s.pages || []).length)
       foot.appendChild(el("span", "sfield-hint",
-        `원서 ${s.pages[0]}${s.pages[1] && s.pages[1] !== s.pages[0] ? "–" + s.pages[1] : ""}쪽`));
+        `${s.pages[0]}${s.pages[1] && s.pages[1] !== s.pages[0] ? "–" + s.pages[1] : ""}쪽`));
 
     const drop = el("button", "sopt drop");
     drop.type = "button";

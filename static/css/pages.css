@@ -189,3 +189,10 @@
   .chain-row { grid-template-columns: 20px 1fr; }
   .chain-why { grid-column: 2; }
 }
+
+/* 목록 첫 줄의 「권장」 배지. app.css 의 `.sopt-rec` 는 알약 단추 **안**에 놓일
+   것을 전제로 흰 반투명 바탕을 쓴다. 여기는 바탕이 밝아서 그대로 두면 안 보인다. */
+.pdfrow .sopt-rec { margin-left: 0; padding: 1px 7px; border-radius: var(--r-pill);
+  background: var(--brand-wash); color: var(--brand);
+  font-size: 10px; font-weight: 800; font-style: normal; }
+.pdfrow.on .sopt-rec { background: rgb(255 255 255 / .5); }

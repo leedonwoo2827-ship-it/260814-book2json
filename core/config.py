@@ -58,8 +58,27 @@ DEFAULTS: Dict[str, Any] = {
         "negative": "text, letters, watermark, logo, low quality, distorted",
     },
 
+    # ★ 사람마다 다른 절대경로. `book2json.config.local.json` 으로 빠진다.
+    #   비어 있으면 앱 폴더 옆의 `_contex/` 를 추천한다(`suggest_pdf_dir`).
+    "paths": {"pdf_dir": ""},
+
     "render": {"seed_hex": "#2f6b66"},
 }
+
+
+def suggest_pdf_dir() -> str:
+    """새 원고 화면의 「PDF 폴더」 칸에 **미리 채워 둘** 경로.
+
+    ★ 예전엔 이 칸을 빈 채로 두고 placeholder 로 예시 경로만 보여 줬다. 회색 글씨가
+      값처럼 보여서, 사람이 다 채웠다고 여기고 다음으로 넘어갔는데 목록이 영영
+      안 나왔다(2026-08-14 신고: "새로운 원고 넣으면 아무것도 안 나옵니다").
+      **보여 줄 값이면 채워 넣는다.** placeholder 로는 아무것도 시작되지 않는다.
+    """
+    cfg = load()
+    if p := ((cfg.get("paths") or {}).get("pdf_dir") or "").strip():
+        return p
+    here = APP_DIR / "_contex"
+    return str(here) if here.is_dir() else ""
 
 
 def _deep_merge(base: Dict[str, Any], patch: Dict[str, Any]) -> Dict[str, Any]:

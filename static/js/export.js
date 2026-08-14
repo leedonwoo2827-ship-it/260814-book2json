@@ -6,7 +6,7 @@
 "use strict";
 
 import { el, api, icon, toast } from "./util.js";
-import { state } from "./store.js";
+import { state, guard } from "./store.js";
 import { runSteps } from "./runner.js";
 import { navigate } from "./shell.js";
 
@@ -35,6 +35,7 @@ const WHERE = [
 ];
 
 export async function mount(root) {
+  if (!guard(root)) return;
   const page = el("div", "spage");
   root.appendChild(page);
 
