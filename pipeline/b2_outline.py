@@ -126,12 +126,16 @@ def build_brief(project: Dict[str, Any], md: str, heads: List[Dict[str, Any]],
         f"# 책", project.get("book") or "(제목 없음)",
         f"\n# 이 장", project.get("title") or "(제목 없음)",
         f"\n# 목표 영상 길이",
-        f"{want['minutes']}분. 말하는 속도는 {want['chars_per_min']}자/분이므로 "
-        f"`say` 를 **전부 합쳐 {want['say_total']:,}자** 써야 그 길이가 나온다.",
+        f"**{want['minutes']}~{want['minutes_max']}분.** 읽는 속도가 "
+        f"{want['chars_per_min']}자/분(5.5자/초)이므로, `say` 를 전부 합쳐 "
+        f"**{want['say_total']:,}자 이상 {want['say_max']:,}자까지** 써야 그 길이가 나온다.",
+        f"모자란 것은 다시 만들어야 하고 넘치는 것은 장을 빼면 되니, **상한 쪽을 노려라.**",
         f"\n# 장 예산", f"{budget}장 (±3)",
         f"\n# 장당 `say` 분량",
-        f"**{want['say_per_slide']}자 안팎**(±20%) — 한 장을 {want['seconds_per_slide']}초 "
-        f"동안 말하는 양이다. 짧게 쓰면 영상이 목표의 절반으로 나온다.",
+        f"**{want['say_per_slide']}~{int(want['say_per_slide'] * nr.RANGE_MAX)}자** — "
+        f"한 장을 {want['seconds_per_slide']}~"
+        f"{round(want['seconds_per_slide'] * nr.RANGE_MAX)}초 동안 말하는 양이다. "
+        f"짧게 쓰면 영상이 목표의 절반으로 나온다.",
     ]
     # ★ 300자가 넘어가면 「네 토막」만으로는 안 찬다. 그때 사람이 하는 짓은 같은 말을
     #   바꿔 말하며 늘리는 것인데, 그러면 듣는 쪽이 먼저 안다. 무엇으로 채울지를

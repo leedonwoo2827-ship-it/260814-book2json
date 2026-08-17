@@ -11,6 +11,7 @@ Claude 를 부르지 않으므로 마음껏 다시 돌려도 된다 — 목차�
 """
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, List
 
 from core import narration as nr, speech, workspace as ws
@@ -57,8 +58,8 @@ def script_text(*, title: str, book: str, minutes: int, verdict: Dict[str, Any],
     적어 두면, 어느 장이 얇은지가 목록에서 그대로 보인다.
     """
     head = [f"{title}", f"{book}" if book else "",
-            f"목표 {minutes}분 · 지금 {verdict['clock']} "
-            f"({verdict['say_chars']:,}자 · {nr.CHARS_PER_MIN}자/분 기준)",
+            f"목표 {minutes}~{round(minutes * nr.RANGE_MAX)}분 · 지금 {verdict['clock']} "
+            f"({verdict['say_chars']:,}자 · {nr.CHARS_PER_MIN}자/분 = 5.5자/초 기준)",
             "AI 아바타가 이 글을 그대로 읽습니다. 고치면 원고(b6)를 다시 조립하세요.",
             "「자막」은 화면에 뜨는 글, 「발음」은 TTS 에 넣을 글입니다 — 뜻은 같고",
             "숫자와 약어의 표기만 다릅니다. 발음 줄이 없으면 바꿀 것이 없었던 것입니다.",
@@ -123,9 +124,17 @@ def run(job, pid: int, slug: str, project: Dict[str, Any], *, force: bool = Fals
     book = project.get("book") or ""
     intro, outro = bookends(outline, title, book)
 
+    # ★ 원고 맨 위에 박을 한 줄을 **여기서 짓는다.** 길이를 아는 자리가 여기라서다.
+    src = cached_data(pid, slug, "b1-pdf") or {}
+    want = nr.plan_of(project, int(src.get("chars") or 0))
+    said = nr.count_all([s.get("say") or "" for s in slides] + [intro, outro])
+    # 「제20장」 → 「20장」. 받는 쪽이 장 번호로 파일을 가른다.
+    chap = (re.search(r"\d+\s*장", title) or [None])[0] or title
+    lecture = nr.label(want, said, chapter=chap)
+
     html = ms.build(title=title, book=book,
                     groups=outline.get("groups") or [], slides=slides,
-                    figures=figures, intro=intro, outro=outro)
+                    figures=figures, intro=intro, outro=outro, lecture=lecture)
 
     d = ws.step_dir(pid, slug, "export")
     stem = ws.ascii_slug(slug) or "manuscript"
@@ -133,10 +142,7 @@ def run(job, pid: int, slug: str, project: Dict[str, Any], *, force: bool = Fals
     ws.write_text(path, html)
 
     # ── 길이 — **여기서 처음으로 「몇 분짜리인가」가 확정된다** ──────────────
-    src = cached_data(pid, slug, "b1-pdf") or {}
-    want = nr.plan_of(project, int(src.get("chars") or 0))
-    # 표지와 마무리도 **소리가 나는 글**이라 길이에 넣는다.
-    said = nr.count_all([s.get("say") or "" for s in slides] + [intro, outro])
+    #   표지와 마무리도 소리가 나는 글이라 위에서 셀 때 같이 넣었다.
     length = nr.verdict(said, want)
     # ★ 넘기는 파일은 **원고 하나뿐**이다. 나머지는 `bak/` 으로 내린다
     #   (2026-08-14: "필요없는건 bak 폴더로 다 치워줘요. 헷갈려요").

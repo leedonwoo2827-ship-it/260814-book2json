@@ -8,9 +8,12 @@
     20장  28장 · say 2,007자 · 화면 3,680자
     21장  24장 · say 2,840자 · 화면 3,335자
 
-2,419 ÷ 5.5분 = **440자/분**. 발표 쇼케이스가 쓰는 값(4,200자 = 10분 → 420자/분)과
-사실상 같다. **화면 글자로는 안 맞는다**(3,333 ÷ 5.5 = 606자/분 — 사람이 그 속도로
-읽지 않는다). 즉 길이를 정하는 것은 화면에 적힌 줄이 아니라 **말하는 글**이다.
+즉 길이를 정하는 것은 화면에 적힌 줄이 아니라 **말하는 글**이다. 그 글이 장당
+89자였으니 어떻게 붙여도 짧을 수밖에 없었다.
+
+★ 처음엔 저 5분 30초에서 440자/분을 거꾸로 셈해 썼다. **틀린 셈이었다** — 그때
+  저쪽은 우리 `data-say` 를 안 읽고 자기가 지은 내레이션을 읽고 있었다. 지금은
+  읽는 쪽이 알려 준 값(5.5자/초 = 330자/분)을 쓴다.
 
 그러면 왜 짧았나 — `llm/prompts/outline.md` 가 `say` 를 「한두 문장」으로 시켰기
 때문이다. 장당 89자짜리 스물일곱 장은 어떻게 붙여도 6분을 못 넘긴다. **목표 길이를
@@ -26,18 +29,31 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Sequence
 
-# ── 상수 — 전부 위 실측에서 나온 값이다 ────────────────────────────────────
+# ── 상수 ───────────────────────────────────────────────────────────────────
 #
-# 자/분. 19장 실측은 440 이지만 **420 으로 잡는다** — 쇼케이스가 쓰는 값과 같게
-# 두어야 두 앱의 표가 어긋나지 않고, 낮게 잡으면 목표보다 짧아지는 쪽이 아니라
-# 살짝 넘치는 쪽으로 틀린다. 모자란 것보다 넘치는 편이 고치기 쉽다.
-CHARS_PER_MIN = 420
+# 자/분. **330 = 5.5자/초.** 영상을 만드는 쪽이 알려 준 값이다(2026-08-14):
+#
+#     분 = 공백 뺀 글자 수 ÷ 5.5 ÷ 60
+#     5,000자 = 약 15분 · 6,600자 = 약 20분
+#
+# ★ 여기 처음엔 420 이 적혀 있었다. 19장 영상이 5분 30초였고 그 원고의 `say` 가
+#   2,419자였으니 440자/분이라고 거꾸로 셈한 값이었다. **그 셈이 틀렸다** — 그때
+#   저쪽은 `data-say` 를 읽지 않고 자기가 지은 내레이션을 읽고 있었다. 우리 글자
+#   수와 그 영상 길이 사이에는 아무 관계가 없었던 것이다.
+#
+#   실제로 읽는 쪽이 말해 준 값이 유일한 근거다. 재는 자와 읽는 자가 다르면
+#   재는 쪽이 아니라 **읽는 쪽의 자**를 써야 한다.
+CHARS_PER_MIN = 330
 
-# 장 하나에서 말할 글자 수. 155자면 우리말로 서너 문장, 22초쯤이다.
-SAY_PER_SLIDE = 155
-SAY_PER_SLIDE_MIN = 110      # 이보다 짧으면 「한두 문장」으로 되돌아간 것이다
-SAY_PER_SLIDE_MAX = 240      # 34초. 장을 늘려서라도 여기까지는 맞춘다
-SAY_PER_SLIDE_HARD = 600     # 86초. 이 위로는 한 화면이 너무 오래 머문다
+# 목표는 점이 아니라 **구간**이다 — 「15~20분」. 넘치는 것은 괜찮고(씬을 빼면 된다)
+# 모자란 것은 다시 만들어야 한다. 그래서 하한을 목표로 잡고 상한까지 허용한다.
+RANGE_MAX = 1.33
+
+# 장 하나에서 말할 글자 수. **초로 환산해서 정한 값이다**(330자/분 = 5.5자/초).
+SAY_PER_SLIDE = 155          # 28초. 우리말로 서너 문장
+SAY_PER_SLIDE_MIN = 110      # 20초. 이보다 짧으면 「한두 문장」으로 되돌아간 것이다
+SAY_PER_SLIDE_MAX = 190      # 35초. 장을 늘려서라도 여기까지는 맞춘다
+SAY_PER_SLIDE_HARD = 470     # 85초. 이 위로는 한 화면이 너무 오래 머문다
 
 # ★ **장을 늘리는 것은 30분치까지다.** 그 위로는 장을 더 만들지 않고 장당 대본만
 #   늘린다(2026-08-14 지시: "슬라이드 수는 30분까지만 늘리고 그다음부터는 안 늘어나는").
@@ -62,8 +78,8 @@ MIN_SLIDES = 12
 # 요약 비율(= 말할 글자 ÷ 원문)이 이 선을 넘으면 원문을 거의 통째로 읽는 셈이다.
 RATIO_WARN = 0.60
 
-# 장당 이만큼을 넘으면 「긴 대본」이다 — 프롬프트가 쓰는 법을 더 붙인다(43초).
-LONG_FORM_FROM = 300
+# 장당 이만큼을 넘으면 「긴 대본」이다 — 프롬프트가 쓰는 법을 더 붙인다(42초).
+LONG_FORM_FROM = 230
 
 # 목차 한 번에 이만큼을 넘게 쓰게 되면 미리 말해 준다. b2 는 **한 번의 호출**로
 # 목차와 대본을 통째로 내는데, 출력이 길수록 뒤쪽이 성글어진다(b3 를 여덟 장씩
@@ -103,7 +119,7 @@ def plan(source_chars: int, minutes: int = DEFAULT_MIN) -> Dict[str, Any]:
     순서가 중요하다:
 
         1. 장 수는 **원문**이 정한다 (1,700자당 한 장)
-        2. 말할 총량은 **목표 길이**가 정한다 (분 × 420자)
+        2. 말할 총량은 **목표 길이**가 정한다 (분 × 330자)
         3. 장당 말 = 총량 ÷ 장 수. 이게 34초를 넘길 때만 **그제서야** 장을 늘린다
         4. 단, 장을 늘리는 것은 **30분치까지**다. 그 위로는 대본만 늘어난다
 
@@ -148,7 +164,9 @@ def plan(source_chars: int, minutes: int = DEFAULT_MIN) -> Dict[str, Any]:
 
     return {
         "minutes": mins,
-        "say_total": say_total,          # 이만큼 말해야 그 길이가 나온다
+        "minutes_max": round(mins * RANGE_MAX),
+        "say_total": say_total,          # 이만큼 말해야 그 길이가 나온다(하한)
+        "say_max": int(say_total * RANGE_MAX),   # 여기까지는 넘쳐도 괜찮다
         "slides": slides,                # 목차(b2)가 만들 장 수
         "base_slides": base,             # 원문만 보고 정한 장 수(늘리기 전)
         "added_slides": added,           # 길이 때문에 더한 장
@@ -184,6 +202,22 @@ def plan_of(project: Dict[str, Any], source_chars: int) -> Dict[str, Any]:
     return plan(source_chars, target_of(project))
 
 
+def label(want: Dict[str, Any], say_chars: int, chapter: str = "") -> str:
+    """원고 맨 위에 박을 한 줄. **목표가 원고에 안 적혀 있으면 아무도 모른다.**
+
+    2026-08-14, 영상 쪽 부탁:
+
+        "글자 수는 앱이 셀 수 있습니다. 그런데 목표가 몇 분인지는 원고에 없으면
+         알 수가 없습니다. 그래서 음성을 다 구운 뒤에야 「짧다」를 알게 됩니다."
+
+    맞는 말이다. 우리는 목표를 알고 저쪽은 모른다 — **아는 쪽이 적어 보내야 한다.**
+    """
+    ch = (chapter or "").strip()
+    return (f"{ch + ' · ' if ch else ''}"
+            f"목표 {want['minutes']}~{want['minutes_max']}분 · "
+            f"data-say {say_chars:,}자".replace(",", ""))
+
+
 def verdict(say_chars: int, want: Dict[str, Any]) -> Dict[str, Any]:
     """지금 원고가 목표에 닿았나. **다 만든 뒤에 알면 늦으므로** 조립할 때 센다."""
     total = int(want.get("say_total") or 0)
@@ -197,6 +231,8 @@ def verdict(say_chars: int, want: Dict[str, Any]) -> Dict[str, Any]:
         "target_chars": total,
         "pct": round(got / total * 100) if total else 0,
         "short": bool(short),
-        "note": (f"목표 {want.get('minutes')}분({total:,}자)인데 {clock(got)}({got:,}자)입니다"
-                 if short else f"{clock(got)} — 목표 {want.get('minutes')}분"),
+        "note": (f"목표 {want.get('minutes')}~{want.get('minutes_max')}분"
+                 f"({total:,}자 이상)인데 {clock(got)}({got:,}자)입니다"
+                 if short else
+                 f"{clock(got)} — 목표 {want.get('minutes')}~{want.get('minutes_max')}분"),
     }

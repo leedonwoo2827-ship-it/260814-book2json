@@ -156,7 +156,14 @@ export async function mount(root) {
       //   원고를 못 내보낸다(2026-08-14: 대본 지침을 고쳤더니 19장 목차가 통째로
       //   낡음이 되고 마무리가 잠겼다). 낡음은 **다시 할지 사람이 정하는 것**이고,
       //   앞 단계의 결과가 아예 없을 때만 뒤가 성립하지 않는다.
-      blocked = mine.some((s) => s.blocked);
+      //
+      // ★ **한 줄 안에서 서로를 기다리는 것은 잠글 이유가 아니다.** 3번 줄은
+      //   몸통(b3)과 그림(b4) 두 단계인데, 그림은 몸통이 끝나기 전까지 늘 「막힘」
+      //   이다 — 누르면 차례로 도니까 그게 맞다. 그것까지 세는 바람에 3번이 영영
+      //   안 눌렸다. 그래서 **이 줄 밖의** 단계가 비었을 때만 잠근다.
+      const own = new Set(st.keys);
+      blocked = mine.some((s) =>
+        (s.missing_deps || []).some((d) => !own.has(d)));
 
       const row = el("div", "step" + (blocked ? " locked" : "") + (done ? " done" : ""));
       const head = el("div", "step-hd");

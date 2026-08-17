@@ -11,8 +11,8 @@ import { runSteps } from "./runner.js";
 import { navigate } from "./shell.js";
 
 export const meta = {
-  title: "내보내기",
-  subtitle: "원고 HTML 과 대본을 발표 쇼케이스로 넘깁니다",
+  title: "넘길 파일",
+  subtitle: "원고 HTML 하나면 됩니다 — 대본은 그 안에 들어 있습니다",
 };
 
 /* 파일 이름 끝 → (무엇인가, 어디에 넣나). **긴 이름을 먼저** 본다 —
@@ -23,7 +23,7 @@ const WHERE = [
    + "h3 개수 + 1(표지) 만큼 장이 생깁니다."],
   // 이 칸은 그냥 글자로 뜬다 — 마크다운이 아니다. 별표를 쓰면 별표가 보인다.
   ["_대본.txt", "대본",
-   "AI 아바타가 읽을 글입니다. 이 글자 수의 총합이 곧 영상 길이입니다(420자 = 1분). "
+   "AI 아바타가 읽을 글입니다. 이 글자 수의 총합이 곧 영상 길이입니다(330자 = 1분). "
    + "원고 안의 data-say 와 같은 글이라, 고칠 때는 목차 화면에서 고치고 "
    + "4번(마무리)을 다시 돌리세요."],
   // ★ 이미지 프롬프트 세 파일(전체·부족분·이름바꾸기)이 여기 있었다. 2026-08-14 에
@@ -53,7 +53,7 @@ export async function mount(root) {
     const run = el("button", "btn primary");
     const label = el("span", "step-run-label");
     run.type = "button";
-    run.textContent = doc.files.length ? "다시 내보내기" : "내보내기";
+    run.textContent = doc.files.length ? "다시 만들기" : "만들기";
     run.onclick = async () => {
       const ok = await runSteps(["b6-assemble", "b7-check"], {
         btn: run, label,
@@ -61,7 +61,7 @@ export async function mount(root) {
         onLog: (lines) => lines.forEach((t) =>
           logs.appendChild(el("div", "srun-line", t))),
       });
-      if (ok) toast("내보냈습니다");
+      if (ok) toast("다 됐습니다");
       draw();
     };
     bar.append(run, label);
@@ -72,7 +72,7 @@ export async function mount(root) {
 
     if (!doc.files.length) {
       page.appendChild(el("div", "side-empty",
-        "아직 내보낸 것이 없습니다. 위 단추를 누르면 조립 → 실측 → 내보내기가 차례로 돕니다."));
+        "아직 만든 것이 없습니다. 위 단추를 누르면 조립 → 실측이 차례로 돕니다."));
       return;
     }
 

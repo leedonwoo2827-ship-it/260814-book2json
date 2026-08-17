@@ -197,12 +197,12 @@ _DEFS: List[Stage] = [
     #   그때 b6 의 deps 에 `b5-imgprompt` 도 다시 넣어야 한다.
     Stage("b6-assemble", "원고 조립", "export", "det",
           deps=["b3-write", "b4-figure"],
-          reads=["title", "book", "slug", "outline_rev", "target_min"], code_version=7),
+          reads=["title", "book", "slug", "outline_rev", "target_min"], code_version=8),
     # playwright 로 실제 브라우저에 띄워 잰다. 자로 재지 않은 "규약을 지켰다"는
     # 말은 믿을 것이 못 된다 — 규약의 숫자가 전부 픽셀이기 때문이다.
     # 마지막 단계다. 여기까지 오면 `10_내보내기/` 에 원고·대본·실측이 다 있다.
     Stage("b7-check", "실측 검증", "export", "ext",
-          deps=["b6-assemble"], reads=["manuscript", "target_min"], code_version=4),
+          deps=["b6-assemble"], reads=["manuscript", "target_min"], code_version=5),
 ]
 
 STAGES: Dict[str, Stage] = {s.key: s for s in _DEFS}

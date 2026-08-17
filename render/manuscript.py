@@ -28,7 +28,7 @@ import json
 import re
 from typing import Any, Dict, List, Optional
 
-from core import speech
+from core import narration as nr, speech
 
 
 def count_say(s: Optional[str]) -> int:
@@ -233,7 +233,7 @@ def _body(blocks: List[Dict[str, Any]], svg: Optional[str]) -> List[str]:
 
 def build(*, title: str, book: str, groups: List[Dict[str, Any]],
           slides: List[Dict[str, Any]], figures: Dict[str, str],
-          intro: str = "", outro: str = "",
+          intro: str = "", outro: str = "", lecture: str = "",
           prompts: Optional[Dict[str, Dict[str, Any]]] = None) -> str:
     """원고 한 파일. `slides` 는 **화면에 나갈 순서 그대로** 온다.
 
@@ -251,6 +251,10 @@ def build(*, title: str, book: str, groups: List[Dict[str, Any]],
     #   대본이고 무엇이 화면 글인지 알 수 있어야 한다.
     said = sum(count_say(s.get("say")) for s in slides) + count_say(intro) + count_say(outro)
     head_note = [
+        # ★ **목표 길이를 원고에 박는다.** 글자 수는 받는 쪽이 셀 수 있지만 목표는
+        #   못 센다 — 적혀 있지 않으면 음성을 다 구운 뒤에야 「짧다」를 안다
+        #   (2026-08-14 영상 쪽 부탁). 아는 쪽이 적어 보내는 것이 맞다.
+        f'<meta name="lecture" content="{esc(lecture)}">' if lecture else "",
         "<!--",
         f"  작가 에이전트 (book2summaryhtml) — {title}",
         "",
@@ -262,7 +266,8 @@ def build(*, title: str, book: str, groups: List[Dict[str, Any]],
         "        다르다 — 「1946년·GDP·25%」를 「천구백사십육 년·지디피·이십오 퍼센트」로",
         "        풀어 둔 것이다. data-read 가 없는 장은 바꿀 것이 없어서 없는 것이니",
         "        그때는 data-say 를 그대로 읽히면 된다.",
-        f"      - 대본 합계 {said:,}자 · 420자/분 기준 {said // 420}분 {round(said % 420 / 7):02d}초",
+        f"      - 대본 합계 {said:,}자 · {nr.CHARS_PER_MIN}자/분(5.5자/초) 기준 "
+        f"{said // nr.CHARS_PER_MIN}분 {round(said % nr.CHARS_PER_MIN / (nr.CHARS_PER_MIN / 60)):02d}초",
         "      - 화면 글(p·li)과 일부러 다르다. 같으면 보는 사람이 읽기와 듣기를",
         "        동시에 하게 되어 둘 다 안 들어온다.",
         "    h1 에는 앞뒤 장의 대본이 붙어 있다 — 표지에서 읽을 data-say, 마무리에서",
@@ -277,7 +282,7 @@ def build(*, title: str, book: str, groups: List[Dict[str, Any]],
         "<!DOCTYPE html>", '<html lang="ko">', "<head>",
         '<meta charset="utf-8">',
         f"<title>{esc(title)}</title>",
-        *head_note,
+        *[x for x in head_note if x],
         "<style>", DOC_CSS, "</style>",
         "</head>", "<body>",
     ]
